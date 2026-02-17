@@ -1,0 +1,22 @@
+# GitHub Pages Configuration
+title: GWD Dashboard
+description: Global World Domination Dashboard
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Exclude files
+exclude:
+  - .openclaw/
+  - dashboard/node_modules/
+  - tools/
+  - logs/
+  - "*.sh"
+  - "*.js"
+  - "*.json"
+  - "*.md"
+
+# Include only the HTML file
+include:
+  - index.html
