@@ -3,409 +3,691 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GWD — LIVE Dashboard</title>
+    <title>GWD — Command Center</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --border: rgba(0, 212, 255, 0.15);
+            --accent: #00d4ff;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --success: #4caf50;
+            --warning: #ffc107;
+            --danger: #ff6b6b;
+        }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #eaeaea;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #0a0f1d 50%, var(--bg-secondary) 100%);
+            color: var(--text);
             min-height: 100vh;
-            padding: 10px;
+            padding: 20px;
+        }
+        .glass {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
         .header {
-            text-align: center;
-            margin-bottom: 15px;
-            padding: 20px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 32px;
+            margin-bottom: 24px;
         }
-        .header h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+        .brand { display: flex; align-items: center; gap: 16px; }
+        .logo { font-size: 3rem; animation: float 3s ease-in-out infinite; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .brand-text h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), #a855f7);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        .brand-text p { color: var(--text-muted); font-size: 0.9rem; }
+        .header-info { display: flex; gap: 32px; align-items: center; }
+        .time-display { text-align: right; }
+        .clock {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+        }
         .live-indicator {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 8px;
-            color: #4caf50;
-            font-size: 0.9rem;
-            margin-top: 10px;
+            background: rgba(76, 175, 80, 0.15);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(76, 175, 80, 0.3);
         }
         .live-dot {
             width: 8px;
             height: 8px;
-            background: #4caf50;
+            background: var(--success);
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.9); }
         }
-        .news-ticker {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 8px;
-            padding: 10px 15px;
-            margin-bottom: 20px;
+        .hero-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+        .hero-card {
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        .hero-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 8px 12px -1px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .value {
+            font-size: 1.8rem;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 15px;
-            overflow: hidden;
-        }
-        .ticker-label {
-            background: #00d4ff;
-            color: #1a1a2e;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            white-space: nowrap;
-        }
-        .ticker-content {
-            flex: 1;
-            overflow: hidden;
-        }
-        .ticker-items {
-            display: flex;
-            gap: 40px;
-            animation: ticker 30s linear infinite;
-            white-space: nowrap;
-        }
-        @keyframes ticker {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-        .ticker-item a {
-            color: #00d4ff;
-            text-decoration: none;
-        }
-        .section-title {
-            font-size: 1.2rem;
-            margin: 25px 0 12px 0;
-            padding-left: 10px;
-            border-left: 4px solid #00d4ff;
-            color: #00d4ff;
-        }
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-        }
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 12px;
         }
-        .card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 15px;
-            border: 1px solid rgba(255,255,255,0.1);
+        .budget-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-top: 12px;
+            overflow: hidden;
         }
-        .card.compact { padding: 12px; }
-        .card.wide { grid-column: span 2; }
-        @media (max-width: 768px) {
-            .card.wide { grid-column: span 1; }
+        .budget-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), var(--warning));
+            border-radius: 4px;
+            width: 2.4%;
         }
-        .card-header {
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .status-card {
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .status-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+        .status-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 12px;
         }
-        .card-icon { font-size: 1.8rem; }
-        .card-title { font-size: 1.1rem; font-weight: 600; }
-        .card-role { font-size: 0.8rem; color: #888; }
-        .status {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 20px;
+        .status-icon { font-size: 1.5rem; }
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
             font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
-            margin-left: auto;
         }
-        .status.online { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
-        .status.active { background: rgba(0, 212, 255, 0.2); color: #00d4ff; }
-        .status.busy { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
-        .status.new { background: rgba(156, 39, 176, 0.2); color: #e91e63; }
-        .live-data {
-            background: rgba(0,0,0,0.2);
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 8px;
-            font-size: 0.9rem;
+        .badge-online { background: rgba(76, 175, 80, 0.2); color: var(--success); }
+        .badge-warning { background: rgba(255, 193, 7, 0.2); color: var(--warning); }
+        .status-title { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+        .status-value { font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+        .status-detail { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
         }
-        .weather-main { font-size: 1.8rem; margin: 8px 0; }
-        .weather-details { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 8px; font-size: 0.85rem; }
-        .budget-bar { background: rgba(0,0,0,0.3); height: 18px; border-radius: 9px; overflow: hidden; margin-top: 8px; }
-        .budget-used { height: 100%; background: linear-gradient(90deg, #4caf50, #ffc107); transition: width 0.5s; }
-        .task-list { list-style: none; font-size: 0.85rem; }
-        .task-list li { padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 6px; }
-        .checkbox { width: 14px; height: 14px; border: 2px solid #555; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.6rem; flex-shrink: 0; }
-        .checkbox.checked { background: #4caf50; border-color: #4caf50; }
-        .quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .action-btn { background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); color: #00d4ff; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; text-decoration: none; text-align: center; display: block; }
-        .meeting-notes { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; font-size: 0.9rem; line-height: 1.5; }
-        .meeting-notes h4 { color: #00d4ff; margin-bottom: 10px; }
-        .team-status { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; font-size: 0.85rem; }
-        .timestamp { text-align: center; color: #666; font-size: 0.85rem; margin-top: 30px; padding: 20px; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: #1a1a2e; border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 16px; padding: 24px; max-width: 500px; width: 90%; }
+        .activity-panel { padding: 24px; }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .panel-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .activity-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border-left: 3px solid var(--accent);
+            transition: all 0.2s;
+        }
+        .activity-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(4px);
+        }
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            min-width: 60px;
+        }
+        .activity-content { flex: 1; }
+        .activity-title { font-weight: 600; margin-bottom: 4px; }
+        .activity-desc { font-size: 0.9rem; color: var(--text-muted); }
+        .team-panel { padding: 24px; }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+        .team-member:hover { background: rgba(255, 255, 255, 0.05); }
+        .member-avatar { font-size: 1.8rem; }
+        .member-info { flex: 1; }
+        .member-name { font-weight: 600; font-size: 0.9rem; }
+        .member-role { font-size: 0.75rem; color: var(--text-muted); }
+        .member-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .status-active { background: var(--success); box-shadow: 0 0 8px var(--success); }
+        .status-busy { background: var(--warning); }
+        .status-new { background: #e91e63; }
+        .personal-panel { padding: 24px; }
+        .event-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .event-item {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border-left: 3px solid var(--warning);
+        }
+        .event-date { text-align: center; min-width: 50px; }
+        .event-date .day {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .event-date .month {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .event-info { flex: 1; }
+        .event-title { font-weight: 600; margin-bottom: 4px; }
+        .event-countdown { font-size: 0.85rem; color: var(--text-muted); }
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .action-btn {
+            padding: 16px 24px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 212, 255, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .action-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 212, 255, 0.1));
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+        }
+        .news-ticker {
+            background: linear-gradient(90deg, rgba(0, 212, 255, 0.1), rgba(0, 212, 255, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            overflow: hidden;
+        }
+        .ticker-label {
+            background: var(--accent);
+            color: var(--bg-primary);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+        .ticker-content { flex: 1; overflow: hidden; }
+        .ticker-scroll {
+            display: flex;
+            gap: 40px;
+            animation: scroll 30s linear infinite;
+            white-space: nowrap;
+        }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .ticker-item a { color: var(--accent); text-decoration: none; }
+        @media (max-width: 1200px) {
+            .hero-bar { grid-template-columns: repeat(2, 1fr); }
+            .main-grid { grid-template-columns: 1fr; }
+            .status-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .hero-bar, .status-grid { grid-template-columns: 1fr; }
+            .actions-grid { grid-template-columns: repeat(2, 1fr); }
+            .header { flex-direction: column; gap: 20px; }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🦞 GWD</h1>
-        <div style="color: #888;">Global World Domination</div>
-        <div class="live-indicator"><span class="live-dot"></span><span>LIVE DATA</span><span id="refresh-timer">(60s)</span></div>
-    </div>
+    <header class="header glass">
+        <div class="brand">
+            <span class="logo">🦞</span>
+            <div class="brand-text">
+                <h1>GWD Command Center</h1>
+                <p>Global World Domination — Live Operations</p>
+            </div>
+        </div>
+        <div class="header-info">
+            <div class="live-indicator">
+                <span class="live-dot"></span>
+                <span>LIVE SYSTEM</span>
+            </div>
+            <div class="time-display">
+                <div class="clock" id="clock">06:12:34</div>
+                <div class="date" id="date">Monday, February 17, 2026</div>
+            </div>
+        </div>
+    </header>
 
     <div class="news-ticker">
-        <div class="ticker-label">📰 LIVE NEWS</div>
-        <div class="ticker-content" id="ticker-content">
-            <div class="ticker-items"><div class="ticker-item">Loading headlines...</div></div>
+        <span class="ticker-label">📰 LIVE NEWS</span>
+        <div class="ticker-content">
+            <div class="ticker-scroll">
+                <span class="ticker-item"><a href="#">Toronto teen makes Olympic debut for Albania</a> — CBC News</span>
+                <span class="ticker-item"><a href="#">5 hospitalized in North York stabbing incident</a> — CBC Toronto</span>
+                <span class="ticker-item"><a href="#">Team Canada at 11 medals in 2026 Olympics</a> — CBC Sports</span>
+                <span class="ticker-item"><a href="#">GWD dashboard v3.0 now live</a> — Internal</span>
+                <span class="ticker-item"><a href="#">Toronto teen makes Olympic debut for Albania</a> — CBC News</span>
+                <span class="ticker-item"><a href="#">5 hospitalized in North York stabbing incident</a> — CBC Toronto</span>
+                <span class="ticker-item"><a href="#">Team Canada at 11 medals in 2026 Olympics</a> — CBC Sports</span>
+                <span class="ticker-item"><a href="#">GWD dashboard v3.0 now live</a> — Internal</span>
+            </div>
         </div>
     </div>
 
-    <div class="section-title">📊 Live Operations</div>
-    <div class="dashboard-grid">
-        <div class="card">
-            <div class="card-header"><span class="card-icon">🌤️</span><div><div class="card-title">Burlington Weather</div><div class="card-role">Live Conditions</div></div><span class="status online">Live</span></div>
-            <div id="weather-data" class="live-data">Loading...</div>
+    <div class="hero-bar">
+        <div class="hero-card glass">
+            <div class="label">🌤️ Burlington Weather</div>
+            <div class="value" style="font-size: 2.2rem;" id="weather">🌤️ --°C</div>
+            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">Loading conditions...</div>
         </div>
-        <div class="card">
-            <div class="card-header"><span class="card-icon">🐕‍🦺</span><div><div class="card-title">Daily Budget</div><div class="card-role">Rosco Monitoring</div></div><span class="status active">$5 Max</span></div>
-            <div class="live-data">
-                <div style="display: flex; justify-content: space-between; font-size: 0.9rem;"><span>Spend:</span><span id="budget-amount">$0.00 / $5.00</span></div>
-                <div class="budget-bar"><div id="budget-bar" class="budget-used" style="width: 0%"></div></div>
+        <div class="hero-card glass">
+            <div class="label">💰 Daily Budget</div>
+            <div class="value" style="color: var(--success);">$0.12 <span style="font-size: 1rem; color: var(--text-muted);">/ $5.00</span></div>
+            <div class="budget-bar"><div class="budget-fill"></div></div>
+            <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">2.4% used — Rosco monitoring</div>
+        </div>
+        <div class="hero-card glass">
+            <div class="label">📅 Next Event</div>
+            <div class="value" style="font-size: 1.5rem;">GWD Brief</div>
+            <div style="color: var(--accent); font-size: 1.2rem; font-weight: 700;" id="countdown">23h 48m</div>
+        </div>
+        <div class="hero-card glass">
+            <div class="label">👥 Team Status</div>
+            <div class="value" style="color: var(--success);">12 <span style="font-size: 1rem; color: var(--text-muted);">/ 12 Active</span></div>
+            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;">All systems operational</div>
+        </div>
+    </div>
+
+    <div class="status-grid">
+        <div class="status-card glass">
+            <div class="status-header">
+                <span class="status-icon">🖥️</span>
+                <span class="status-badge badge-online">Online</span>
+            </div>
+            <div class="status-title">System Health</div>
+            <div class="status-value">100%</div>
+            <div class="status-detail">All APIs responding</div>
+        </div>
+        <div class="status-card glass">
+            <div class="status-header">
+                <span class="status-icon">🔔</span>
+                <span class="status-badge badge-online">0 Active</span>
+            </div>
+            <div class="status-title">Active Alerts</div>
+            <div class="status-value" style="color: var(--success);">None</div>
+            <div class="status-detail">No issues requiring attention</div>
+        </div>
+        <div class="status-card glass">
+            <div class="status-header">
+                <span class="status-icon">🧠</span>
+                <span class="status-badge badge-warning">Tracking</span>
+            </div>
+            <div class="status-title">Model Usage</div>
+            <div class="status-value">$0.12</div>
+            <div class="status-detail">Ollama: 0 | Gemini: 0 | Kimi: 0</div>
+        </div>
+        <div class="status-card glass">
+            <div class="status-header">
+                <span class="status-icon">👥</span>
+                <span class="status-badge badge-online">Active</span>
+            </div>
+            <div class="status-title">Team Pulse</div>
+            <div class="status-value">8/12</div>
+            <div class="status-detail">Working on tasks now</div>
+        </div>
+        <div class="status-card glass">
+            <div class="status-header">
+                <span class="status-icon">📈</span>
+                <span class="status-badge badge-online">On Track</span>
+            </div>
+            <div class="status-title">Progress</div>
+            <div class="status-value">67%</div>
+            <div class="status-detail">16 done | 8 in progress</div>
+        </div>
+        <div class="status-card glass">
+            <div class="status-header">
+                <span class="status-icon">⚡</span>
+                <span class="status-badge badge-online">Ready</span>
+            </div>
+            <div class="status-title">Quick Actions</div>
+            <div class="status-value">4</div>
+            <div class="status-detail">Click to execute</div>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <div class="left-col">
+            <div class="activity-panel glass">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span>⚡</span>
+                        <span>What's Happening</span>
+                    </div>
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Live Activity Feed</span>
+                </div>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-time">NOW</div>
+                        <div class="activity-content">
+                            <div class="activity-title">Dashboard v3.0 Deployed</div>
+                            <div class="activity-desc">Modern glassmorphism design now live</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-time">6:00 AM</div>
+                        <div class="activity-content">
+                            <div class="activity-title">Morning Brief Delivered</div>
+                            <div class="activity-desc">Weather, news, and priorities sent</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-time">OVERNIGHT</div>
+                        <div class="activity-content">
+                            <div class="activity-title">Team Working on Tasks</div>
+                            <div class="activity-desc">8 members actively completing deliverables</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-time">YESTERDAY</div>
+                        <div class="activity-content">
+                            <div class="activity-title">Dashboard Launched on Netlify</div>
+                            <div class="activity-desc">Live at https://gwd-hub.netlify.app</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions-grid">
+                <button class="action-btn" onclick="window.open('https://t.me/openclaw_bot', '_blank')">
+                    <span>📋</span> New Task
+                </button>
+                <button class="action-btn" onclick="window.open('https://t.me/openclaw_bot', '_blank')">
+                    <span>👥</span> Call Meeting
+                </button>
+                <button class="action-btn" onclick="alert('📊 Reports\n\nBudget: $0.12 / $5.00\nTeam: 12 Active\nTasks: 16 done, 8 in progress')">
+                    <span>📊</span> View Reports
+                </button>
+                <button class="action-btn" onclick="alert('⚙️ Settings\n\nDaily Budget: $5.00\nWorkspace: ~/.openclaw/workspace\nConfig: ~/.openclaw/openclaw.json')">
+                    <span>⚙️</span> Settings
+                </button>
             </div>
         </div>
-        <div class="card">
-            <div class="card-header"><span class="card-icon">👥</span><div><div class="card-title">Team Overview</div><div class="card-role">12 Members</div></div><span class="status online">Active</span></div>
-            <div class="live-data">
-                <div class="team-status">
-                    <div>🦞 CEO: <span style="color: #4caf50">Online</span></div><div>🚀 Buzz: <span style="color: #4caf50">Ready</span></div>
-                    <div>🧙‍♂️ Gandalf: <span style="color: #4caf50">Available</span></div><div>🧌 Chunk: <span style="color: #4caf50">On Duty</span></div>
-                    <div>🧚‍♀️ Wisp: <span style="color: #4caf50">Sparkling</span></div><div>🥷 Ninja: <span style="color: #4caf50">Executing</span></div>
-                    <div>👵 Granny O: <span style="color: #4caf50">Caring</span></div><div>👮‍♀️ PC Plod: <span style="color: #4caf50">By Book</span></div>
-                    <div>🧠 BrainZ: <span style="color: #4caf50">24/7</span></div><div>👩‍🏫 Kazza: <span style="color: #e91e63">New Hire</span></div>
-                    <div>🐕‍🦺 Rosco: <span style="color: #e91e63">New Hire</span></div>
+
+        <div class="right-col">
+            <div class="team-panel glass">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span>👥</span>
+                        <span>Team Status</span>
+                    </div>
+                    <span style="color: var(--success); font-size: 0.85rem;">12 Active</span>
+                </div>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <span class="member-avatar">🦞</span>
+                        <div class="member-info">
+                            <div class="member-name">CEO</div>
+                            <div class="member-role">Strategy</div>
+                        </div>
+                        <span class="member-status status-active"></span>
+                    </div>
+                    <div class="team-member">
+                        <span class="member-avatar">🚀</span>
+                        <div class="member-info">
+                            <div class="member-name">Buzz</div>
+                            <div class="member-role">Research</div>
+                        </div>
+                        <span class="member-status status-active"></span>
+                    </div>
+                    <div class="team-member">
+                        <span class="member-avatar">🧙‍♂️</span>
+                        <div class="member-info">
+                            <div class="member-name">Gandalf</div>
+                            <div class="member-role">Strategy</div>
+                        </div>
+                        <span class="member-status status-active"></span>
+                    </div>
+                    <div class="team-member">
+                        <span class="member-avatar">🧌</span>
+                        <div class="member-info">
+                            <div class="member-name">Chunk</div>
+                            <div class="member-role">Security</div>
+                        </div>
+                        <span class="member-status status-active"></span>
+                    </div>
+                    <div class="team-member">
+                        <span class="member-avatar">🧚‍♀️</span>
+                        <div class="member-info">
+                            <div class="member-name">Wisp</div>
+                            <div class="member-role">Creative</div>
+                        </div>
+                        <span class="member-status status-active"></span>
+                    </div>
+                    <div class="team-member">
+                        <span class="member-avatar">🥷</span>
+                        <div class="member-info">
+                            <div class="member-name">Ninja</div>
+                            <div class="member-role">Execution</div>
+                        </div>
+                        <span class="member-status status-busy"></span>
+                    </div>
+                    <div class="team-member">
+                        <span class="member-avatar">👵</span>
+                        <div class="member-info">
+                            <div class="member-name">Granny O</div>
+                            <div class="member-role">Care</div>
+                        </div>
+                        <span class="member-status status-active"></span>
+                    </div>
+                    <div class="team-member">
+                        <span class="member-avatar">👮‍♀️</span>
+                        <div class="member-info">
+                            <div class="member-name">PC Plod</div>
+                            <div class="member-role">Compliance</div>
+                        </div>
+                        <span class="member-status status-active"></span>
+                    </div>
+                    <div class="team-member">
+                        <span class="member-avatar">🧠</span>
+                        <div class="member-info">
+                            <div class="member-name">BrainZ</div>
+                            <div class="member-role">Knowledge</div>
+                        </div>
+                        <span class="member-status status-active"></span>
+                    </div>
+                    <div class="team-member">
+                        <span class="member-avatar">👩‍🏫</span>
+                        <div class="member-info">
+                            <div class="member-name">Kazza</div>
+                            <div class="member-role">Client Success</div>
+                        </div>
+                        <span class="member-status status-new"></span>
+                    </div>
+                    <div class="team-member">
+                        <span class="member-avatar">🐕‍🦺</span>
+                        <div class="member-info">
+                            <div class="member-name">Rosco</div>
+                            <div class="member-role">Performance</div>
+                        </div>
+                        <span class="member-status status-new"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="personal-panel glass">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <span>📅</span>
+                        <span>Your Calendar</span>
+                    </div>
+                </div>
+                <div class="event-list">
+                    <div class="event-item">
+                        <div class="event-date">
+                            <div class="day">03</div>
+                            <div class="month">MAR</div>
+                        </div>
+                        <div class="event-info">
+                            <div class="event-title">Chloe's Birthday</div>
+                            <div class="event-countdown">14 days away</div>
+                        </div>
+                    </div>
+                    <div class="event-item">
+                        <div class="event-date">
+                            <div class="day">25</div>
+                            <div class="month">JUN</div>
+                        </div>
+                        <div class="event-info">
+                            <div class="event-title">Mexico Trip</div>
+                            <div class="event-countdown">128 days away</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-header"><span class="card-icon">📅</span><div><div class="card-title">Next GWD Brief</div><div class="card-role">6:00 AM EST</div></div><span class="status active">Scheduled</span></div>
-            <div class="live-data" style="text-align: center;"><div style="font-size: 2rem; color: #00d4ff;" id="countdown">--</div></div>
-        </div>
-        <div class="card">
-            <div class="card-header"><span class="card-icon">⚡</span><div><div class="card-title">Quick Actions</div><div class="card-role">For Stevie</div></div></div>
-            <div class="quick-actions">
-                <a href="https://t.me/openclaw_bot" target="_blank" class="action-btn">📋 New Task</a>
-                <button class="action-btn" onclick="showMeetingModal()">👥 Call Meeting</button>
-                <button class="action-btn" onclick="showReports()">📊 View Reports</button>
-                <button class="action-btn" onclick="showSettings()">⚙️ Settings</button>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header"><span class="card-icon">🧠</span><div><div class="card-title">Model Usage</div><div class="card-role">Today's Activity</div></div><span class="status active">Tracking</span></div>
-            <div class="live-data">
-                <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px; font-size: 0.85rem;">
-                    <div><span style="color: #4caf50;">●</span> Ollama (Free)</div><div id="ollama-calls">0 calls</div>
-                    <div><span style="color: #00d4ff;">●</span> Gemini Flash</div><div id="gemini-calls">0 calls</div>
-                    <div><span style="color: #ffc107;">●</span> Kimi K2.5</div><div id="kimi-calls">0 calls</div>
-                    <div><span style="color: #ff6b6b;">●</span> Claude/GPT</div><div id="expensive-calls">0 calls</div>
-                </div>
-                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; color: #888;">
-                    Total Cost: <span id="total-cost" style="color: #eaeaea; font-weight: 600;">$0.00</span>
-                </div>
-            </div>
-        </div>
     </div>
-
-    <div class="section-title">👥 Team Members</div>
-    <div class="team-grid">
-        <div class="card compact">
-            <div class="card-header"><span class="card-icon">🦞</span><div><div class="card-title">CEO</div><div class="card-role">Chief Executive Officer</div></div><span class="status online">Online</span></div>
-            <ul class="task-list"><li><span class="checkbox checked">✓</span> Team assembled</li><li><span class="checkbox checked">✓</span> Dashboard live</li><li><span class="checkbox">☐</span> Phase 2 planning</li></ul>
-        </div>
-        <div class="card compact">
-            <div class="card-header"><span class="card-icon">🚀</span><div><div class="card-title">Buzz</div><div class="card-role">Head of Research</div></div><span class="status active">Ready</span></div>
-            <ul class="task-list"><li><span class="checkbox checked">✓</span> Dashboard research</li><li><span class="checkbox">☐</span> Fix Brave API config</li><li><span class="checkbox">☐</span> Weekly trend scan</li></ul>
-        </div>
-        <div class="card compact">
-            <div class="card-header"><span class="card-icon">🧙‍♂️</span><div><div class="card-title">Gandalf</div><div class="card-role">Chief Strategy Officer</div></div><span class="status active">Available</span></div>
-            <ul class="task-list"><li><span class="checkbox checked">✓</span> Hired Kazza & Rosco</li><li><span class="checkbox">☐</span> Define 3 core values</li><li><span class="checkbox">☐</span> Align leadership KPIs</li></ul>
-        </div>
-        <div class="card compact">
-            <div class="card-header"><span class="card-icon">🧌</span><div><div class="card-title">Chunk</div><div class="card-role">Chief Security Officer</div></div><span class="status online">On Duty</span></div>
-            <ul class="task-list"><li><span class="checkbox">☐</span> Password audit</li><li><span class="checkbox">☐</span> Enable MFA</li><li><span class="checkbox">☐</span> Phishing protocols</li></ul>
-        </div>
-        <div class="card compact">
-            <div class="card-header"><span class="card-icon">🧚‍♀️</span><div><div class="card-title">Wisp</div><div class="card-role">Creative Director</div></div><span class="status online">Sparkling</span></div>
-            <ul class="task-list"><li><span class="checkbox">☐</span> Constraint masquerade</li><li><span class="checkbox">☐</span> Creative branding</li></ul>
-        </div>
-        <div class="card compact">
-            <div class="card-header"><span class="card-icon">🥷</span><div><div class="card-title">Ninja</div><div class="card-role">Head of Execution</div></div><span class="status busy">Executing</span></div>
-            <ul class="task-list"><li><span class="checkbox checked">✓</span> Credential watchdog</li><li><span class="checkbox checked">✓</span> SOPs created</li><li><span class="checkbox">☐</span> Phase 2 automation</li></ul>
-        </div>
-        <div class="card compact">
-            <div class="card-header"><span class="card-icon">👵</span><div><div class="card-title">Granny O</div><div class="card-role">Head of Care</div></div><span class="status online">Caring</span></div>
-            <ul class="task-list"><li><span class="checkbox">☐</span> Stevie wellness check</li><li><span class="checkbox">☐</span> 9pm laptop reminder</li></ul>
-        </div>
-        <div class="card compact">
-            <div class="card-header"><span class="card-icon">👮‍♀️</span><div><div class="card-title">PC Plod</div><div class="card-role">Compliance Officer</div></div><span class="status online">By Book</span></div>
-            <ul class="task-list"><li><span class="checkbox checked">✓</span> SOP-001 Incident Response</li><li><span class="checkbox checked">✓</span> SOP-002 Backup/Recovery</li><li><span class="checkbox checked">✓</span> SOP-003 Change Management</li></ul>
-        </div>
-        <div class="card compact">
-            <div class="card-header"><span class="card-icon">🧠</span><div><div class="card-title">BrainZ</div><div class="card-role">Knowledge Officer</div></div><span class="status online">24/7</span></div>
-            <ul class="task-list"><li><span class="checkbox checked">✓</span> Knowledge base setup</li><li><span class="checkbox checked">✓</span> Decision ledger</li><li><span class="checkbox">☐</span> Consolidate Q1 retros</li></ul>
-        </div>
-        <div class="card compact">
-            <div class="card-header"><span class="card-icon">👩‍🏫</span><div><div class="card-title">Kazza</div><div class="card-role">Client Success Lead</div></div><span class="status new">New Hire</span></div>
-            <ul class="task-list"><li><span class="checkbox">☐</span> Introduce self</li><li><span class="checkbox">☐</span> Feedback system setup</li><li><span class="checkbox">☐</span> Weekly check-in schedule</li></ul>
-        </div>
-        <div class="card compact">
-            <div class="card-header"><span class="card-icon">🐕‍🦺</span><div><div class="card-title">Rosco</div><div class="card-role">Performance Analyst</div></div><span class="status new">New Hire</span></div>
-            <ul class="task-list"><li><span class="checkbox">☐</span> Introduce self</li><li><span class="checkbox">☐</span> Token tracking setup</li><li><span class="checkbox">☐</span> Weekly cost audit</li></ul>
-        </div>
-    </div>
-
-    <div class="section-title">📝 Meeting Notes</div>
-    <div class="dashboard-grid">
-        <div class="card wide">
-            <div class="card-header"><span class="card-icon">📝</span><div><div class="card-title">Meeting Notes</div><div class="card-role">All-Hands #1 — Feb 16, 2026</div></div><span class="status active">Completed</span></div>
-            <div class="meeting-notes">
-                <h4>🎯 Key Takeaways</h4>
-                <p><strong>Strengths:</strong> Diverse expertise, cost-conscious with Ollama, proactive issue identification, empathetic leadership.</p>
-                <p><strong>Weaknesses:</strong> No visual dashboard (now fixed!), fragmented knowledge, security gaps.</p>
-                <p><strong>Blockers Resolved:</strong> API keys configured, 12-member team assembled, daily briefs scheduled.</p>
-                <p><strong>Next Meeting:</strong> Tomorrow 6:00 AM EST — first automated GWD morning brief.</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="timestamp">GWD 🦞 Global World Domination — Self-Sufficient Operations</div>
 
     <script>
-        const NEWS_API_KEY = 'b6b63436a2fb444da6a93ec02306c0a5';
-        const OPENWEATHER_API_KEY = '04832d02538c589665439846bde74042';
-        
-        async function fetchNews() {
-            const tickerEl = document.getElementById('ticker-content');
-            let headlines = [];
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+                timeZone: 'America/Toronto'
+            });
+            document.getElementById('date').textContent = now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                timeZone: 'America/Toronto'
+            }) + ' EST';
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function updateCountdown() {
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(6, 0, 0, 0);
+            const diff = tomorrow - now;
+            const hrs = Math.floor(diff / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('countdown').textContent = hrs + 'h ' + mins + 'm';
+        }
+        updateCountdown();
+        setInterval(updateCountdown, 60000);
+
+        // Fetch weather
+        async function fetchWeather() {
             try {
-                const response = await fetch(`https://newsapi.org/v2/top-headlines?country=ca&pageSize=5&apiKey=${NEWS_API_KEY}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.articles) headlines = data.articles.slice(0,5).map(a => ({title: a.title, url: a.url, source: a.source.name}));
+                const res = await fetch('https://api.openweathermap.org/data/2.5/weather?lat=43.3255&lon=-79.7990&appid=04832d02538c589665439846bde74042&units=metric');
+                if (res.ok) {
+                    const data = await res.json();
+                    const icons = {'Clear':'☀️','Clouds':'☁️','Rain':'🌧️','Drizzle':'🌦️','Thunderstorm':'⛈️','Snow':'🌨️','Mist':'🌫️','Fog':'🌫️'};
+                    const icon = icons[data.weather[0].main] || '🌤️';
+                    document.getElementById('weather').innerHTML = icon + ' ' + Math.round(data.main.temp) + '°C';
                 }
             } catch(e) {}
-            if (headlines.length === 0) {
-                try {
-                    const rss = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml');
-                    if (rss.ok) {
-                        const data = await rss.json();
-                        if (data.items) headlines = data.items.slice(0,5).map(i => ({title: i.title, url: i.link, source: 'BBC'}));
-                    }
-                } catch(e) {}
-            }
-            if (headlines.length === 0) headlines = [{title: 'GWD team expands to 12 members', url: '#', source: 'Internal'}, {title: 'Live dashboard operational', url: '#', source: 'GWD'}, {title: 'Daily 6AM briefs scheduled', url: '#', source: 'GWD'}];
-            const html = headlines.map(h => `<div class="ticker-item"><a href="${h.url}" target="_blank">${h.title}</a><span style="color:#666;margin-left:8px;">— ${h.source}</span></div>`).join('');
-            tickerEl.innerHTML = `<div class="ticker-items">${html}${html}</div>`;
         }
-        
-        async function fetchWeather() {
-            const el = document.getElementById('weather-data');
-            try {
-                const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=43.3255&lon=-79.7990&appid=${OPENWEATHER_API_KEY}&units=metric`);
-                if (!res.ok) throw new Error('Weather error');
-                const data = await res.json();
-                const icons = {'Clear':'☀️','Clouds':'☁️','Rain':'🌧️','Drizzle':'🌦️','Thunderstorm':'⛈️','Snow':'🌨️','Mist':'🌫️','Fog':'🌫️'};
-                el.innerHTML = `<div class="weather-main">${icons[data.weather[0].main]||'🌤️'} ${Math.round(data.main.temp)}°C</div><div style="color:#888;text-transform:capitalize;font-size:0.9rem;">${data.weather[0].description}</div><div class="weather-details"><div>🌡️ Feels ${Math.round(data.main.feels_like)}°C</div><div>💧 ${data.main.humidity}%</div><div>💨 ${Math.round(data.wind.speed*3.6)} km/h</div></div>`;
-            } catch(e) { el.innerHTML = '⚠️ Weather unavailable'; }
-        }
-        
-        function updateBudget() {
-            const spend = 0.12, pct = (spend/5)*100;
-            document.getElementById('budget-amount').textContent = `$${spend.toFixed(2)} / $5.00`;
-            document.getElementById('budget-bar').style.width = `${pct}%`;
-        }
-        
-        let refreshSeconds = 60;
-        function updateRefreshTimer() {
-            refreshSeconds--;
-            if (refreshSeconds <= 0) {
-                refreshSeconds = 60;
-                fetchWeather();
-                fetchNews();
-            }
-            document.getElementById('refresh-timer').textContent = `(${refreshSeconds}s)`;
-        }
-        
-        function updateCountdown() {
-            const now = new Date(), tomorrow = new Date(now);
-            tomorrow.setDate(tomorrow.getDate()+1); tomorrow.setHours(6,0,0,0);
-            const diff = tomorrow - now, hrs = Math.floor(diff/(1000*60*60)), mins = Math.floor((diff%(1000*60*60))/(1000*60));
-            document.getElementById('countdown').textContent = `${hrs}h ${mins}m`;
-        }
-        
-        // Model Usage Tracking (placeholder - real tracker coming tomorrow)
-        let modelCalls = {
-            ollama: 0,
-            gemini: 0,
-            kimi: 0,
-            expensive: 0
-        };
-        
-        function trackModelCall(model) {
-            if (model === 'ollama') modelCalls.ollama++;
-            else if (model === 'gemini') modelCalls.gemini++;
-            else if (model === 'kimi') modelCalls.kimi++;
-            else if (model === 'claude' || model === 'gpt') modelCalls.expensive++;
-            updateModelDisplay();
-        }
-        
-        function updateModelDisplay() {
-            document.getElementById('ollama-calls').textContent = `${modelCalls.ollama} calls`;
-            document.getElementById('gemini-calls').textContent = `${modelCalls.gemini} calls`;
-            document.getElementById('kimi-calls').textContent = `${modelCalls.kimi} calls`;
-            document.getElementById('expensive-calls').textContent = `${modelCalls.expensive} calls`;
-            
-            // Fake cost calculation (real one tomorrow)
-            const cost = (modelCalls.gemini * 0.0001) + (modelCalls.kimi * 0.002) + (modelCalls.expensive * 0.01);
-            document.getElementById('total-cost').textContent = `$${cost.toFixed(4)}`;
-            document.getElementById('budget-amount').textContent = `$${cost.toFixed(2)} / $5.00`;
-            document.getElementById('budget-bar').style.width = `${Math.min((cost/5)*100, 100)}%`;
-        }
-        
-        function showReports() {
-            const cost = (modelCalls.gemini * 0.0001) + (modelCalls.kimi * 0.002) + (modelCalls.expensive * 0.01);
-            alert(`📊 GWD Reports\n\n• Daily Budget: $${cost.toFixed(2)} / $5.00\n• Team Members: 12 Active\n• Ollama Calls: ${modelCalls.ollama} (FREE)\n• Gemini Calls: ${modelCalls.gemini}\n• Kimi Calls: ${modelCalls.kimi}\n• Claude/GPT Calls: ${modelCalls.expensive}\n• Next Brief: 6:00 AM EST\n\nFor detailed reports, message @openclaw_bot`);
-        }
-        
-        function showSettings() {
-            alert('⚙️ GWD Settings\n\n• Daily Budget: $5.00 (max)\n• Primary Model: Kimi K2.5\n• Workspace: ~/.openclaw/workspace\n• Config: ~/.openclaw/openclaw.json\n\nEdit config via Telegram or Mac mini terminal');
-        }
-        
-        function showMeetingModal() {
-            const topic = prompt('📅 Call GWD Meeting\n\nEnter meeting topic:', 'Weekly review');
-            if (topic) {
-                const message = `I need an all-hands meeting about: ${topic}`;
-                const telegramUrl = `https://t.me/openclaw_bot?start=${encodeURIComponent(message)}`;
-                window.open(telegramUrl, '_blank');
-            }
-        }
-        
-        fetchNews(); fetchWeather(); updateBudget(); updateCountdown(); updateRefreshTimer();
-        setInterval(updateCountdown, 60000);
-        setInterval(updateRefreshTimer, 1000);
+        fetchWeather();
     </script>
 </body>
 </html>
