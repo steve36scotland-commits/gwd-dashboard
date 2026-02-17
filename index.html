@@ -186,6 +186,9 @@
         .card-status.new { background: #9944cc; box-shadow: 0 0 8px rgba(153,68,204,0.4); }
         
         .checklist { background: rgba(0,0,0,0.03); border-radius: 10px; padding: 14px; margin: 14px 0; }
+        .models-row { display: flex; align-items: center; gap: 8px; margin: 12px 0; padding: 10px 12px; background: rgba(0,102,204,0.06); border-radius: 8px; border: 1px solid rgba(0,102,204,0.1); }
+        .models-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .models-value { font-size: 12px; color: var(--primary); font-weight: 500; }
         .checklist-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--text); border-bottom: 1px solid rgba(0,0,0,0.06); }
         .checklist-item:last-child { border-bottom: none; }
         .checklist-item.done { color: var(--success); }
@@ -407,17 +410,17 @@
         document.getElementById('teamTicker').innerHTML = TEAM_STATUS.map(t => `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">▸</span>${t}</div>`).join('') + TEAM_STATUS.map(t => `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">▸</span>${t}</div>`).join('');
 
         const TEAM = [
-            { emoji: '🧙‍♂️', name: 'Gandalf', role: 'Chief Strategy Officer', priority: 'high', status: 'online', checklist: [{text: 'Researched consulting values', done: true}, {text: 'Draft 3 core GWD values', done: false}, {text: 'Present to CEO', done: false}] },
-            { emoji: '🧌', name: 'Chunk', role: 'Chief Security Officer', priority: 'high', status: 'online', checklist: [{text: 'Audited 8/12 accounts', done: true}, {text: 'Enable MFA everywhere', done: false}, {text: 'Document security', done: false}] },
-            { emoji: '🥷', name: 'Ninja', role: 'Head of Execution', priority: 'high', status: 'online', checklist: [{text: 'Fixed gateway conflicts', done: true}, {text: 'Added Ollama models', done: true}, {text: 'Weather API integration', done: false}] },
-            { emoji: '👵', name: 'Granny O', role: 'Head of Care', priority: 'high', status: 'online', checklist: [{text: 'Scheduled 9PM check', done: true}, {text: 'Wellness check at 9PM', done: false}, {text: 'Log notes', done: false}] },
-            { emoji: '👮‍♀️', name: 'PC Plod', role: 'Compliance Officer', priority: 'high', status: 'online', checklist: [{text: 'Outlined SOP structure', done: true}, {text: 'Draft Weather API SOP', done: false}, {text: 'CEO approval', done: false}] },
-            { emoji: '🧠', name: 'BrainZ', role: 'Knowledge Officer', priority: 'high', status: 'online', checklist: [{text: 'Gathered Q1 docs', done: true}, {text: 'Consolidate retros', done: false}, {text: 'Index in KB', done: false}] },
-            { emoji: '🚀', name: 'Buzz', role: 'Head of Research', priority: 'medium', status: 'online', checklist: [{text: 'Fixed API config', done: true}, {text: 'Designed dashboard', done: true}, {text: 'Brave Search fix', done: false}] },
-            { emoji: '🦞', name: 'CEO', role: 'Chief Executive Officer', priority: 'critical', status: 'online', checklist: [{text: 'Team communications', done: true}, {text: 'Model configs fixed', done: true}, {text: 'Dashboard oversight', done: false}] },
-            { emoji: '🧚‍♀️', name: 'Wisp', role: 'Creative Director', priority: 'medium', status: 'online', checklist: [{text: 'Design concepts approved', done: true}, {text: 'Develop brand guidelines', done: false}, {text: 'Create asset library', done: false}] },
-            { emoji: '👩‍🏫', name: 'Kazza', role: 'Client Success Lead', priority: 'high', status: 'new', checklist: [{text: 'Onboarding', done: false}, {text: 'Feedback system', done: false}] },
-            { emoji: '🐕‍🦺', name: 'Rosco', role: 'Performance Analyst', priority: 'high', status: 'new', checklist: [{text: 'Onboarding', done: false}, {text: 'Budget tracker', done: false}] }
+            { emoji: '🧙‍♂️', name: 'Gandalf', role: 'Chief Strategy Officer', priority: 'high', status: 'online', models: 'Kimi K2.5 (strategy), Gemini Flash (research)', checklist: [{text: 'Researched consulting values', done: true}, {text: 'Draft 3 core GWD values', done: false}, {text: 'Present to CEO', done: false}] },
+            { emoji: '🧌', name: 'Chunk', role: 'Chief Security Officer', priority: 'high', status: 'online', models: 'Ollama/Mistral (local), GPT-5.1 (audit)', checklist: [{text: 'Audited 8/12 accounts', done: true}, {text: 'Enable MFA everywhere', done: false}, {text: 'Document security', done: false}] },
+            { emoji: '🥷', name: 'Ninja', role: 'Head of Execution', priority: 'high', status: 'online', models: 'Kimi K2.5 (coding), Ollama/Llama2 (local)', checklist: [{text: 'Fixed gateway conflicts', done: true}, {text: 'Added Ollama models', done: true}, {text: 'Weather API integration', done: false}] },
+            { emoji: '👵', name: 'Granny O', role: 'Head of Care', priority: 'high', status: 'online', models: 'Gemini Flash (gentle), Ollama/Gemma3 (local)', checklist: [{text: 'Scheduled 9PM check', done: true}, {text: 'Wellness check at 9PM', done: false}, {text: 'Log notes', done: false}] },
+            { emoji: '👮‍♀️', name: 'PC Plod', role: 'Compliance Officer', priority: 'high', status: 'online', models: 'Ollama/Mistral (local), Gemini Flash (docs)', checklist: [{text: 'Outlined SOP structure', done: true}, {text: 'Draft Weather API SOP', done: false}, {text: 'CEO approval', done: false}] },
+            { emoji: '🧠', name: 'BrainZ', role: 'Knowledge Officer', priority: 'high', status: 'online', models: 'Kimi K2.5 (analysis), Ollama/Llama2 (indexing)', checklist: [{text: 'Gathered Q1 docs', done: true}, {text: 'Consolidate retros', done: false}, {text: 'Index in KB', done: false}] },
+            { emoji: '🚀', name: 'Buzz', role: 'Head of Research', priority: 'medium', status: 'online', models: 'Kimi K2.5 (research), Gemini Flash (quick)', checklist: [{text: 'Fixed API config', done: true}, {text: 'Designed dashboard', done: true}, {text: 'Brave Search fix', done: false}] },
+            { emoji: '🦞', name: 'CEO', role: 'Chief Executive Officer', priority: 'critical', status: 'online', models: 'Kimi K2.5 (main), GPT-5.1 (fallback)', checklist: [{text: 'Team communications', done: true}, {text: 'Model configs fixed', done: true}, {text: 'Dashboard oversight', done: false}] },
+            { emoji: '🧚‍♀️', name: 'Wisp', role: 'Creative Director', priority: 'medium', status: 'online', models: 'Gemini Flash (design), Ollama/Gemma3 (local)', checklist: [{text: 'Design concepts approved', done: true}, {text: 'Develop brand guidelines', done: false}, {text: 'Create asset library', done: false}] },
+            { emoji: '👩‍🏫', name: 'Kazza', role: 'Client Success Lead', priority: 'high', status: 'new', models: 'Gemini Flash (chat), Ollama/Mistral (local)', checklist: [{text: 'Onboarding', done: false}, {text: 'Feedback system', done: false}] },
+            { emoji: '🐕‍🦺', name: 'Rosco', role: 'Performance Analyst', priority: 'high', status: 'new', models: 'Ollama/Llama2 (local), Kimi K2.5 (reports)', checklist: [{text: 'Onboarding', done: false}, {text: 'Budget tracker', done: false}] }
         ];
 
         document.getElementById('teamGrid').innerHTML = TEAM.map(m => `
@@ -429,6 +432,10 @@
                         <div class="card-role">${m.role}</div>
                     </div>
                     <div class="card-status ${m.status}"></div>
+                </div>
+                <div class="models-row">
+                    <span class="models-label">🤖 Models:</span>
+                    <span class="models-value">${m.models}</span>
                 </div>
                 <div class="checklist">
                     ${m.checklist.map(item => `<div class="checklist-item ${item.done ? 'done' : item.blocked ? 'blocked' : ''}"><span class="check-icon">${item.done ? '✓' : item.blocked ? '✗' : '○'}</span>${item.text}</div>`).join('')}
