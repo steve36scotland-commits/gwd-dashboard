@@ -532,20 +532,38 @@ setInterval(fetchModelUsage, 30000); // Update every 30 seconds
         ];
         document.getElementById('newsTicker').innerHTML = NEWS_TICKER.map(n => `<div class="ticker-item"><a href="${n.url}" target="_blank"><span style="color:var(--primary);margin-right:10px;">●</span>${n.text}</a></div>`).join('') + NEWS_TICKER.map(n => `<div class="ticker-item"><a href="${n.url}" target="_blank"><span style="color:var(--primary);margin-right:10px;">●</span>${n.text}</a></div>`).join('');
 
-        const TEAM_STATUS_TICKER = [
-            '🦞 CEO — Dashboard oversight in progress',
-            '🚀 Buzz — Brave Search fix ongoing',
-            '🧙‍♂️ Gandalf — Drafting core values, due tonight',
-            '🧌 Chunk — Enabling MFA on all accounts, 80% complete',
-            '🥷 Ninja — Weather API integration testing',
-            '👵 Granny O — Wellness check queued for 9PM',
-            '👮‍♀️ PC Plod — Drafting Weather API SOP',
-            '🧠 BrainZ — Consolidating Q1 retrospectives',
-            '🧚‍♀️ Wisp — Developing brand guidelines',
-            '👩‍🏫 Kazza — Onboarding, feedback system setup',
-            '🐕‍🦺 Rosco — Building real budget tracker'
-        ];
-        document.getElementById('teamTicker').innerHTML = TEAM_STATUS_TICKER.map(t => `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">▸</span>${t}</div>`).join('') + TEAM_STATUS_TICKER.map(t => `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">▸</span>${t}</div>`).join('');
+        // REAL ACTIVITY TICKER - Updates from actual API usage
+        async function fetchActivityTicker() {
+            try {
+                const budgetResponse = await fetch('http://192.168.1.93:8080/api/budget');
+                const modelsResponse = await fetch('http://192.168.1.93:8080/api/models');
+                
+                if (budgetResponse.ok && modelsResponse.ok) {
+                    const budget = await budgetResponse.json();
+                    const models = await modelsResponse.json();
+                    
+                    const activities = [
+                        `💰 Budget: $${budget.used} used today (${budget.calls} API calls)`,
+                        ...models.filter(m => m.calls > 0).map(m => 
+                            `🤖 ${m.name}: ${m.calls} calls • ${m.tokens.toLocaleString()} tokens • $${m.cost}`
+                        ),
+                        `🌤 Weather API: Live data from Burlington, ON`,
+                        `📰 News API: Canadian sports headlines`,
+                        `⏰ Last update: ${new Date().toLocaleTimeString()}`
+                    ];
+                    
+                    document.getElementById('teamTicker').innerHTML = activities.map(t => 
+                        `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">▸</span>${t}</div>`
+                    ).join('') + activities.map(t => 
+                        `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">▸</span>${t}</div>`
+                    ).join('');
+                }
+            } catch (err) {
+                document.getElementById('teamTicker').innerHTML = `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">▸</span>System activity data loading...</div>`;
+            }
+        }
+        fetchActivityTicker();
+        setInterval(fetchActivityTicker, 30000); // Update every 30 seconds
     </script>
 </body>
 </html>
