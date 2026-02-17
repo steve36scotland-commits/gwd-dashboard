@@ -4,389 +4,701 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GWD Command Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg: #020408;
-            --card: rgba(15, 23, 42, 0.7);
-            --accent: #00f0ff;
-            --accent-glow: rgba(0, 240, 255, 0.4);
-            --purple: #c084fc;
-            --success: #4ade80;
-            --warning: #fbbf24;
-            --danger: #f87171;
-            --text: #ffffff;
-            --muted: #64748b;
+            --bg-deep: #0a0e1a;
+            --bg-primary: #0f172a;
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --glass: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(0, 212, 255, 0.12);
+            --glass-hover: rgba(0, 212, 255, 0.08);
+            --cyan: #00d4ff;
+            --cyan-dim: rgba(0, 212, 255, 0.5);
+            --cyan-glow: rgba(0, 212, 255, 0.15);
+            --cyan-subtle: rgba(0, 212, 255, 0.06);
+            --green: #00ff88;
+            --amber: #ffb800;
+            --red: #ff3366;
+            --text: #e2e8f0;
+            --text-dim: #64748b;
+            --text-bright: #f8fafc;
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', sans-serif;
-            background: 
-                radial-gradient(ellipse at 0% 0%, rgba(0, 240, 255, 0.2) 0%, transparent 40%),
-                radial-gradient(ellipse at 100% 0%, rgba(192, 132, 252, 0.15) 0%, transparent 40%),
-                radial-gradient(ellipse at 50% 100%, rgba(0, 240, 255, 0.08) 0%, transparent 50%),
-                var(--bg);
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-deep);
             color: var(--text);
             min-height: 100vh;
-            padding: 16px;
+            overflow-x: hidden;
         }
-        .glass {
-            background: var(--card);
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse at 50% 30%, black 20%, transparent 70%);
         }
-        .ticker-wrap {
-            background: linear-gradient(90deg, rgba(0, 240, 255, 0.1), rgba(192, 132, 252, 0.08));
-            border: 1px solid rgba(0, 240, 255, 0.2);
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 16px;
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: 0;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+        .bg-orb.orb1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0,212,255,0.08), transparent);
+            top: -200px;
+            left: -100px;
+        }
+        .bg-orb.orb2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0,100,255,0.06), transparent);
+            bottom: -150px;
+            right: -100px;
+            animation-delay: -10s;
+        }
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.05); }
+            66% { transform: translate(-20px, 15px) scale(0.95); }
+        }
+        .app {
+            position: relative;
+            z-index: 1;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 20px 24px 40px;
+        }
+        .topbar {
             display: flex;
             align-items: center;
-            gap: 12px;
-            overflow: hidden;
+            justify-content: space-between;
+            padding: 16px 24px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            animation: slideDown 0.6s ease-out;
         }
-        .ticker-badge {
-            background: linear-gradient(135deg, var(--accent), var(--purple));
-            color: var(--bg);
-            padding: 6px 12px;
-            border-radius: 6px;
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .topbar-left { display: flex; align-items: center; gap: 16px; }
+        .logo-mark {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--cyan), #0066ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 16px;
+            color: var(--bg-deep);
+            box-shadow: 0 0 20px var(--cyan-glow);
+            flex-shrink: 0;
+        }
+        .topbar-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 20px;
             font-weight: 700;
-            font-size: 0.7rem;
-            white-space: nowrap;
+            letter-spacing: 3px;
+            background: linear-gradient(90deg, var(--cyan), #66e0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
         }
-        .ticker-content { flex: 1; overflow: hidden; }
+        .topbar-subtitle {
+            font-size: 11px;
+            color: var(--text-dim);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+        .topbar-right { display: flex; align-items: center; gap: 24px; }
+        .clock {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 28px;
+            color: var(--cyan);
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px var(--cyan-glow);
+        }
+        .clock-date {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-align: right;
+            letter-spacing: 1px;
+        }
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 10px var(--green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--green); }
+            50% { opacity: 0.5; box-shadow: 0 0 20px var(--green); }
+        }
+        .ticker-wrap {
+            overflow: hidden;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 10px 0;
+            position: relative;
+            animation: slideDown 0.7s ease-out;
+        }
+        .ticker-wrap::before {
+            content: '📡 LIVE';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            background: linear-gradient(90deg, var(--bg-primary) 70%, transparent);
+            font-family: 'Orbitron', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--cyan);
+            letter-spacing: 2px;
+        }
         .ticker-track {
             display: flex;
-            gap: 40px;
-            animation: ticker 25s linear infinite;
+            animation: scroll 60s linear infinite;
             white-space: nowrap;
         }
-        @keyframes ticker {
+        .ticker-track:hover { animation-play-state: paused; }
+        .ticker-item {
+            flex-shrink: 0;
+            padding: 0 40px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+        .ticker-item .ticker-sep { color: var(--cyan); margin-right: 12px; }
+        @keyframes scroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
-        .ticker-item { font-size: 0.85rem; color: var(--muted); }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 24px;
-            margin-bottom: 16px;
-            position: relative;
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
         }
-        header::before {
+        .metric-card {
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: fadeUp 0.8s ease-out both;
+        }
+        .metric-card:hover {
+            border-color: rgba(0,212,255,0.3);
+            background: var(--glass-hover);
+            transform: translateY(-2px);
+        }
+        .metric-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent), var(--purple), transparent);
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
         }
-        .brand { display: flex; align-items: center; gap: 12px; }
-        .logo {
-            font-size: 2.5rem;
-            animation: bounce 2s ease-in-out infinite;
-            filter: drop-shadow(0 0 20px var(--accent-glow));
+        .metric-card:hover::before { opacity: 1; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        .brand h1 {
-            font-size: 1.4rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--accent), var(--purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .brand p { color: var(--muted); font-size: 0.8rem; }
-        .live-pill {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(74, 222, 128, 0.15);
-            padding: 6px 12px;
-            border-radius: 20px;
-            border: 1px solid rgba(74, 222, 128, 0.3);
-            font-size: 0.75rem;
-        }
-        .live-dot {
-            width: 8px; height: 8px;
-            background: var(--success);
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-        .clock-wrap { text-align: right; }
-        .clock { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
-        .date { color: var(--muted); font-size: 0.75rem; }
-        .refresh-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 16px;
-            margin-bottom: 16px;
-            background: rgba(0, 240, 255, 0.05);
-            border: 1px solid rgba(0, 240, 255, 0.15);
-            border-radius: 10px;
-        }
-        .refresh-timer {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--accent);
-            font-family: monospace;
-        }
-        .refresh-btn {
-            background: rgba(0, 240, 255, 0.1);
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-        .metrics {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        .metric {
-            padding: 16px;
-            transition: all 0.3s;
-        }
-        .metric:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent);
-        }
+        .metric-card:nth-child(1) { animation-delay: 0.1s; }
+        .metric-card:nth-child(2) { animation-delay: 0.15s; }
+        .metric-card:nth-child(3) { animation-delay: 0.2s; }
+        .metric-card:nth-child(4) { animation-delay: 0.25s; }
+        .metric-icon { font-size: 24px; margin-bottom: 8px; }
         .metric-label {
-            font-size: 0.65rem;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-dim);
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            color: var(--muted);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         .metric-value {
-            font-size: 1.5rem;
+            font-family: 'Orbitron', monospace;
+            font-size: 22px;
             font-weight: 700;
+            color: var(--text-bright);
         }
-        .metric small { font-size: 0.8rem; color: var(--muted); }
-        .section { padding: 20px; margin-bottom: 16px; }
-        .section-title {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .metric-sub { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+        .metric-value .cyan { color: var(--cyan); }
+        .metric-value .green { color: var(--green); }
+        .metric-value .amber { color: var(--amber); }
+        .budget-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
         }
-        .team-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        .budget-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--green), var(--cyan));
+            transition: width 1s ease;
+            box-shadow: 0 0 8px var(--cyan-glow);
         }
-        .member {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 14px;
-            padding: 16px;
-        }
-        .member-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-        .member-avatar { font-size: 1.8rem; }
-        .member-info { flex: 1; }
-        .member-name { font-weight: 600; font-size: 0.95rem; }
-        .member-role { font-size: 0.7rem; color: var(--muted); }
-        .status-dot {
-            width: 10px; height: 10px;
-            border-radius: 50%;
-        }
-        .working { background: var(--success); }
-        .busy { background: var(--warning); }
-        .blocked { background: var(--danger); }
-        .new { background: #f472b6; }
-        .task-box {
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 0.85rem;
-        }
-        .task-box strong { color: var(--text); display: block; margin-bottom: 4px; }
-        .priority {
+        .countdown-ring {
             display: inline-block;
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            padding: 2px 8px;
-            border-radius: 4px;
+            width: 44px;
+            height: 44px;
+            position: relative;
             margin-top: 6px;
         }
-        .p-high { background: rgba(248, 113, 113, 0.2); color: var(--danger); }
-        .done-item {
+        .countdown-ring svg {
+            transform: rotate(-90deg);
+            width: 44px;
+            height: 44px;
+        }
+        .countdown-ring circle {
+            fill: none;
+            stroke-width: 3;
+        }
+        .countdown-ring .ring-bg { stroke: rgba(255,255,255,0.06); }
+        .countdown-ring .ring-fg {
+            stroke: var(--cyan);
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear;
+            filter: drop-shadow(0 0 4px var(--cyan-glow));
+        }
+        .countdown-num {
+            position: absolute;
+            inset: 0;
             display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
             gap: 12px;
-            padding: 12px;
-            background: rgba(74, 222, 128, 0.05);
-            border-radius: 10px;
-            border-left: 3px solid var(--success);
-            margin-bottom: 10px;
+            margin-bottom: 18px;
+            animation: fadeUp 0.9s ease-out both;
         }
-        .actions {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 16px;
-        }
-        .action-btn {
-            padding: 14px;
-            background: linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(192, 132, 252, 0.05));
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
+        .section-header h2 {
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
             color: var(--text);
+        }
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--glass-border), transparent);
+        }
+        .section-badge {
+            font-family: 'Orbitron', monospace;
+            font-size: 10px;
             font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            color: var(--cyan);
+            letter-spacing: 1px;
+        }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        .team-card {
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.35s ease;
+            animation: fadeUp 1s ease-out both;
+        }
+        .team-card:nth-child(1) { animation-delay: 0.05s; }
+        .team-card:nth-child(2) { animation-delay: 0.1s; }
+        .team-card:nth-child(3) { animation-delay: 0.15s; }
+        .team-card:nth-child(4) { animation-delay: 0.2s; }
+        .team-card:nth-child(5) { animation-delay: 0.25s; }
+        .team-card:nth-child(6) { animation-delay: 0.3s; }
+        .team-card:nth-child(7) { animation-delay: 0.35s; }
+        .team-card:nth-child(8) { animation-delay: 0.4s; }
+        .team-card:nth-child(9) { animation-delay: 0.45s; }
+        .team-card:nth-child(10) { animation-delay: 0.5s; }
+        .team-card:nth-child(11) { animation-delay: 0.55s; }
+        .team-card:hover {
+            border-color: rgba(0,212,255,0.3);
+            background: var(--glass-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0,212,255,0.08);
+        }
+        .team-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--cyan), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .team-card:hover::after { opacity: 1; }
+        .card-top {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            background: var(--cyan-subtle);
+            border: 1px solid var(--glass-border);
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+        .team-card:hover .avatar {
+            border-color: var(--cyan-dim);
+            box-shadow: 0 0 16px var(--cyan-glow);
+        }
+        .card-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-bright);
+            letter-spacing: 1px;
+        }
+        .card-role {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 2px;
+            letter-spacing: 0.5px;
+        }
+        .card-task {
+            font-size: 12.5px;
+            color: var(--text);
+            line-height: 1.5;
+            padding: 10px 12px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            border-left: 2px solid var(--glass-border);
+            margin-bottom: 12px;
+        }
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .priority {
+            font-family: 'Orbitron', monospace;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+        .priority.critical {
+            background: rgba(255,51,102,0.15);
+            color: var(--red);
+            border: 1px solid rgba(255,51,102,0.3);
+        }
+        .priority.high {
+            background: rgba(255,184,0,0.12);
+            color: var(--amber);
+            border: 1px solid rgba(255,184,0,0.25);
+        }
+        .priority.medium {
+            background: rgba(0,212,255,0.1);
+            color: var(--cyan);
+            border: 1px solid rgba(0,212,255,0.2);
+        }
+        .priority.low {
+            background: rgba(0,255,136,0.08);
+            color: var(--green);
+            border: 1px solid rgba(0,255,136,0.2);
+        }
+        .card-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .card-status-dot.online {
+            background: var(--green);
+            box-shadow: 0 0 8px rgba(0,255,136,0.4);
+        }
+        .card-status-dot.away {
+            background: var(--amber);
+            box-shadow: 0 0 8px rgba(255,184,0,0.4);
+        }
+        .card-status-dot.offline {
+            background: var(--text-dim);
+        }
+        @media (max-width: 900px) {
+            .metrics-row { grid-template-columns: repeat(2, 1fr); }
+            .topbar { flex-direction: column; gap: 12px; text-align: center; }
+            .topbar-right { justify-content: center; }
+            .topbar-title { font-size: 16px; }
+        }
+        @media (max-width: 600px) {
+            .metrics-row { grid-template-columns: 1fr; }
+            .team-grid { grid-template-columns: 1fr; }
+            .app { padding: 12px; }
         }
     </style>
 </head>
 <body>
-    <div class="ticker-wrap">
-        <span class="ticker-badge">📰 LIVE</span>
-        <div class="ticker-content">
-            <div class="ticker-track">
-                <span class="ticker-item">Gandalf defining company values — Due tonight</span>
-                <span class="ticker-item">Chunk running security audit — In progress</span>
-                <span class="ticker-item">Rosco building real budget tracker — No more fake data</span>
-                <span class="ticker-item">Chloe's birthday March 3 — 14 days away</span>
-                <span class="ticker-item">Mexico trip June 25 — 128 days away</span>
-                <span class="ticker-item">Morning brief every 6AM — Next: 22h 45m</span>
+    <div class="bg-grid"></div>
+    <div class="bg-orb orb1"></div>
+    <div class="bg-orb orb2"></div>
+    <div class="app">
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <div class="logo-mark">GW</div>
+                <div>
+                    <div class="topbar-title">GWD Command Center</div>
+                    <div class="topbar-subtitle">Global Workforce Division • Operational Hub</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="status-dot"></div>
+                <div>
+                    <div class="clock" id="clock">--:--:--</div>
+                    <div class="clock-date" id="clockDate">---</div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <header class="glass">
-        <div class="brand">
-            <span class="logo">🦞</span>
-            <div>
-                <h1>GWD Command Center</h1>
-                <p>Global World Domination</p>
-            </div>
+        <!-- NEWS TICKER -->
+        <div class="ticker-wrap">
+            <div class="ticker-track" id="ticker"></div>
         </div>
-        <div style="display: flex; align-items: center; gap: 16px;">
-            <div class="live-pill">
-                <span class="live-dot"></span>
-                <span>LIVE</span>
-            </div>
-            <div class="clock-wrap">
-                <div class="clock" id="clock">--:--</div>
-                <div class="date" id="date">--</div>
-            </div>
-        </div>
-    </header>
 
-    <div class="refresh-bar">
-        <div style="font-size: 0.8rem; color: var(--muted);">
-            🔄 Auto-refresh in <span class="refresh-timer" id="refreshTimer">60s</span>
+        <!-- METRICS -->
+        <div class="metrics-row">
+            <div class="metric-card">
+                <div class="metric-icon">🌤</div>
+                <div class="metric-label">Weather</div>
+                <div class="metric-value" id="weatherVal">--°C</div>
+                <div class="metric-sub" id="weatherSub">Loading...</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">💰</div>
+                <div class="metric-label">API Budget</div>
+                <div class="metric-value"><span class="cyan">$0.12</span> <span style="font-size:13px;color:var(--text-dim)">/ $5.00</span></div>
+                <div class="budget-bar"><div class="budget-fill" style="width:2.4%"></div></div>
+                <div class="metric-sub">2.4% used • Rosco monitoring</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">📡</div>
+                <div class="metric-label">Next Brief</div>
+                <div class="countdown-ring" id="briefRing">
+                    <svg viewBox="0 0 44 44">
+                        <circle class="ring-bg" cx="22" cy="22" r="19" />
+                        <circle class="ring-fg" cx="22" cy="22" r="19" stroke-dasharray="119.38" stroke-dashoffset="0" id="briefArc" />
+                    </svg>
+                    <div class="countdown-num" id="briefCountdown">--</div>
+                </div>
+                <div class="metric-sub" id="briefSub">Next brief at 06:00</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">👥</div>
+                <div class="metric-label">Team Status</div>
+                <div class="metric-value"><span class="green">7</span> <span style="font-size:13px;color:var(--text-dim)">/ 11 online</span></div>
+                <div class="budget-bar"><div class="budget-fill" style="width:63.6%; background: linear-gradient(90deg, var(--green), var(--cyan));"></div></div>
+                <div class="metric-sub">4 away or offline</div>
+            </div>
         </div>
-        <button class="refresh-btn" onclick="location.reload()">Refresh Now</button>
-    </div>
 
-    <div class="metrics">
-        <div class="metric glass">
-            <div class="metric-label">🌤️ Weather</div>
-            <div class="metric-value" id="weather">--°C</div>
+        <!-- REFRESH COUNTDOWN -->
+        <div class="section-header">
+            <h2>🎖 Team Roster</h2>
+            <div class="section-line"></div>
+            <div class="section-badge" id="refreshBadge">REFRESH 30s</div>
         </div>
-        <div class="metric glass">
-            <div class="metric-label">💰 Budget</div>
-            <div class="metric-value" style="color: var(--success);">$0.12 <small>/ $5</small></div>
-        </div>
-        <div class="metric glass">
-            <div class="metric-label">📅 Next Brief</div>
-            <div class="metric-value" id="countdown">--h --m</div>
-        </div>
-        <div class="metric glass">
-            <div class="metric-label">👥 Team</div>
-            <div class="metric-value" style="color: var(--success);">7 <small>/ 11</small></div>
-        </div>
-    </div>
 
-    <div class="section glass">
-        <div class="section-title">Team Assignments</div>
-        <div class="team-grid">
-            <div class="member">
-                <div class="member-header">
-                    <span class="member-avatar">🧙‍♂️</span>
-                    <div class="member-info">
-                        <div class="member-name">Gandalf</div>
-                        <div class="member-role">Chief Strategy Officer</div>
-                    </div>
-                    <span class="status-dot working"></span>
-                </div>
-                <div class="task-box">
-                    <strong>Define 3 core GWD company values</strong>
-                    <span class="priority p-high">High • Due Tonight</span>
-                </div>
-            </div>
-            <div class="member">
-                <div class="member-header">
-                    <span class="member-avatar">🧌</span>
-                    <div class="member-info">
-                        <div class="member-name">Chunk</div>
-                        <div class="member-role">Security</div>
-                    </div>
-                    <span class="status-dot working"></span>
-                </div>
-                <div class="task-box">
-                    <strong>Password audit + MFA enable</strong>
-                    <span class="priority p-high">High • Due Tonight</span>
-                </div>
-            </div>
-            <div class="member">
-                <div class="member-header">
-                    <span class="member-avatar">🥷</span>
-                    <div class="member-info">
-                        <div class="member-name">Ninja</div>
-                        <div class="member-role">Execution</div>
-                    </div>
-                    <span class="status-dot working"></span>
-                </div>
-                <div class="task-box">
-                    <strong>OpenWeatherMap API integration</strong>
-                    <span class="priority p-high">High • Due Tonight</span>
-                </div>
-            </div>
-        </div>
+        <!-- TEAM GRID -->
+        <div class="team-grid" id="teamGrid"></div>
     </div>
 
     <script>
-        let refreshSeconds = 60;
-        setInterval(() => {
-            refreshSeconds--;
-            if (refreshSeconds <= 0) {
-                location.reload();
-            } else {
-                document.getElementById('refreshTimer').textContent = refreshSeconds + 's';
-            }
-        }, 1000);
+        // TEAM DATA
+        const TEAM = [
+            { emoji: '🦞', name: 'CEO', role: 'Chief Executive Officer', task: 'Managing team, dashboard rebuild, user communication', priority: 'critical', status: 'online' },
+            { emoji: '🚀', name: 'Buzz', role: 'Head of Research', task: 'Fix Brave Search API configuration for subagents', priority: 'medium', status: 'online' },
+            { emoji: '🧙‍♂️', name: 'Gandalf', role: 'Chief Strategy Officer', task: 'Define 3 core GWD company values', priority: 'high', status: 'online' },
+            { emoji: '🧌', name: 'Chunk', role: 'Chief Security Officer', task: 'Password audit + MFA enable on all accounts', priority: 'high', status: 'online' },
+            { emoji: '🧚‍♀️', name: 'Wisp', role: 'Creative Director', task: 'Awaiting dashboard design approval from Stevie', priority: 'medium', status: 'away' },
+            { emoji: '🥷', name: 'Ninja', role: 'Head of Execution', task: 'OpenWeatherMap API integration for dashboard', priority: 'high', status: 'online' },
+            { emoji: '👵', name: 'Granny O', role: 'Head of Care', task: 'Stevie wellness check scheduled for 9:00 PM', priority: 'high', status: 'online' },
+            { emoji: '👮‍♀️', name: 'PC Plod', role: 'Compliance Officer', task: 'Draft Weather API Standard Operating Procedure', priority: 'high', status: 'online' },
+            { emoji: '🧠', name: 'BrainZ', role: 'Knowledge Officer', task: 'Consolidate Q1 retrospectives into knowledge base', priority: 'high', status: 'online' },
+            { emoji: '👩‍🏫', name: 'Kazza', role: 'Client Success Lead', task: 'NEW HIRE: Setting up feedback capture system', priority: 'high', status: 'away' },
+            { emoji: '🐕‍🦺', name: 'Rosco', role: 'Performance Analyst', task: 'NEW HIRE: Building real-time budget tracker', priority: 'high', status: 'away' },
+        ];
 
+        // NEWS TICKER
+        const NEWS = [
+            '🦞 CEO managing dashboard rebuild — critical priority',
+            '🚀 Buzz fixing Brave Search API — in progress',
+            '🧙‍♂️ Gandalf defining company values — due tonight',
+            '🧌 Chunk running security audit — high priority',
+            '🧚‍♀️ Wisp awaiting design approval — blocked',
+            '🥷 Ninja integrating weather API — due tonight',
+            '👵 Granny O wellness check at 9PM — scheduled',
+            '👮‍♀️ PC Plod drafting SOP — due tonight',
+            '🧠 BrainZ consolidating retrospectives — due tonight',
+            '👩‍🏫 Kazza onboarding — feedback system setup',
+            '🐕‍🦺 Rosco building budget tracker — no more fake data',
+        ];
+
+        function buildTicker() {
+            const track = document.getElementById('ticker');
+            const items = NEWS.map(n => `<div class="ticker-item"><span class="ticker-sep">▸</span>${n}</div>`).join('');
+            track.innerHTML = items + items;
+        }
+        buildTicker();
+
+        // RENDER TEAM
+        function renderTeam() {
+            const grid = document.getElementById('teamGrid');
+            grid.innerHTML = TEAM.map((m, i) => `
+                <div class="team-card" style="animation-delay:${0.05 + i * 0.05}s">
+                    <div class="card-top">
+                        <div class="avatar">${m.emoji}</div>
+                        <div>
+                            <div class="card-name">${m.name}</div>
+                            <div class="card-role">${m.role}</div>
+                        </div>
+                    </div>
+                    <div class="card-task">${m.task}</div>
+                    <div class="card-footer">
+                        <span class="priority ${m.priority}">${m.priority}</span>
+                        <div class="card-status-dot ${m.status}" title="${m.status}"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        renderTeam();
+
+        // LIVE CLOCK
         function updateClock() {
             const now = new Date();
             document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', {
-                hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/Toronto'
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
+                hour12: false, timeZone: 'America/Toronto'
             });
-            document.getElementById('date').textContent = now.toLocaleDateString('en-US', {
-                weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Toronto'
-            });
+            document.getElementById('clockDate').textContent = now.toLocaleDateString('en-US', {
+                weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
+                timeZone: 'America/Toronto'
+            }).toUpperCase();
         }
-        setInterval(updateClock, 1000);
         updateClock();
+        setInterval(updateClock, 1000);
+
+        // REFRESH COUNTDOWN (30s)
+        let refreshSec = 30;
+        function updateRefresh() {
+            refreshSec--;
+            if (refreshSec <= 0) {
+                refreshSec = 30;
+                // Could trigger data refresh here
+            }
+            document.getElementById('refreshBadge').textContent = `REFRESH ${refreshSec}s`;
+        }
+        setInterval(updateRefresh, 1000);
+
+        // NEXT BRIEF COUNTDOWN
+        function updateBriefCountdown() {
+            const now = new Date();
+            const briefHour = 6; // 06:00
+            let next = new Date(now);
+            next.setHours(briefHour, 0, 0, 0);
+            if (now >= next) next.setDate(next.getDate() + 1);
+            const diff = next - now;
+            const hours = Math.floor(diff / 3600000);
+            const mins = Math.floor((diff % 3600000) / 60000);
+            const el = document.getElementById('briefCountdown');
+            const sub = document.getElementById('briefSub');
+            const arc = document.getElementById('briefArc');
+            if (hours > 0) {
+                el.textContent = hours + 'h';
+            } else {
+                el.textContent = mins + 'm';
+            }
+            sub.textContent = 'Next brief at 06:00';
+            // Arc: full circle = 119.38, proportion of 24h remaining
+            const totalSec = 24 * 3600;
+            const remainSec = diff / 1000;
+            const offset = 119.38 * (1 - remainSec / totalSec);
+            arc.setAttribute('stroke-dashoffset', offset);
+        }
+        updateBriefCountdown();
+        setInterval(updateBriefCountdown, 60000);
+
+        // WEATHER
+        async function fetchWeather() {
+            try {
+                const res = await fetch('https://api.openweathermap.org/data/2.5/weather?lat=43.3255&lon=-79.7990&appid=04832d02538c589665439846bde74042&units=metric');
+                if (res.ok) {
+                    const data = await res.json();
+                    const icons = {'Clear':'☀️','Clouds':'☁️','Rain':'🌧️','Drizzle':'🌦️','Thunderstorm':'⛈️','Snow':'🌨️','Mist':'🌫️','Fog':'🌫️'};
+                    const icon = icons[data.weather[0].main] || '🌤️';
+                    document.getElementById('weatherVal').textContent = Math.round(data.main.temp) + '°C';
+                    document.getElementById('weatherSub').textContent = 'Burlington — ' + data.weather[0].main;
+                }
+            } catch(e) {
+                document.getElementById('weatherVal').textContent = '--°C';
+                document.getElementById('weatherSub').textContent = 'Burlington — Loading...';
+            }
+        }
+        fetchWeather();
     </script>
 </body>
 </html>
