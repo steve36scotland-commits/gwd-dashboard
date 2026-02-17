@@ -405,7 +405,7 @@ function renderTeamGrid(modelData) {
 // FETCH REAL MODEL USAGE
 async function fetchModelUsage() {
     try {
-        const response = await fetch('http://192.168.1.93:8080/api/models');
+        const response = await fetch('http://192.168.1.93:8081/api/models');
         if (response.ok) {
             const data = await response.json();
             renderTeamGrid(data);
@@ -459,7 +459,7 @@ setInterval(fetchModelUsage, 30000); // Update every 30 seconds
         // REAL BUDGET DATA
         async function fetchBudgetData() {
             try {
-                const response = await fetch('http://192.168.1.93:8080/api/budget');
+                const response = await fetch('http://192.168.1.93:8081/api/budget');
                 if (response.ok) {
                     const data = await response.json();
                     document.getElementById('budgetVal').textContent = '$' + data.used;
@@ -535,8 +535,8 @@ setInterval(fetchModelUsage, 30000); // Update every 30 seconds
         // REAL ACTIVITY TICKER - Updates from actual API usage
         async function fetchActivityTicker() {
             try {
-                const budgetResponse = await fetch('http://192.168.1.93:8080/api/budget');
-                const modelsResponse = await fetch('http://192.168.1.93:8080/api/models');
+                const budgetResponse = await fetch('http://192.168.1.93:8081/api/budget');
+                const modelsResponse = await fetch('http://192.168.1.93:8081/api/models');
                 
                 if (budgetResponse.ok && modelsResponse.ok) {
                     const budget = await budgetResponse.json();
