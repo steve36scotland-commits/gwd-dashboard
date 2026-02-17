@@ -183,6 +183,36 @@
         .status-dot.blocked { background: var(--danger); box-shadow: 0 0 8px rgba(221,34,68,0.4); }
         .status-dot.new { background: #9944cc; box-shadow: 0 0 8px rgba(153,68,204,0.4); }
         
+        .ticker-wrap {
+            overflow: hidden;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 0;
+            position: relative;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .ticker-label {
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(255,255,255,0.95) 60%, transparent);
+            font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700;
+            color: var(--primary); letter-spacing: 2px; z-index: 2;
+        }
+        .ticker-track {
+            display: flex;
+            animation: scroll 40s linear infinite;
+            white-space: nowrap;
+            padding-left: 140px;
+        }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .ticker-item { padding: 0 40px; font-size: 14px; color: var(--muted); font-weight: 500; }
+        .ticker-item a { color: var(--muted); text-decoration: none; }
+        .ticker-item a:hover { color: var(--primary); }
+        
         @media (max-width: 1200px) {
             .metrics-grid { grid-template-columns: repeat(2, 1fr); }
             .content-grid { grid-template-columns: 1fr; }
@@ -208,6 +238,12 @@
                 <div class="clock" id="clock">--:--:--</div>
                 <div class="clock-date" id="clockDate">---</div>
             </div>
+        </div>
+
+        <!-- NEWS TICKER -->
+        <div class="ticker-wrap">
+            <div class="ticker-label">📰 LIVE NEWS</div>
+            <div class="ticker-track" id="newsTicker"></div>
         </div>
 
         <!-- METRICS ROW -->
@@ -246,6 +282,12 @@
                 <div class="metric-value primary" id="briefCountdown">--</div>
                 <div class="metric-sub">Tomorrow 6:00 AM EST</div>
             </div>
+        </div>
+
+        <!-- TEAM TICKER -->
+        <div class="ticker-wrap" style="background: linear-gradient(90deg, rgba(0,102,204,0.08), rgba(0,170,68,0.05));">
+            <div class="ticker-label">👥 TEAM STATUS</div>
+            <div class="ticker-track" id="teamTicker"></div>
         </div>
 
         <!-- TEAM SECTION -->
@@ -471,6 +513,34 @@ setInterval(fetchModelUsage, 30000); // Update every 30 seconds
             }
         }
         fetchNews();
+
+        // TICKERS
+        const NEWS_TICKER = [
+            { text: 'Toronto FC sign Serie A midfielder ahead of season opener', url: 'https://www.google.com/search?q=Toronto+FC+Serie+A+midfielder+2026' },
+            { text: 'Maple Leafs defeat Bruins 5-3, Matthews scores twice', url: 'https://www.google.com/search?q=Maple+Leafs+Bruins+Matthews+2026' },
+            { text: 'Raptors exploring trade options before deadline', url: 'https://www.google.com/search?q=Raptors+trade+deadline+2026' },
+            { text: 'Blue Jays pitchers report to Dunedin for spring training', url: 'https://www.google.com/search?q=Blue+Jays+spring+training+Dunedin+2026' },
+            { text: 'Bank of Canada notes continued inflation cooldown', url: 'https://www.google.com/search?q=Bank+of+Canada+inflation+cooldown+2026' },
+            { text: 'Niagara Falls tourism up 15% compared to last winter', url: 'https://www.google.com/search?q=Niagara+Falls+tourism+increase+2026' },
+            { text: 'GO Transit expanding weekend service starting March', url: 'https://www.google.com/search?q=GO+Transit+weekend+service+March+2026' },
+            { text: 'Hamilton Tiger-Cats announce new head coach', url: 'https://www.google.com/search?q=Hamilton+Tiger-Cats+head+coach+2026' }
+        ];
+        document.getElementById('newsTicker').innerHTML = NEWS_TICKER.map(n => `<div class="ticker-item"><a href="${n.url}" target="_blank"><span style="color:var(--primary);margin-right:10px;">●</span>${n.text}</a></div>`).join('') + NEWS_TICKER.map(n => `<div class="ticker-item"><a href="${n.url}" target="_blank"><span style="color:var(--primary);margin-right:10px;">●</span>${n.text}</a></div>`).join('');
+
+        const TEAM_STATUS_TICKER = [
+            '🦞 CEO — Dashboard oversight in progress',
+            '🚀 Buzz — Brave Search fix ongoing',
+            '🧙‍♂️ Gandalf — Drafting core values, due tonight',
+            '🧌 Chunk — Enabling MFA on all accounts, 80% complete',
+            '🥷 Ninja — Weather API integration testing',
+            '👵 Granny O — Wellness check queued for 9PM',
+            '👮‍♀️ PC Plod — Drafting Weather API SOP',
+            '🧠 BrainZ — Consolidating Q1 retrospectives',
+            '🧚‍♀️ Wisp — Developing brand guidelines',
+            '👩‍🏫 Kazza — Onboarding, feedback system setup',
+            '🐕‍🦺 Rosco — Building real budget tracker'
+        ];
+        document.getElementById('teamTicker').innerHTML = TEAM_STATUS_TICKER.map(t => `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">▸</span>${t}</div>`).join('') + TEAM_STATUS_TICKER.map(t => `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">▸</span>${t}</div>`).join('');
     </script>
 </body>
 </html>
