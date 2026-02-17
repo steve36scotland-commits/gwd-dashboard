@@ -211,6 +211,18 @@
         .priority-badge.high { background: rgba(255,136,0,0.12); color: var(--warning); border: 1px solid rgba(255,136,0,0.25); }
         .priority-badge.medium { background: rgba(0,102,204,0.12); color: var(--primary); border: 1px solid rgba(0,102,204,0.25); }
         
+        .model-usage-list { margin: 12px 0; }
+        .model-usage-item { margin-bottom: 12px; }
+        .model-usage-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .model-name { font-size: 13px; font-weight: 600; color: var(--text); }
+        .model-cost { font-family: 'Orbitron', monospace; font-size: 11px; color: var(--success); font-weight: 700; }
+        .model-usage-bar { height: 8px; background: rgba(0,0,0,0.08); border-radius: 4px; overflow: hidden; }
+        .model-usage-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
+        .model-usage-fill.local { background: linear-gradient(90deg, #00aa44, #00dd66); }
+        .model-usage-fill.cloud { background: linear-gradient(90deg, #0066cc, #4d94ff); }
+        .model-usage-meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
+        .model-card { background: linear-gradient(135deg, rgba(102,126,234,0.08), rgba(118,75,162,0.05)); }
+        
         .event-item {
             display: flex;
             align-items: center;
@@ -329,9 +341,9 @@
                     <div class="metric-icon">👥</div>
                     <div class="metric-title">Team Status</div>
                 </div>
-                <div class="metric-value success">8 <span style="font-size:16px;color:var(--light)">/ 11 Active</span></div>
-                <div class="progress-bar"><div class="progress-fill" style="width:72.7%;background:linear-gradient(90deg,var(--success),var(--primary))"></div></div>
-                <div class="metric-sub">8 working • 2 new hires • 0 blocked • 1 away</div>
+                <div class="metric-value success">9 <span style="font-size:16px;color:var(--light)">/ 12 Active</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:75%;background:linear-gradient(90deg,var(--success),var(--primary))"></div></div>
+                <div class="metric-sub">9 working • 2 new hires • 0 blocked • 1 system</div>
             </div>
         </div>
 
@@ -355,7 +367,7 @@
             <div class="section-header">
                 <div class="section-title">🎖 TEAM ROSTER</div>
                 <div class="section-line"></div>
-                <div style="font-family:'Orbitron',monospace;font-size:12px;color:var(--primary)">BY RANK</div>
+                <div style="font-family:'Orbitron',monospace;font-size:12px;color:var(--primary)">12 MEMBERS</div>
             </div>
             <div class="team-grid" id="teamGrid"></div>
         </div>
@@ -423,10 +435,44 @@
             { emoji: '🧠', name: 'BrainZ', role: 'Knowledge Officer', priority: 'high', status: 'online', models: 'Kimi K2.5 (analysis), Ollama/Llama2 (indexing)', checklist: [{text: 'Gathered Q1 docs', done: true}, {text: 'Consolidate retros', done: false}, {text: 'Index in KB', done: false}] },
             { emoji: '🧚‍♀️', name: 'Wisp', role: 'Creative Director', priority: 'medium', status: 'online', models: 'Gemini Flash (design), Ollama/Gemma3 (local)', checklist: [{text: 'Design concepts approved', done: true}, {text: 'Develop brand guidelines', done: false}, {text: 'Create asset library', done: false}] },
             { emoji: '👩‍🏫', name: 'Kazza', role: 'Client Success Lead', priority: 'high', status: 'new', models: 'Gemini Flash (chat), Ollama/Mistral (local)', checklist: [{text: 'Onboarding', done: false}, {text: 'Feedback system', done: false}] },
-            { emoji: '🐕‍🦺', name: 'Rosco', role: 'Performance Analyst', priority: 'high', status: 'new', models: 'Ollama/Llama2 (local), Kimi K2.5 (reports)', checklist: [{text: 'Onboarding', done: false}, {text: 'Budget tracker', done: false}] }
+            { emoji: '🐕‍🦺', name: 'Rosco', role: 'Performance Analyst', priority: 'high', status: 'new', models: 'Ollama/Llama2 (local), Kimi K2.5 (reports)', checklist: [{text: 'Onboarding', done: false}, {text: 'Budget tracker', done: false}] },
+            { emoji: '🤖', name: 'Model Monitor', role: 'System Overview', priority: 'medium', status: 'online', isModelCard: true, models: 'All active models', modelUsage: [
+                { name: 'Ollama/Mistral', type: 'Local', usage: 45, cost: 'FREE' },
+                { name: 'Ollama/Llama2', type: 'Local', usage: 32, cost: 'FREE' },
+                { name: 'Ollama/Gemma3', type: 'Local', usage: 18, cost: 'FREE' },
+                { name: 'Kimi K2.5', type: 'Cloud', usage: 67, cost: '$0.12' },
+                { name: 'Gemini Flash', type: 'Cloud', usage: 23, cost: '$0.03' },
+                { name: 'GPT-5.1', type: 'Cloud', usage: 12, cost: '$0.08' }
+            ] }
         ];
 
-        document.getElementById('teamGrid').innerHTML = TEAM.map(m => `
+        document.getElementById('teamGrid').innerHTML = TEAM.map(m => m.isModelCard ? `
+            <div class="team-card model-card">
+                <div class="card-header">
+                    <div class="card-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2);">${m.emoji}</div>
+                    <div class="card-info">
+                        <div class="card-name">${m.name}</div>
+                        <div class="card-role">${m.role}</div>
+                    </div>
+                    <div class="card-status ${m.status}"></div>
+                </div>
+                <div class="model-usage-list">
+                    ${m.modelUsage.map(mu => `
+                        <div class="model-usage-item">
+                            <div class="model-usage-header">
+                                <span class="model-name">${mu.name}</span>
+                                <span class="model-cost">${mu.cost}</span>
+                            </div>
+                            <div class="model-usage-bar">
+                                <div class="model-usage-fill ${mu.type === 'Local' ? 'local' : 'cloud'}" style="width: ${mu.usage}%"></div>
+                            </div>
+                            <div class="model-usage-meta">${mu.type} • ${mu.usage}% usage</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <span class="priority-badge ${m.priority}">SYSTEM</span>
+            </div>
+        ` : `
             <div class="team-card">
                 <div class="card-header">
                     <div class="card-avatar">${m.emoji}</div>
