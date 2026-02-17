@@ -381,7 +381,7 @@
             </div>
             <div class="bottom-card actions">
                 <div class="action-buttons">
-                    <button class="action-btn" onclick="window.open('https://t.me/openclaw_bot','_blank')">📋 New Task</button>
+                    <button class="action-btn" onclick="alert('📱 Message the CEO directly on Telegram to create a new task')">📋 New Task</button>
                     <button class="action-btn" onclick="alert('Next all-hands: Tomorrow 6AM EST')">👥 Meeting</button>
                     <button class="action-btn" onclick="alert('Completed: 8 | In Progress: 6 | Blocked: 0')">📊 Reports</button>
                     <button class="action-btn" onclick="alert('Budget: \$5/day | Alert: 80% | CEO Restored')">⚙️ Settings</button>
@@ -394,18 +394,18 @@
 
     <script>
         const NEWS = [
-            'Toronto FC sign Serie A midfielder ahead of season opener',
-            'Maple Leafs defeat Bruins 5-3, Matthews scores twice',
-            'Raptors exploring trade options before deadline',
-            'Blue Jays pitchers report to Dunedin for spring training',
-            'Bank of Canada notes continued inflation cooldown',
-            'Niagara Falls tourism up 15% compared to last winter',
-            'GO Transit expanding weekend service starting March',
-            'Hamilton Tiger-Cats announce new head coach',
-            'Apple shares rally on strong AR headset demand',
-            'Canadian dollar strengthens against USD'
+            { text: 'Toronto FC sign Serie A midfielder ahead of season opener', url: 'https://www.google.com/search?q=Toronto+FC+sign+Serie+A+midfielder+2026' },
+            { text: 'Maple Leafs defeat Bruins 5-3, Matthews scores twice', url: 'https://www.google.com/search?q=Maple+Leafs+defeat+Bruins+Matthews+2026' },
+            { text: 'Raptors exploring trade options before deadline', url: 'https://www.google.com/search?q=Raptors+trade+options+deadline+2026' },
+            { text: 'Blue Jays pitchers report to Dunedin for spring training', url: 'https://www.google.com/search?q=Blue+Jays+spring+training+Dunedin+2026' },
+            { text: 'Bank of Canada notes continued inflation cooldown', url: 'https://www.google.com/search?q=Bank+of+Canada+inflation+cooldown+2026' },
+            { text: 'Niagara Falls tourism up 15% compared to last winter', url: 'https://www.google.com/search?q=Niagara+Falls+tourism+increase+2026' },
+            { text: 'GO Transit expanding weekend service starting March', url: 'https://www.google.com/search?q=GO+Transit+weekend+service+expansion+March+2026' },
+            { text: 'Hamilton Tiger-Cats announce new head coach', url: 'https://www.google.com/search?q=Hamilton+Tiger-Cats+new+head+coach+2026' },
+            { text: 'Apple shares rally on strong AR headset demand', url: 'https://www.google.com/search?q=Apple+shares+rally+AR+headset+demand+2026' },
+            { text: 'Canadian dollar strengthens against USD', url: 'https://www.google.com/search?q=Canadian+dollar+strengthens+USD+2026' }
         ];
-        document.getElementById('newsTicker').innerHTML = NEWS.map(n => `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">●</span>${n}</div>`).join('') + NEWS.map(n => `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">●</span>${n}</div>`).join('');
+        document.getElementById('newsTicker').innerHTML = NEWS.map(n => `<div class="ticker-item"><a href="${n.url}" target="_blank" style="color:var(--muted);text-decoration:none;"><span style="color:var(--primary);margin-right:10px;">●</span>${n.text}</a></div>`).join('') + NEWS.map(n => `<div class="ticker-item"><a href="${n.url}" target="_blank" style="color:var(--muted);text-decoration:none;"><span style="color:var(--primary);margin-right:10px;">●</span>${n.text}</a></div>`).join('');
 
         const TEAM_STATUS = [
             '🦞 CEO — Dashboard oversight in progress',
