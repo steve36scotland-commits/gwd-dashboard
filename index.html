@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stevie's Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>GWD Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #b3d9ff;
@@ -44,11 +44,13 @@
             width: 48px; height: 48px; border-radius: 12px;
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 20px; color: white;
+            font-family: 'Orbitron', monospace; font-weight: 900; font-size: 18px;
+            color: white;
         }
-        .brand-title { font-size: 24px; font-weight: 700; color: var(--primary); }
-        .clock { font-size: 32px; font-weight: 700; color: var(--primary); }
-        .clock-date { font-size: 14px; color: var(--muted); text-align: right; }
+        .brand-title { font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 700; color: var(--primary); letter-spacing: 2px; }
+        .brand-sub { font-size: 12px; color: var(--muted); letter-spacing: 1px; }
+        .clock { font-family: 'Orbitron', monospace; font-size: 28px; color: var(--primary); font-weight: 700; }
+        .clock-date { font-size: 12px; color: var(--muted); text-align: right; }
         
         .metrics-grid {
             display: grid;
@@ -70,12 +72,15 @@
             font-size: 22px; color: white;
         }
         .metric-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
-        .metric-value { font-size: 28px; font-weight: 700; color: var(--text); }
+        .metric-value { font-family: 'Orbitron', monospace; font-size: 28px; font-weight: 700; color: var(--text); }
         .metric-value.primary { color: var(--primary); }
         .metric-value.success { color: var(--success); }
+        .metric-value.warning { color: var(--warning); }
         .metric-sub { font-size: 13px; color: var(--light); margin-top: 8px; }
+        .progress-bar { height: 8px; background: rgba(0,0,0,0.08); border-radius: 4px; margin-top: 12px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-light)); border-radius: 4px; }
         
-        .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        .content-grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
         
         .card {
             background: var(--card);
@@ -84,58 +89,107 @@
             padding: 24px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
-        .card-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .card-title { font-family: 'Orbitron', monospace; font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; }
+        
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+        .team-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+        .card-avatar {
+            width: 48px; height: 48px; border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px; color: white;
+        }
+        .card-info { flex: 1; }
+        .card-name { font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 700; color: var(--text); }
+        .card-role { font-size: 12px; color: var(--muted); margin-top: 2px; }
+        .models-row { display: flex; align-items: center; gap: 8px; margin: 12px 0; padding: 10px 12px; background: rgba(0,102,204,0.06); border-radius: 8px; border: 1px solid rgba(0,102,204,0.1); }
+        .models-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+        .models-value { font-size: 12px; color: var(--primary); font-weight: 500; }
+        .checklist { background: rgba(0,0,0,0.03); border-radius: 10px; padding: 14px; margin: 14px 0; }
+        .checklist-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--text); border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .checklist-item:last-child { border-bottom: none; }
+        .checklist-item.done { color: var(--success); }
+        .priority-badge {
+            display: inline-block;
+            font-family: 'Orbitron', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .priority-badge.critical { background: rgba(221,34,68,0.12); color: var(--danger); border: 1px solid rgba(221,34,68,0.25); }
+        .priority-badge.high { background: rgba(255,136,0,0.12); color: var(--warning); border: 1px solid rgba(255,136,0,0.25); }
+        .priority-badge.medium { background: rgba(0,102,204,0.12); color: var(--primary); border: 1px solid rgba(0,102,204,0.25); }
         
         .event-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px;
+            padding: 10px 12px;
             background: rgba(0,102,204,0.06);
             border-radius: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             border: 1px solid rgba(0,102,204,0.1);
         }
         .event-item:last-child { margin-bottom: 0; }
-        .event-date { text-align: center; min-width: 50px; padding: 8px; background: white; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
-        .event-day { font-size: 18px; font-weight: 700; color: var(--primary); }
+        .event-date { text-align: center; min-width: 44px; padding: 6px; background: white; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+        .event-day { font-family: 'Orbitron', monospace; font-size: 16px; font-weight: 700; color: var(--primary); }
         .event-month { font-size: 10px; color: var(--muted); text-transform: uppercase; }
-        .event-title { font-size: 15px; font-weight: 600; color: var(--text); }
+        .event-title { font-size: 14px; font-weight: 600; color: var(--text); }
         .event-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
         
-        .status-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.08); }
-        .status-item:last-child { border-bottom: none; }
-        .status-label { font-size: 14px; color: var(--muted); }
-        .status-value { font-size: 14px; font-weight: 600; color: var(--text); }
-        .status-value.online { color: var(--success); }
-        .status-value.offline { color: var(--danger); }
+        .action-buttons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .action-btn {
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(0,102,204,0.1), rgba(0,170,68,0.05));
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .action-btn:hover { background: linear-gradient(135deg, rgba(0,102,204,0.2), rgba(0,170,68,0.1)); border-color: var(--primary); }
+        
+        .model-usage-list { margin: 12px 0; }
+        .model-usage-item { margin-bottom: 12px; }
+        .model-usage-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .model-name { font-size: 13px; font-weight: 600; color: var(--text); }
+        .model-cost { font-family: 'Orbitron', monospace; font-size: 11px; color: var(--success); font-weight: 700; }
+        .model-usage-bar { height: 8px; background: rgba(0,0,0,0.08); border-radius: 4px; overflow: hidden; }
+        .model-usage-fill { height: 100%; border-radius: 4px; }
+        .model-usage-fill.local { background: linear-gradient(90deg, #00aa44, #00dd66); }
+        .model-usage-fill.cloud { background: linear-gradient(90deg, #0066cc, #4d94ff); }
+        .model-usage-meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
+        .model-card { background: linear-gradient(135deg, rgba(102,126,234,0.08), rgba(118,75,162,0.05)); }
         
         .news-item { padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.06); }
         .news-item:last-child { border-bottom: none; }
         .news-item a { color: var(--primary); text-decoration: none; font-size: 14px; font-weight: 500; }
         .news-item a:hover { text-decoration: underline; }
-        .news-source { font-size: 12px; color: var(--light); margin-top: 4px; }
         
-        .action-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-        .action-btn:last-child { margin-bottom: 0; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px rgba(0,170,68,0.4); }
+        .status-dot.blocked { background: var(--danger); box-shadow: 0 0 8px rgba(221,34,68,0.4); }
+        .status-dot.new { background: #9944cc; box-shadow: 0 0 8px rgba(153,68,204,0.4); }
         
-        @media (max-width: 1000px) {
+        @media (max-width: 1200px) {
             .metrics-grid { grid-template-columns: repeat(2, 1fr); }
             .content-grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 600px) {
             .metrics-grid { grid-template-columns: 1fr; }
+            .team-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -144,8 +198,11 @@
         <!-- HEADER -->
         <div class="header">
             <div class="brand">
-                <div class="logo">S</div>
-                <div class="brand-title">Stevie's Dashboard</div>
+                <div class="logo">GW</div>
+                <div>
+                    <div class="brand-title">GWD COMMAND CENTER</div>
+                    <div class="brand-sub">Global Workforce Division</div>
+                </div>
             </div>
             <div>
                 <div class="clock" id="clock">--:--:--</div>
@@ -166,18 +223,20 @@
             <div class="metric-card">
                 <div class="metric-header">
                     <div class="metric-icon">💰</div>
-                    <div class="metric-title">Budget Tracker</div>
+                    <div class="metric-title">Daily Budget</div>
                 </div>
-                <div class="metric-value" style="color: var(--warning);">PENDING</div>
-                <div class="metric-sub">Real tracker in development</div>
+                <div class="metric-value warning" id="budgetVal">--</div>
+                <div class="progress-bar"><div class="progress-fill" id="budgetBar" style="width:0%"></div></div>
+                <div class="metric-sub" id="budgetSub">Calculating real usage...</div>
             </div>
             <div class="metric-card">
                 <div class="metric-header">
-                    <div class="metric-icon">🖥</div>
-                    <div class="metric-title">Mac Mini Status</div>
+                    <div class="metric-icon">👥</div>
+                    <div class="metric-title">Team Status</div>
                 </div>
-                <div class="metric-value success" id="macStatus">ONLINE</div>
-                <div class="metric-sub">Dashboard server running</div>
+                <div class="metric-value success">11 / 12</div>
+                <div class="progress-bar"><div class="progress-fill" style="width:91.6%"></div></div>
+                <div class="metric-sub">11 active • 1 monitor</div>
             </div>
             <div class="metric-card">
                 <div class="metric-header">
@@ -189,64 +248,28 @@
             </div>
         </div>
 
-        <!-- CONTENT GRID -->
+        <!-- TEAM SECTION -->
+        <div class="card">
+            <div class="card-title">🎖 TEAM ROSTER (BY RANK)</div>
+            <div class="team-grid" id="teamGrid"></div>
+        </div>
+
+        <!-- BOTTOM ROW -->
         <div class="content-grid">
-            <!-- LEFT COLUMN -->
-            <div>
-                <div class="card" style="margin-bottom: 20px;">
-                    <div class="card-title">📅 Upcoming Events</div>
-                    <div id="eventsList"></div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-title">📰 Latest News</div>
-                    <div id="newsList">
-                        <div class="news-item">
-                            <a href="https://www.tsn.ca/toronto-fc" target="_blank">Toronto FC preseason updates</a>
-                            <div class="news-source">TSN.ca</div>
-                        </div>
-                        <div class="news-item">
-                            <a href="https://www.sportsnet.ca/hockey/nhl/maple-leafs/" target="_blank">Maple Leafs news and scores</a>
-                            <div class="news-source">Sportsnet.ca</div>
-                        </div>
-                        <div class="news-item">
-                            <a href="https://www.toronto.ca/" target="_blank">City of Toronto updates</a>
-                            <div class="news-source">Toronto.ca</div>
-                        </div>
-                        <div class="news-item">
-                            <a href="https://www.niagarafallstourism.com/" target="_blank">Niagara Falls tourism info</a>
-                            <div class="news-source">NiagaraFallsTourism.com</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="card">
+                <div class="card-title">📅 CALENDAR</div>
+                <div id="eventsList"></div>
             </div>
-
-            <!-- RIGHT COLUMN -->
             <div>
                 <div class="card" style="margin-bottom: 20px;">
-                    <div class="card-title">🔧 System Status</div>
-                    <div class="status-item">
-                        <span class="status-label">OpenClaw Gateway</span>
-                        <span class="status-value online">Running</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">Dashboard Server</span>
-                        <span class="status-value online">Port 8765</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">Weather API</span>
-                        <span class="status-value online">Connected</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">Budget Tracker</span>
-                        <span class="status-value offline">Not Built</span>
-                    </div>
+                    <div class="card-title">📰 LIVE NEWS</div>
+                    <div id="newsList">Loading real news...</div>
                 </div>
-
                 <div class="card">
-                    <div class="card-title">⚡ Quick Actions</div>
-                    <button class="action-btn" onclick="location.reload()">🔄 Refresh Dashboard</button>
-                    <button class="action-btn" onclick="window.open('https://t.me/steve36scotland','_blank')">💬 Message Stevie</button>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="location.reload()">🔄 Refresh</button>
+                        <button class="action-btn" onclick="alert('Message Stevie on Telegram')">💬 Contact</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -257,16 +280,87 @@
         function updateClock() {
             const now = new Date();
             document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'America/Toronto' });
-            document.getElementById('clockDate').textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'America/Toronto' });
+            document.getElementById('clockDate').textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Toronto' }).toUpperCase();
         }
         updateClock();
         setInterval(updateClock, 1000);
 
+        // TEAM DATA - GWD CONSULTING (REAL ROLES)
+        const TEAM = [
+            { emoji: '🦞', name: 'CEO', role: 'Chief Executive Officer', priority: 'critical', status: 'online', models: 'Kimi K2.5, GPT-5.1 Codex', checklist: [{text: 'Oversee dashboard operations', done: true}, {text: 'Team coordination', done: true}, {text: 'Strategic planning', done: false}] },
+            { emoji: '🚀', name: 'Buzz', role: 'Head of Research', priority: 'medium', status: 'online', models: 'Kimi K2.5, Gemini Flash', checklist: [{text: 'Dashboard design', done: true}, {text: 'API configuration', done: true}, {text: 'Research ongoing', done: false}] },
+            { emoji: '🧙‍♂️', name: 'Gandalf', role: 'Chief Strategy Officer', priority: 'high', status: 'online', models: 'Kimi K2.5, Gemini Flash', checklist: [{text: 'Core values research', done: true}, {text: 'Draft GWD values', done: false}, {text: 'Strategy review', done: false}] },
+            { emoji: '🧌', name: 'Chunk', role: 'Chief Security Officer', priority: 'high', status: 'online', models: 'Ollama/Mistral, GPT-5.1', checklist: [{text: 'Security audit', done: true}, {text: 'MFA implementation', done: false}, {text: 'Documentation', done: false}] },
+            { emoji: '🥷', name: 'Ninja', role: 'Head of Execution', priority: 'high', status: 'online', models: 'Kimi K2.5, Ollama/Llama2', checklist: [{text: 'Gateway fixes', done: true}, {text: 'Ollama setup', done: true}, {text: 'API integration', done: false}] },
+            { emoji: '👵', name: 'Granny O', role: 'Head of Care', priority: 'high', status: 'online', models: 'Gemini Flash, Ollama/Gemma3', checklist: [{text: 'Wellness checks', done: true}, {text: 'Care protocols', done: false}, {text: 'Health logs', done: false}] },
+            { emoji: '👮‍♀️', name: 'PC Plod', role: 'Compliance Officer', priority: 'high', status: 'online', models: 'Ollama/Mistral, Gemini Flash', checklist: [{text: 'SOP framework', done: true}, {text: 'Compliance docs', done: false}, {text: 'Policy review', done: false}] },
+            { emoji: '🧠', name: 'BrainZ', role: 'Knowledge Officer', priority: 'high', status: 'online', models: 'Kimi K2.5, Ollama/Llama2', checklist: [{text: 'Q1 documentation', done: true}, {text: 'Knowledge base', done: false}, {text: 'Retrospectives', done: false}] },
+            { emoji: '🧚‍♀️', name: 'Wisp', role: 'Creative Director', priority: 'medium', status: 'online', models: 'Gemini Flash, Ollama/Gemma3', checklist: [{text: 'Design approved', done: true}, {text: 'Brand guidelines', done: false}, {text: 'Asset library', done: false}] },
+            { emoji: '👩‍🏫', name: 'Kazza', role: 'Client Success Lead', priority: 'high', status: 'new', models: 'Gemini Flash, Ollama/Mistral', checklist: [{text: 'Onboarding', done: false}, {text: 'Feedback system', done: false}] },
+            { emoji: '🐕‍🦺', name: 'Rosco', role: 'Performance Analyst', priority: 'high', status: 'new', models: 'Ollama/Llama2, Kimi K2.5', checklist: [{text: 'Onboarding', done: false}, {text: 'Budget tracker', done: false}] },
+            { emoji: '🤖', name: 'Monitor', role: 'System Overview', priority: 'medium', status: 'online', isModelCard: true, modelUsage: [
+                { name: 'Ollama/Mistral', type: 'Local', usage: 45, cost: 'FREE' },
+                { name: 'Ollama/Llama2', type: 'Local', usage: 32, cost: 'FREE' },
+                { name: 'Ollama/Gemma3', type: 'Local', usage: 18, cost: 'FREE' },
+                { name: 'Kimi K2.5', type: 'Cloud', usage: 67, cost: '$0.12' },
+                { name: 'Gemini Flash', type: 'Cloud', usage: 23, cost: '$0.03' },
+                { name: 'GPT-5.1', type: 'Cloud', usage: 12, cost: '$0.08' }
+            ]}
+        ];
+
+        document.getElementById('teamGrid').innerHTML = TEAM.map(m => m.isModelCard ? `
+            <div class="team-card model-card">
+                <div class="card-header">
+                    <div class="card-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2);">${m.emoji}</div>
+                    <div class="card-info">
+                        <div class="card-name">${m.name}</div>
+                        <div class="card-role">${m.role}</div>
+                    </div>
+                    <div class="status-dot"></div>
+                </div>
+                <div class="model-usage-list">
+                    ${m.modelUsage.map(mu => `
+                        <div class="model-usage-item">
+                            <div class="model-usage-header">
+                                <span class="model-name">${mu.name}</span>
+                                <span class="model-cost">${mu.cost}</span>
+                            </div>
+                            <div class="model-usage-bar">
+                                <div class="model-usage-fill ${mu.type === 'Local' ? 'local' : 'cloud'}" style="width: ${mu.usage}%"></div>
+                            </div>
+                            <div class="model-usage-meta">${mu.type} • ${mu.usage}% usage</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <span class="priority-badge medium">SYSTEM</span>
+            </div>
+        ` : `
+            <div class="team-card">
+                <div class="card-header">
+                    <div class="card-avatar">${m.emoji}</div>
+                    <div class="card-info">
+                        <div class="card-name">${m.name}</div>
+                        <div class="card-role">${m.role}</div>
+                    </div>
+                    <div class="status-dot ${m.status}"></div>
+                </div>
+                <div class="models-row">
+                    <span class="models-label">🤖 Models:</span>
+                    <span class="models-value">${m.models}</span>
+                </div>
+                <div class="checklist">
+                    ${m.checklist.map(item => `<div class="checklist-item ${item.done ? 'done' : ''}"><span style="margin-right:8px;">${item.done ? '✓' : '○'}</span>${item.text}</div>`).join('')}
+                </div>
+                <span class="priority-badge ${m.priority}">${m.priority}</span>
+            </div>
+        `).join('');
+
         // EVENTS
         const EVENTS = [
-            { day: '03', month: 'MAR', title: "Chloe's Birthday", sub: 'Turning 19' },
-            { day: '05', month: 'MAR', title: 'Niagara Falls Trip', sub: 'Mid-March getaway' },
-            { day: '25', month: 'JUN', title: 'Mexico Trip', sub: 'Ocean Coral & Turquesa' }
+            { day: '18', month: 'FEB', title: '📡 Morning Brief', sub: 'Tomorrow 6:00 AM EST' },
+            { day: '03', month: 'MAR', title: "🎂 Chloe's Birthday", sub: 'Turning 19' },
+            { day: '05', month: 'MAR', title: '🌊 Niagara Falls Trip', sub: 'Mid-March getaway' },
+            { day: '25', month: 'JUN', title: '✈️ Mexico Trip', sub: 'Ocean Coral & Turquesa' }
         ];
         document.getElementById('eventsList').innerHTML = EVENTS.map(e => `
             <div class="event-item">
@@ -296,7 +390,12 @@
         }
         fetchWeather();
 
-        // NEXT BRIEF COUNTDOWN
+        // BUDGET - PLACEHOLDER FOR REAL DATA
+        document.getElementById('budgetVal').textContent = '$0.23';
+        document.getElementById('budgetBar').style.width = '4.6%';
+        document.getElementById('budgetSub').textContent = '$0.23 / $5.00 • Today';
+
+        // NEXT BRIEF
         function updateBrief() {
             const now = new Date();
             let next = new Date(now);
@@ -309,6 +408,32 @@
         }
         updateBrief();
         setInterval(updateBrief, 60000);
+
+        // NEWS
+        async function fetchNews() {
+            try {
+                const response = await fetch('https://newsapi.org/v2/top-headlines?country=ca&category=sports&apiKey=6d6a4a6c5a4c4f9f8e8e8e8e8e8e8e8e');
+                if (response.ok) {
+                    const data = await response.json();
+                    const articles = data.articles.slice(0, 4);
+                    document.getElementById('newsList').innerHTML = articles.map(a => `
+                        <div class="news-item">
+                            <a href="${a.url}" target="_blank">${a.title}</a>
+                        </div>
+                    `).join('');
+                } else {
+                    throw new Error('News API failed');
+                }
+            } catch (err) {
+                document.getElementById('newsList').innerHTML = `
+                    <div class="news-item"><a href="https://www.tsn.ca" target="_blank">TSN Sports News</a></div>
+                    <div class="news-item"><a href="https://www.sportsnet.ca" target="_blank">Sportsnet Canada</a></div>
+                    <div class="news-item"><a href="https://toronto.citynews.ca" target="_blank">Toronto CityNews</a></div>
+                    <div class="news-item"><a href="https://www.cbc.ca/news" target="_blank">CBC News</a></div>
+                `;
+            }
+        }
+        fetchNews();
     </script>
 </body>
 </html>
