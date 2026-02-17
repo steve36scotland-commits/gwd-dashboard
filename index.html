@@ -298,18 +298,22 @@
             { emoji: '🧚‍♀️', name: 'Wisp', role: 'Creative Director', priority: 'medium', status: 'online', models: 'Gemini Flash, Ollama/Gemma3', checklist: [{text: 'Design approved', done: true}, {text: 'Brand guidelines', done: false}, {text: 'Asset library', done: false}] },
             { emoji: '👩‍🏫', name: 'Kazza', role: 'Client Success Lead', priority: 'high', status: 'new', models: 'Gemini Flash, Ollama/Mistral', checklist: [{text: 'Onboarding', done: false}, {text: 'Feedback system', done: false}] },
             { emoji: '🐕‍🦺', name: 'Rosco', role: 'Performance Analyst', priority: 'high', status: 'new', models: 'Ollama/Llama2, Kimi K2.5', checklist: [{text: 'Onboarding', done: false}, {text: 'Budget tracker', done: false}] },
-            { emoji: '🤖', name: 'Monitor', role: 'System Overview', priority: 'medium', status: 'online', isModelCard: true, modelUsage: [
-                { name: 'Ollama/Mistral', type: 'Local', usage: 45, cost: 'FREE' },
-                { name: 'Ollama/Llama2', type: 'Local', usage: 32, cost: 'FREE' },
-                { name: 'Ollama/Gemma3', type: 'Local', usage: 18, cost: 'FREE' },
-                { name: 'Kimi K2.5', type: 'Cloud', usage: 67, cost: '$0.12' },
-                { name: 'Gemini Flash', type: 'Cloud', usage: 23, cost: '$0.03' },
-                { name: 'GPT-5.1', type: 'Cloud', usage: 12, cost: '$0.08' }
-            ]}
+            { emoji: '🤖', name: 'Monitor', role: 'System Overview', priority: 'medium', status: 'online', isModelCard: true, fetchRealData: true }
         ];
 
-        document.getElementById('teamGrid').innerHTML = TEAM.map(m => m.isModelCard ? `
-            <div class="team-card model-card">
+        // RENDER TEAM GRID
+function renderTeamGrid(modelData) {
+    const modelUsage = modelData || [
+        { name: 'Ollama/Mistral', type: 'Local', percentage: 0, cost: 'FREE' },
+        { name: 'Ollama/Llama2', type: 'Local', percentage: 0, cost: 'FREE' },
+        { name: 'Ollama/Gemma3', type: 'Local', percentage: 0, cost: 'FREE' },
+        { name: 'Kimi K2.5', type: 'Cloud', percentage: 0, cost: '$0.00' },
+        { name: 'Gemini Flash', type: 'Cloud', percentage: 0, cost: '$0.00' },
+        { name: 'GPT-5.1', type: 'Cloud', percentage: 0, cost: '$0.00' }
+    ];
+    
+    document.getElementById('teamGrid').innerHTML = TEAM.map(m => m.isModelCard ? `
+            <div class="team-card model-card" id="modelMonitor">
                 <div class="card-header">
                     <div class="card-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2);">${m.emoji}</div>
                     <div class="card-info">
@@ -319,16 +323,16 @@
                     <div class="status-dot"></div>
                 </div>
                 <div class="model-usage-list">
-                    ${m.modelUsage.map(mu => `
+                    ${modelUsage.map(mu => `
                         <div class="model-usage-item">
                             <div class="model-usage-header">
                                 <span class="model-name">${mu.name}</span>
                                 <span class="model-cost">${mu.cost}</span>
                             </div>
                             <div class="model-usage-bar">
-                                <div class="model-usage-fill ${mu.type === 'Local' ? 'local' : 'cloud'}" style="width: ${mu.usage}%"></div>
+                                <div class="model-usage-fill ${mu.type === 'Local' ? 'local' : 'cloud'}" style="width: ${mu.percentage}%"></div>
                             </div>
-                            <div class="model-usage-meta">${mu.type} • ${mu.usage}% usage</div>
+                            <div class="model-usage-meta">${mu.type} • ${mu.calls || 0} calls • ${mu.tokens || 0} tokens</div>
                         </div>
                     `).join('')}
                 </div>
@@ -354,8 +358,28 @@
                 <span class="priority-badge ${m.priority}">${m.priority}</span>
             </div>
         `).join('');
+}
 
-        // EVENTS
+// FETCH REAL MODEL USAGE
+async function fetchModelUsage() {
+    try {
+        const response = await fetch('http://192.168.1.93:8080/api/models');
+        if (response.ok) {
+            const data = await response.json();
+            renderTeamGrid(data);
+        } else {
+            renderTeamGrid();
+        }
+    } catch (err) {
+        renderTeamGrid();
+    }
+}
+
+// Initial render and fetch
+fetchModelUsage();
+setInterval(fetchModelUsage, 30000); // Update every 30 seconds
+
+// EVENTS
         const EVENTS = [
             { day: '18', month: 'FEB', title: '📡 Morning Brief', sub: 'Tomorrow 6:00 AM EST' },
             { day: '03', month: 'MAR', title: "🎂 Chloe's Birthday", sub: 'Turning 19' },
@@ -390,10 +414,23 @@
         }
         fetchWeather();
 
-        // BUDGET - PLACEHOLDER FOR REAL DATA
-        document.getElementById('budgetVal').textContent = '$0.23';
-        document.getElementById('budgetBar').style.width = '4.6%';
-        document.getElementById('budgetSub').textContent = '$0.23 / $5.00 • Today';
+        // REAL BUDGET DATA
+        async function fetchBudgetData() {
+            try {
+                const response = await fetch('http://192.168.1.93:8080/api/budget');
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('budgetVal').textContent = '$' + data.used;
+                    document.getElementById('budgetBar').style.width = data.percentage + '%';
+                    document.getElementById('budgetBar').style.background = data.alert ? 'linear-gradient(90deg, #dd2244, #ff3366)' : 'linear-gradient(90deg, #0066cc, #4d94ff)';
+                    document.getElementById('budgetSub').textContent = '$' + data.used + ' / $' + data.budget + ' • ' + data.calls + ' calls' + (data.alert ? ' ⚠️ ALERT' : '');
+                }
+            } catch (err) {
+                document.getElementById('budgetSub').textContent = 'Budget tracker offline';
+            }
+        }
+        fetchBudgetData();
+        setInterval(fetchBudgetData, 30000); // Update every 30 seconds
 
         // NEXT BRIEF
         function updateBrief() {
