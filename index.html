@@ -324,6 +324,17 @@
             document.getElementById('budget-bar').style.width = `${pct}%`;
         }
         
+        let refreshSeconds = 60;
+        function updateRefreshTimer() {
+            refreshSeconds--;
+            if (refreshSeconds <= 0) {
+                refreshSeconds = 60;
+                fetchWeather();
+                fetchNews();
+            }
+            document.getElementById('refresh-timer').textContent = `(${refreshSeconds}s)`;
+        }
+        
         function updateCountdown() {
             const now = new Date(), tomorrow = new Date(now);
             tomorrow.setDate(tomorrow.getDate()+1); tomorrow.setHours(6,0,0,0);
@@ -339,8 +350,9 @@
             alert('⚙️ GWD Settings\n\n• Daily Budget: $5.00 (max)\n• Primary Model: Kimi K2.5\n• Workspace: ~/.openclaw/workspace\n• Config: ~/.openclaw/openclaw.json\n\nEdit config via Telegram or Mac mini terminal');
         }
         
-        fetchNews(); fetchWeather(); updateBudget(); updateCountdown();
+        fetchNews(); fetchWeather(); updateBudget(); updateCountdown(); updateRefreshTimer();
         setInterval(updateCountdown, 60000);
+        setInterval(updateRefreshTimer, 1000);
     </script>
 </body>
 </html>
