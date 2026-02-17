@@ -11,7 +11,7 @@ import subprocess
 import os
 from pathlib import Path
 
-PORT = 8082
+PORT = 9000
 DASHBOARD_DIR = Path(__file__).parent
 
 class APIHandler(http.server.SimpleHTTPRequestHandler):
