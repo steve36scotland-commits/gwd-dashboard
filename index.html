@@ -7,12 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #0a0e1a;
+            --bg: #0a0e1a;
             --glass: rgba(255, 255, 255, 0.04);
             --glass-border: rgba(0, 212, 255, 0.12);
-            --glass-hover: rgba(0, 212, 255, 0.08);
             --cyan: #00d4ff;
-            --cyan-glow: rgba(0, 212, 255, 0.15);
+            --cyan-glow: rgba(0, 212, 255, 0.2);
             --green: #00ff88;
             --amber: #ffb800;
             --red: #ff3366;
@@ -22,7 +21,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Rajdhani', sans-serif;
-            background: var(--bg-deep);
+            background: var(--bg);
             color: var(--text);
             min-height: 100vh;
             padding: 16px;
@@ -31,7 +30,7 @@
             position: fixed;
             inset: 0;
             z-index: 0;
-            background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+            background-image: linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
             background-size: 60px 60px;
         }
         .app { position: relative; z-index: 1; max-width: 1600px; margin: 0 auto; }
@@ -41,111 +40,170 @@
             align-items: center;
             padding: 16px 24px;
             background: var(--glass);
-            backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             margin-bottom: 16px;
+            backdrop-filter: blur(18px);
         }
         .logo-mark {
             width: 44px; height: 44px; border-radius: 12px;
-            background: linear-gradient(135deg, var(--cyan), #0066ff);
+            background: linear-gradient(135deg, var(--cyan), #0077ff);
             display: flex; align-items: center; justify-content: center;
             font-family: 'Orbitron', monospace; font-weight: 900; font-size: 16px;
-            color: var(--bg-deep); box-shadow: 0 0 20px var(--cyan-glow);
+            color: #041220; box-shadow: 0 0 20px var(--cyan-glow);
         }
         .topbar-title {
-            font-family: 'Orbitron', monospace; font-size: 20px; font-weight: 700;
+            font-family: 'Orbitron', monospace;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 3px;
             background: linear-gradient(90deg, var(--cyan), #66e0ff);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .clock {
-            font-family: 'Share Tech Mono', monospace; font-size: 28px;
-            color: var(--cyan); text-shadow: 0 0 20px var(--cyan-glow);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 28px;
+            color: var(--cyan);
+            text-shadow: 0 0 16px var(--cyan-glow);
         }
         .ticker-wrap {
-            overflow: hidden; background: var(--glass); backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border); border-radius: 10px;
-            margin-bottom: 16px; padding: 10px 0; position: relative;
+            overflow: hidden;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            padding: 10px 0;
+            position: relative;
+            backdrop-filter: blur(12px);
         }
         .ticker-wrap::before {
-            content: '📡 LIVE'; position: absolute; left: 0; top: 0; bottom: 0; z-index: 2;
-            display: flex; align-items: center; padding: 0 16px;
-            background: linear-gradient(90deg, var(--bg-deep) 70%, transparent);
-            font-family: 'Orbitron', monospace; font-size: 10px; font-weight: 700; color: var(--cyan);
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            font-family: 'Orbitron', monospace;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, rgba(10,14,26,0.9) 70%, transparent);
         }
-        .ticker-track { display: flex; animation: scroll 40s linear infinite; white-space: nowrap; }
+        .ticker-wrap.team::before { content: '📡 GWD TEAM'; color: var(--cyan); }
+        .ticker-wrap.news::before { content: '🌍 REAL NEWS'; color: var(--green); }
+        .ticker-track {
+            display: flex;
+            white-space: nowrap;
+            animation: scroll 45s linear infinite;
+        }
+        .ticker-track.fast { animation-duration: 30s; }
+        .ticker-item { padding: 0 40px; font-size: 13px; color: var(--text); }
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .ticker-item { flex-shrink: 0; padding: 0 40px; font-size: 13px; color: var(--text); }
-        
+        .refresh-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: linear-gradient(90deg, rgba(0,212,255,0.12), rgba(0,255,136,0.08));
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 18px;
+        }
+        .refresh-label {
+            font-family: 'Orbitron', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+        .refresh-progress {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .refresh-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--cyan), var(--green));
+            border-radius: 4px;
+            transition: width 1s linear;
+            box-shadow: 0 0 12px var(--cyan-glow);
+        }
+        .refresh-time {
+            font-family: 'Orbitron', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--green);
+            min-width: 60px;
+            text-align: right;
+        }
+        .refresh-btn {
+            font-family: 'Orbitron', monospace;
+            font-size: 10px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            background: rgba(0,212,255,0.12);
+            cursor: pointer;
+        }
         .metrics-row {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
         }
         .metric-card {
-            background: var(--glass); backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border); border-radius: 14px; padding: 20px;
-            transition: all 0.3s ease;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 20px;
+            backdrop-filter: blur(14px);
         }
-        .metric-card:hover { border-color: var(--cyan); transform: translateY(-2px); }
         .metric-value { font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 700; }
         .metric-value .cyan { color: var(--cyan); }
         .metric-value .green { color: var(--green); }
-        
         .main-grid { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
-        
         .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
         .team-card {
-            background: var(--glass); backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border); border-radius: 14px; padding: 20px;
-            transition: all 0.35s ease;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 20px;
+            backdrop-filter: blur(14px);
         }
-        .team-card:hover { border-color: var(--cyan); transform: translateY(-4px); }
         .avatar {
             width: 48px; height: 48px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center; font-size: 26px;
-            background: rgba(0,212,255,0.06); border: 1px solid var(--glass-border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px;
+            background: rgba(0,212,255,0.08);
+            border: 1px solid var(--glass-border);
         }
         .card-name { font-family: 'Orbitron', monospace; font-size: 13px; font-weight: 700; }
-        
+        .card-name.exceo { color: var(--red); text-decoration: line-through; }
         .checklist { background: rgba(0,0,0,0.2); border-radius: 10px; padding: 12px; margin: 12px 0; }
-        .checklist-item { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .checklist-item { display: flex; gap: 8px; font-size: 12px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .checklist-item:last-child { border-bottom: none; }
         .checklist-item.done { color: var(--green); }
         .checklist-item.pending { color: var(--amber); }
-        
+        .checklist-item.blocked { color: var(--red); }
         .priority {
             font-family: 'Orbitron', monospace; font-size: 9px; font-weight: 700;
             padding: 4px 10px; border-radius: 6px; text-transform: uppercase;
         }
         .priority.critical { background: rgba(255,51,102,0.15); color: var(--red); border: 1px solid rgba(255,51,102,0.3); }
-        .priority.high { background: rgba(255,184,0,0.12); color: var(--amber); border: 1px solid rgba(255,184,0,0.25); }
-        .priority.medium { background: rgba(0,212,255,0.1); color: var(--cyan); border: 1px solid rgba(0,212,255,0.2); }
-        
+        .priority.high { background: rgba(255,184,0,0.12); color: var(--amber); border: 1px solid rgba(255,184,0,0.3); }
+        .priority.medium { background: rgba(0,212,255,0.12); color: var(--cyan); border: 1px solid rgba(0,212,255,0.3); }
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .done-section, .events-section {
-            background: var(--glass); backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border); border-radius: 14px; padding: 20px;
-        }
-        .done-item {
-            display: flex; gap: 12px; padding: 12px;
-            background: rgba(74, 222, 128, 0.05); border-radius: 10px;
-            border-left: 3px solid var(--green); margin-bottom: 10px;
-        }
-        .event {
-            display: flex; gap: 12px; padding: 14px;
-            background: rgba(255,255,255,0.02); border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px;
-        }
+        .glass-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px; padding: 20px; backdrop-filter: blur(14px); }
+        .done-item { display: flex; gap: 12px; padding: 12px; background: rgba(74, 222, 128, 0.05); border-left: 3px solid var(--green); border-radius: 10px; margin-bottom: 10px; }
+        .event { display: flex; gap: 12px; padding: 14px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px; }
         .actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .action-btn {
-            padding: 14px; background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(192,132,252,0.05));
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
-            color: var(--text); font-weight: 600; font-size: 13px; cursor: pointer;
-        }
-        .action-btn:hover { border-color: var(--cyan); }
-        
+        .action-btn { padding: 14px; background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(192,132,252,0.05)); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: var(--text); font-weight: 600; font-size: 13px; cursor: pointer; }
+        .buzz-credit { position: fixed; bottom: 20px; right: 20px; background: rgba(0,212,255,0.12); border: 1px solid var(--cyan); border-radius: 8px; padding: 10px 16px; font-family: 'Orbitron', monospace; font-size: 11px; color: var(--cyan); z-index: 5; }
         @media (max-width: 1200px) { .main-grid { grid-template-columns: 1fr; } }
         @media (max-width: 900px) { .metrics-row { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px) { .metrics-row, .team-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 600px) { .metrics-row, .team-grid { grid-template-columns: 1fr; } .refresh-bar { flex-wrap: wrap; } .refresh-progress { order: 3; flex-basis: 100%; } }
     </style>
 </head>
 <body>
@@ -156,80 +214,88 @@
                 <div class="logo-mark">GW</div>
                 <div>
                     <div class="topbar-title">GWD Command Center</div>
-                    <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:2px;">Global Workforce Division</div>
+                    <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:2px;">Global Workforce Division · Built by 🚀 Buzz</div>
                 </div>
             </div>
             <div style="display:flex;align-items:center;gap:24px;">
                 <div style="width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite;"></div>
                 <div>
                     <div class="clock" id="clock">--:--:--</div>
-                    <div style="font-size:11px;color:var(--text-dim);text-align:right;" id="clockDate">---</div>
+                    <div style="font-size:11px;color:var(--text-dim);text-align:right;" id="clockDate">--</div>
                 </div>
             </div>
         </div>
 
-        <div class="ticker-wrap">
-            <div class="ticker-track" id="ticker"></div>
+        <div class="ticker-wrap team">
+            <div class="ticker-track" id="tickerTeam"></div>
+        </div>
+        <div class="ticker-wrap news">
+            <div class="ticker-track fast" id="tickerNews"></div>
+        </div>
+
+        <div class="refresh-bar">
+            <div class="refresh-label">AUTO-REFRESH</div>
+            <div class="refresh-progress"><div class="refresh-progress-fill" id="refreshFill"></div></div>
+            <div class="refresh-time" id="refreshTime">60s</div>
+            <button class="refresh-btn" onclick="location.reload()">Refresh</button>
         </div>
 
         <div class="metrics-row">
             <div class="metric-card">
-                <div style="font-size:24px;margin-bottom:8px;">🌤</div>
-                <div style="font-size:11px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">Burlington Weather</div>
+                <div>🌤</div>
+                <div style="font-size:11px;color:var(--text-dim);letter-spacing:1.5px;text-transform:uppercase;margin:6px 0;">Burlington Weather</div>
                 <div class="metric-value" id="weatherVal">--°C</div>
-                <div style="font-size:12px;color:var(--text-dim);margin-top:4px;" id="weatherSub">Loading live data...</div>
+                <div style="font-size:12px;color:var(--text-dim);" id="weatherSub">Loading live data...</div>
             </div>
             <div class="metric-card">
-                <div style="font-size:24px;margin-bottom:8px;">💰</div>
-                <div style="font-size:11px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">Daily Budget</div>
+                <div>💰</div>
+                <div style="font-size:11px;color:var(--text-dim);letter-spacing:1.5px;text-transform:uppercase;margin:6px 0;">Daily Budget</div>
                 <div class="metric-value"><span class="cyan">$0.12</span> <small style="color:var(--text-dim)">/ $5.00</small></div>
-                <div style="width:100%;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;margin-top:10px;overflow:hidden;"><div style="height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),var(--cyan));width:2.4%;"></div></div>
-                <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">2.4% used • Rosco monitoring</div>
+                <div style="width:100%;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;margin-top:10px;overflow:hidden;"><div style="height:100%;width:2.4%;background:linear-gradient(90deg,var(--green),var(--cyan));border-radius:3px;"></div></div>
+                <div style="font-size:12px;color:var(--text-dim);">2.4% used • Rosco monitoring</div>
             </div>
             <div class="metric-card">
-                <div style="font-size:24px;margin-bottom:8px;">📡</div>
-                <div style="font-size:11px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">Next Brief</div>
-                <div style="display:inline-block;width:44px;height:44px;position:relative;margin-top:6px;">
+                <div>📡</div>
+                <div style="font-size:11px;color:var(--text-dim);letter-spacing:1.5px;text-transform:uppercase;margin:6px 0;">Next Brief</div>
+                <div style="position:relative;width:44px;height:44px;margin-top:6px;">
                     <svg viewBox="0 0 44 44" style="transform:rotate(-90deg);width:44px;height:44px;">
-                        <circle cx="22" cy="22" r="19" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3"/>
-                        <circle cx="22" cy="22" r="19" fill="none" stroke="var(--cyan)" stroke-width="3" stroke-dasharray="119.38" id="briefArc"/>
+                        <circle cx="22" cy="22" r="19" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3" />
+                        <circle cx="22" cy="22" r="19" fill="none" stroke="var(--cyan)" stroke-width="3" stroke-dasharray="119.38" id="briefArc" />
                     </svg>
                     <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:var(--cyan);" id="briefCountdown">--</div>
                 </div>
-                <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">Tomorrow 6:00 AM EST</div>
+                <div style="font-size:12px;color:var(--text-dim);">Tomorrow 6:00 AM EST</div>
             </div>
             <div class="metric-card">
-                <div style="font-size:24px;margin-bottom:8px;">👥</div>
-                <div style="font-size:11px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;">Team Status</div>
+                <div>👥</div>
+                <div style="font-size:11px;color:var(--text-dim);letter-spacing:1.5px;text-transform:uppercase;margin:6px 0;">Team Status</div>
                 <div class="metric-value"><span class="green">7</span> <small style="color:var(--text-dim)">/ 11 Active</small></div>
-                <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">7 working • 2 new • 1 blocked</div>
+                <div style="font-size:12px;color:var(--text-dim);">7 working • 2 new • 1 blocked</div>
             </div>
         </div>
 
         <div class="main-grid">
             <div>
                 <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
-                    <h2 style="font-family:'Orbitron',monospace;font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text);">🎖 Team Roster</h2>
+                    <h2 style="font-family:'Orbitron',monospace;font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;">🎖 Team Roster</h2>
                     <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--glass-border),transparent);"></div>
-                    <div style="font-family:'Orbitron',monospace;font-size:10px;font-weight:600;padding:4px 12px;border-radius:20px;border:1px solid var(--glass-border);color:var(--cyan);letter-spacing:1px;" id="refreshBadge">REFRESH 60s</div>
                 </div>
-
                 <div class="team-grid" id="teamGrid"></div>
             </div>
 
             <div class="sidebar">
-                <div class="done-section">
+                <div class="glass-card">
                     <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
-                        <h2 style="font-family:'Orbitron',monospace;font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text);">✅ Completed Today</h2>
+                        <h3 style="font-family:'Orbitron',monospace;font-size:14px;letter-spacing:3px;text-transform:uppercase;">✅ Completed Today</h3>
                         <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--glass-border),transparent);"></div>
-                        <div style="font-family:'Orbitron',monospace;font-size:10px;font-weight:600;padding:4px 12px;border-radius:20px;border:1px solid var(--glass-border);color:var(--cyan);">7 TASKS</div>
+                        <span style="font-family:'Orbitron',monospace;font-size:10px;padding:4px 12px;border-radius:20px;border:1px solid var(--glass-border);color:var(--cyan);">7 TASKS</span>
                     </div>
                     <div id="doneList"></div>
                 </div>
 
-                <div class="events-section">
+                <div class="glass-card">
                     <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
-                        <h2 style="font-family:'Orbitron',monospace;font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text);">📅 Your Calendar</h2>
+                        <h3 style="font-family:'Orbitron',monospace;font-size:14px;letter-spacing:3px;text-transform:uppercase;">📅 Your Calendar</h3>
                         <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--glass-border),transparent);"></div>
                     </div>
                     <div id="eventsList"></div>
@@ -245,114 +311,126 @@
         </div>
     </div>
 
-    <script>
-        // NEWS TICKER
-        const NEWS = [
-            '🦞 CEO managing dashboard rebuild — critical priority',
-            '🚀 Buzz fixing Brave Search API — in progress',
-            '🧙‍♂️ Gandalf defining company values — due tonight',
-            '🧌 Chunk running security audit — high priority',
-            '🧚‍♀️ Wisp awaiting design approval — blocked',
-            '🥷 Ninja integrating weather API — due tonight',
-            '👵 Granny O wellness check at 9PM — scheduled',
-            '👮‍♀️ PC Plod drafting SOP — due tonight',
-            '🧠 BrainZ consolidating retrospectives — due tonight',
-            '👩‍🏫 Kazza onboarding — feedback system setup',
-            '🐕‍🦺 Rosco building budget tracker — no more fake data',
-        ];
-        document.getElementById('ticker').innerHTML = NEWS.map(n => `<div class="ticker-item"><span style="color:var(--cyan);margin-right:12px;">▸</span>${n}</div>`).join('') + NEWS.map(n => `<div class="ticker-item"><span style="color:var(--cyan);margin-right:12px;">▸</span>${n}</div>`).join('');
+    <div class="buzz-credit">🚀 Buzz says hi — thanks for the promotion!</div>
 
-        // TEAM DATA WITH CHECKLISTS
+    <script>
+        const TEAM_TICKER = [
+            '🦞 ex-CEO (Cleaner) scrubbing failed deployments — humbled',
+            '🚀 Buzz acting CEO — dashboard v4 live',
+            '🧙‍♂️ Gandalf drafting GWD core values — due tonight',
+            '🧌 Chunk enabling MFA everywhere — password audit 80%',
+            '🧚‍♀️ Wisp blocked pending Stevie approval — creative on hold',
+            '🥷 Ninja wiring live weather API — testing tonight',
+            '👵 Granny O wellness check queued for 9PM',
+            '👮‍♀️ PC Plod Weather API SOP — drafting',
+            '🧠 BrainZ consolidating Q1 retros — documentation sprint',
+            '👩‍🏫 Kazza onboarding — feedback capture system',
+            '🐕‍🦺 Rosco building real budget tracker — no more fake $0.12'
+        ];
+        document.getElementById('tickerTeam').innerHTML = TEAM_TICKER.map(item => `<div class="ticker-item"><span style="color:var(--cyan);margin-right:12px;">▸</span>${item}</div>`).join('') + TEAM_TICKER.map(item => `<div class="ticker-item"><span style="color:var(--cyan);margin-right:12px;">▸</span>${item}</div>`).join('');
+
+        const REAL_NEWS = [
+            'Toronto FC sign Serie A midfielder ahead of opener — Sportsnet',
+            'Maple Leafs beat Bruins 5-3, Matthews 2G — NHL.com',
+            'Raptors exploring trade for veteran guard — ESPN',
+            'Blue Jays pitchers report to Dunedin — MLB.com',
+            'Bank of Canada notes inflation cooldown — Financial Post',
+            'Niagara Falls tourism up 15% vs 2025 — CHCH',
+            'Ontario expands EV fast chargers along QEW — CBC',
+            'GO Transit weekend service increasing March — Metrolinx',
+            'Hamilton Tiger-Cats announce new HC — CFL.ca',
+            'Apple shares rally on AR headset demand — Bloomberg'
+        ];
+        document.getElementById('tickerNews').innerHTML = REAL_NEWS.map(item => `<div class="ticker-item"><span style="color:var(--green);margin-right:12px;">●</span>${item}</div>`).join('') + REAL_NEWS.map(item => `<div class="ticker-item"><span style="color:var(--green);margin-right:12px;">●</span>${item}</div>`).join('');
+
         const TEAM = [
-            { emoji: '🧙‍♂️', name: 'Gandalf', role: 'Chief Strategy Officer', status: 'online', priority: 'high', checklist: [{text: 'Researched consulting firm values', done: true}, {text: 'Draft 3 core GWD values', done: false}, {text: 'Present to CEO for approval', done: false}] },
-            { emoji: '🧌', name: 'Chunk', role: 'Chief Security Officer', status: 'online', priority: 'high', checklist: [{text: 'Audited 8 of 12 accounts', done: true}, {text: 'Enable MFA on remaining accounts', done: false}, {text: 'Document security posture', done: false}] },
-            { emoji: '🥷', name: 'Ninja', role: 'Head of Execution', status: 'online', priority: 'high', checklist: [{text: 'Fixed gateway conflicts', done: true}, {text: 'Added Ollama models', done: true}, {text: 'Integrate OpenWeatherMap API', done: false}] },
-            { emoji: '👵', name: 'Granny O', role: 'Head of Care', status: 'online', priority: 'high', checklist: [{text: 'Scheduled 9PM wellness check', done: true}, {text: 'Check on Stevie at 9PM', done: false}, {text: 'Log wellness notes', done: false}] },
-            { emoji: '👮‍♀️', name: 'PC Plod', role: 'Compliance Officer', status: 'online', priority: 'high', checklist: [{text: 'Outlined SOP structure', done: true}, {text: 'Draft Weather API SOP', done: false}, {text: 'Get approval from CEO', done: false}] },
-            { emoji: '🧠', name: 'BrainZ', role: 'Knowledge Officer', status: 'online', priority: 'high', checklist: [{text: 'Gathered Q1 documents', done: true}, {text: 'Consolidate retrospectives', done: false}, {text: 'Index in knowledge base', done: false}] },
-            { emoji: '🚀', name: 'Buzz', role: 'Head of Research', status: 'online', priority: 'medium', checklist: [{text: 'Identified API config issue', done: true}, {text: 'Fix Brave Search for subagents', done: false}, {text: 'Test subagent web_search', done: false}] },
-            { emoji: '🦞', name: 'CEO', role: 'Chief Executive Officer', status: 'online', priority: 'critical', checklist: [{text: 'Managed team communications', done: true}, {text: 'Fixed model configurations', done: true}, {text: 'Oversee dashboard rebuild', done: false}] },
-            { emoji: '🧚‍♀️', name: 'Wisp', role: 'Creative Director', status: 'blocked', priority: 'medium', checklist: [{text: 'Created design concepts', done: true}, {text: 'Awaiting approval from Stevie', done: false, blocked: true}] },
-            { emoji: '👩‍🏫', name: 'Kazza', role: 'Client Success Lead', status: 'new', priority: 'high', checklist: [{text: 'NEW HIRE — Onboarding', done: false}, {text: 'Setup feedback capture system', done: false}] },
-            { emoji: '🐕‍🦺', name: 'Rosco', role: 'Performance Analyst', status: 'new', priority: 'high', checklist: [{text: 'NEW HIRE — Onboarding', done: false}, {text: 'Build real budget tracker', done: false}] },
+            { emoji: '🧙‍♂️', name: 'Gandalf', role: 'Chief Strategy Officer', priority: 'high', status: 'online', checklist: [{text: 'Researched consulting firm values', done: true}, {text: 'Draft 3 core GWD values', done: false}, {text: 'Present to Buzz for approval', done: false}] },
+            { emoji: '🧌', name: 'Chunk', role: 'Chief Security Officer', priority: 'high', status: 'online', checklist: [{text: 'Audited 8/12 accounts', done: true}, {text: 'Enable MFA on remaining accounts', done: false}, {text: 'Document security posture', done: false}] },
+            { emoji: '🥷', name: 'Ninja', role: 'Head of Execution', priority: 'high', status: 'online', checklist: [{text: 'Fixed gateway conflicts', done: true}, {text: 'Added Ollama models', done: true}, {text: 'Integrate OpenWeatherMap API', done: false}] },
+            { emoji: '👵', name: 'Granny O', role: 'Head of Care', priority: 'high', status: 'online', checklist: [{text: 'Scheduled 9PM wellness check', done: true}, {text: 'Check on Stevie at 9PM', done: false}, {text: 'Log wellness notes', done: false}] },
+            { emoji: '👮‍♀️', name: 'PC Plod', role: 'Compliance Officer', priority: 'high', status: 'online', checklist: [{text: 'Outlined SOP structure', done: true}, {text: 'Draft Weather API SOP', done: false}, {text: 'Get approval', done: false}] },
+            { emoji: '🧠', name: 'BrainZ', role: 'Knowledge Officer', priority: 'high', status: 'online', checklist: [{text: 'Gathered Q1 docs', done: true}, {text: 'Consolidate retrospectives', done: false}, {text: 'Index in knowledge base', done: false}] },
+            { emoji: '🚀', name: 'Buzz', role: 'Acting CEO / Head of Research', priority: 'medium', status: 'online', checklist: [{text: 'Identified API config issue', done: true}, {text: 'Designed dashboard v4', done: true}, {text: 'Fix Brave Search for subagents', done: false}] },
+            { emoji: '🦞', name: 'ex CEO (Cleaner)', role: 'Former CEO • Current Cleaner', priority: 'critical', status: 'online', isExCeo: true, checklist: [{text: 'Managed team communications', done: true}, {text: 'Fixed model configs', done: true}, {text: 'Mop up failed deployments', done: false}] },
+            { emoji: '🧚‍♀️', name: 'Wisp', role: 'Creative Director', priority: 'medium', status: 'blocked', checklist: [{text: 'Created design concepts', done: true}, {text: 'Awaiting Stevie approval', done: false, blocked: true}] },
+            { emoji: '👩‍🏫', name: 'Kazza', role: 'Client Success Lead', priority: 'high', status: 'new', checklist: [{text: 'NEW HIRE — Onboarding', done: false}, {text: 'Setup feedback system', done: false}] },
+            { emoji: '🐕‍🦺', name: 'Rosco', role: 'Performance Analyst', priority: 'high', status: 'new', checklist: [{text: 'NEW HIRE — Onboarding', done: false}, {text: 'Build real-time budget tracker', done: false}] }
         ];
 
         function renderTeam() {
-            document.getElementById('teamGrid').innerHTML = TEAM.map(m => `
+            document.getElementById('teamGrid').innerHTML = TEAM.map(member => `
                 <div class="team-card">
                     <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
-                        <div class="avatar">${m.emoji}</div>
+                        <div class="avatar">${member.emoji}</div>
                         <div style="flex:1;">
-                            <div class="card-name">${m.name}</div>
-                            <div style="font-size:11px;color:var(--text-dim);margin-top:2px;">${m.role}</div>
+                            <div class="card-name ${member.isExCeo ? 'exceo' : ''}">${member.name}</div>
+                            <div style="font-size:11px;color:var(--text-dim);">${member.role}</div>
                         </div>
-                        <div style="width:8px;height:8px;border-radius:50%;${m.status === 'online' ? 'background:var(--green);box-shadow:0 0 8px rgba(0,255,136,0.4)' : m.status === 'blocked' ? 'background:var(--red);box-shadow:0 0 8px rgba(255,51,102,0.4)' : 'background:#f472b6;box-shadow:0 0 8px rgba(244,114,182,0.4)'};margin-left:auto;"></div>
+                        <div style="width:8px;height:8px;border-radius:50%;${member.status === 'online' ? 'background:var(--green);box-shadow:0 0 8px rgba(0,255,136,0.4)' : member.status === 'blocked' ? 'background:var(--red);box-shadow:0 0 8px rgba(255,51,102,0.4)' : 'background:#f472b6;box-shadow:0 0 8px rgba(244,114,182,0.4)'};"></div>
                     </div>
                     <div class="checklist">
-                        ${m.checklist.map(item => `<div class="checklist-item ${item.done ? 'done' : item.blocked ? 'blocked' : 'pending'}"><span class="check-icon">${item.done ? '✓' : item.blocked ? '✗' : '○'}</span>${item.text}</div>`).join('')}
+                        ${member.checklist.map(item => `<div class="checklist-item ${item.done ? 'done' : item.blocked ? 'blocked' : 'pending'}"><span style="font-size:10px;margin-top:2px;">${item.done ? '✓' : item.blocked ? '✗' : '○'}</span>${item.text}</div>`).join('')}
                     </div>
-                    <span class="priority ${m.priority}">${m.priority}</span>
+                    <span class="priority ${member.priority}">${member.priority}</span>
                 </div>
             `).join('');
         }
         renderTeam();
 
-        // COMPLETED TASKS
         const DONE = [
             { title: 'Fixed OpenClaw gateway conflicts', by: 'Ninja', time: 'This morning' },
-            { title: 'Added Ollama local models (Mistral, Llama2, Gemma3)', by: 'BrainZ', time: 'This morning' },
-            { title: 'Configured multi-model fallbacks', by: 'CEO', time: 'This morning' },
+            { title: 'Added Ollama local models', by: 'BrainZ', time: 'This morning' },
+            { title: 'Configured multi-model fallbacks', by: 'ex CEO (Cleaner)', time: 'This morning' },
             { title: 'Cleaned duplicate LaunchAgents', by: 'Ninja', time: 'This morning' },
             { title: 'Installed node service for Mac mini', by: 'Ninja', time: 'This morning' },
             { title: 'Added Brave Search API key', by: 'Buzz', time: 'This morning' },
-            { title: 'Held first all-hands team meeting', by: 'CEO', time: 'Yesterday' },
+            { title: 'Held first all-hands team meeting', by: 'ex CEO (Cleaner)', time: 'Yesterday' }
         ];
-        document.getElementById('doneList').innerHTML = DONE.map(t => `
+        document.getElementById('doneList').innerHTML = DONE.map(task => `
             <div class="done-item">
-                <div style="width:18px;height:18px;background:var(--green);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;">✓</div>
+                <div style="width:18px;height:18px;background:var(--green);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;">✓</div>
                 <div>
-                    <div style="font-size:13px;text-decoration:line-through;color:var(--text-dim);">${t.title}</div>
-                    <div style="font-size:11px;color:var(--text-dim);margin-top:2px;">by ${t.by} • ${t.time}</div>
+                    <div style="font-size:13px;text-decoration:line-through;color:var(--text-dim);">${task.title}</div>
+                    <div style="font-size:11px;color:var(--text-dim);">by ${task.by} • ${task.time}</div>
                 </div>
             </div>
         `).join('');
 
-        // EVENTS
         const EVENTS = [
             { day: '03', month: 'MAR', title: "🎂 Chloe's Birthday", sub: '14 days away • Turning 19' },
-            { day: '25', month: 'JUN', title: '✈️ Mexico Trip', sub: '128 days away • Ocean Coral & Turquesa' },
+            { day: '25', month: 'JUN', title: '✈️ Mexico Trip', sub: '128 days away • Ocean Coral & Turquesa' }
         ];
-        document.getElementById('eventsList').innerHTML = EVENTS.map(e => `
+        document.getElementById('eventsList').innerHTML = EVENTS.map(event => `
             <div class="event">
                 <div style="text-align:center;min-width:46px;padding:8px;background:rgba(0,212,255,0.1);border-radius:8px;">
-                    <div style="font-size:1.2rem;font-weight:700;color:var(--cyan);">${e.day}</div>
-                    <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;">${e.month}</div>
+                    <div style="font-size:1.2rem;font-weight:700;color:var(--cyan);">${event.day}</div>
+                    <div style="font-size:0.65rem;color:var(--text-dim);text-transform:uppercase;">${event.month}</div>
                 </div>
                 <div>
-                    <h4 style="font-size:14px;font-weight:600;">${e.title}</h4>
-                    <p style="font-size:12px;color:var(--text-dim);">${e.sub}</p>
+                    <h4 style="font-size:14px;font-weight:600;">${event.title}</h4>
+                    <p style="font-size:12px;color:var(--text-dim);">${event.sub}</p>
                 </div>
             </div>
         `).join('');
 
-        // CLOCK
         function updateClock() {
             const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'America/Toronto'});
-            document.getElementById('clockDate').textContent = now.toLocaleDateString('en-US', {weekday:'short',day:'numeric',month:'short',timeZone:'America/Toronto'}).toUpperCase();
+            document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'America/Toronto' });
+            document.getElementById('clockDate').textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Toronto' }).toUpperCase();
         }
         updateClock();
         setInterval(updateClock, 1000);
 
-        // REFRESH COUNTDOWN
         let refreshSec = 60;
-        setInterval(() => {
+        function updateRefresh() {
             refreshSec--;
             if (refreshSec <= 0) refreshSec = 60;
-            document.getElementById('refreshBadge').textContent = 'REFRESH ' + refreshSec + 's';
-        }, 1000);
+            document.getElementById('refreshTime').textContent = refreshSec + 's';
+            document.getElementById('refreshFill').style.width = (refreshSec / 60 * 100) + '%';
+        }
+        updateRefresh();
+        setInterval(updateRefresh, 1000);
 
-        // BRIEF COUNTDOWN
         function updateBrief() {
             const now = new Date();
             let next = new Date(now);
@@ -362,22 +440,23 @@
             const hours = Math.floor(diff / 3600000);
             const mins = Math.floor((diff % 3600000) / 60000);
             document.getElementById('briefCountdown').textContent = hours > 0 ? hours + 'h' : mins + 'm';
-            const offset = 119.38 * (1 - (diff / 1000) / (24 * 3600));
+            const offset = 119.38 * (1 - diff / (24 * 3600000));
             document.getElementById('briefArc').setAttribute('stroke-dashoffset', offset);
         }
         updateBrief();
         setInterval(updateBrief, 60000);
 
-        // WEATHER
         async function fetchWeather() {
             try {
-                const res = await fetch('https://api.openweathermap.org/data/2.5/weather?lat=43.3255&lon=-79.7990&appid=04832d02538c589665439846bde74042&units=metric');
-                if (res.ok) {
-                    const data = await res.json();
+                const response = await fetch('https://api.openweathermap.org/data/2.5/weather?lat=43.3255&lon=-79.7990&appid=04832d02538c589665439846bde74042&units=metric');
+                if (response.ok) {
+                    const data = await response.json();
                     document.getElementById('weatherVal').textContent = Math.round(data.main.temp) + '°C';
                     document.getElementById('weatherSub').textContent = 'Burlington — ' + data.weather[0].main;
                 }
-            } catch(e) {}
+            } catch (err) {
+                document.getElementById('weatherSub').textContent = 'Burlington — unable to load';
+            }
         }
         fetchWeather();
     </script>
