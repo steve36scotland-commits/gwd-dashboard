@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GWD Consulting — Team Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #eaeaea;
+            min-height: 100vh;
+            padding: 10px;
+            margin: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        
+        .header .subtitle {
+            color: #888;
+            font-size: 1rem;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0 10px;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .card-icon {
+            font-size: 2rem;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .card-role {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: auto;
+        }
+        
+        .status.active {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+        
+        .status.pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+        
+        .status.done {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+        
+        .task-list {
+            list-style: none;
+        }
+        
+        .task-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .task-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #555;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+        
+        .checkbox.checked {
+            background: #4caf50;
+            border-color: #4caf50;
+        }
+        
+        .priority-high {
+            color: #ff6b6b;
+        }
+        
+        .priority-medium {
+            color: #ffc107;
+        }
+        
+        .priority-low {
+            color: #4caf50;
+        }
+        
+        .meeting-notes {
+            background: rgba(0,0,0,0.2);
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .meeting-notes h4 {
+            color: #00d4ff;
+            margin-bottom: 12px;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .action-btn {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: #00d4ff;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+        }
+        
+        .action-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: #1a1a2e;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-input {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 12px;
+            color: #eaeaea;
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+        
+        .modal-submit {
+            background: #00d4ff;
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .stats-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-box {
+            flex: 1;
+            min-width: 150px;
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00d4ff;
+        }
+        
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🦞 GWD Consulting</h1>
+        <div class="subtitle">Global World Domination — Team Dashboard</div>
+        <div style="margin-top: 10px; color: #666; font-size: 0.85rem;">Last updated: February 16, 2026 — 7:35 PM EST | 💰 Daily Budget: $5 max (prefer less)</div>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-box">
+            <div class="stat-number">12</div>
+            <div class="stat-label">Team Members</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">8</div>
+            <div class="stat-label">Active Tasks</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">8</div>
+            <div class="stat-label">Completed Today</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">1</div>
+            <div class="stat-label">Meetings Held</div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- CEO Card -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🦞</span>
+                <div>
+                    <div class="card-title">CEO</div>
+                    <div class="card-role">Chief Executive Officer</div>
+                </div>
+                <span class="status active">Online</span>
+            </div>
+            <ul class="task-list">
+                <li><span class="checkbox checked">✓</span> Fixed OpenClaw config</li>
+                <li><span class="checkbox checked">✓</span> Added Ollama models</li>
+                <li><span class="checkbox checked">✓</span> Cleaned LaunchAgents</li>
+                <li><span class="checkbox">☐</span> Build team dashboard <span class="priority-high">ACTIVE</span></li>
+                <li><span class="checkbox">☐</span> Get Brave API key working</li>
+            </ul>
+        </div>
+
+        <!-- Gandalf Card -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🧙‍♂️</span>
+                <div>
+                    <div class="card-title">Gandalf</div>
+                    <div class="card-role">Chief Strategy Officer</div>
+                </div>
+                <span class="status active">Present</span>
+            </div>
+            <ul class="task-list">
+                <li><span class="checkbox checked">✓</span> Introduced self at meeting</li>
+                <li><span class="checkbox">☐</span> Define 3 core GWD values <span class="priority-high">DUE TONIGHT</span></li>
+                <li><span class="checkbox">☐</span> Align leadership on 3 KPIs <span class="priority-high">DUE TONIGHT</span></li>
+                <li><span class="checkbox">☐</span> Strategic alignment review</li>
+            </ul>
+        </div>
+
+        <!-- Chunk Card -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🧌</span>
+                <div>
+                    <div class="card-title">Chunk</div>
+                    <div class="card-role">Chief Security Officer</div>
+                </div>
+                <span class="status active">On Duty</span>
+            </div>
+            <ul class="task-list">
+                <li><span class="checkbox">☐</span> Password audit <span class="priority-high">DUE TONIGHT</span></li>
+                <li><span class="checkbox">☐</span> Enable MFA on critical accounts</li>
+                <li><span class="checkbox">☐</span> Review phishing protocols</li>
+            </ul>
+        </div>
+
+        <!-- Wisp Card -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🧚‍♀️</span>
+                <div>
+                    <div class="card-title">Wisp</div>
+                    <div class="card-role">Creative Director</div>
+                </div>
+                <span class="status active">Sparkling</span>
+            </div>
+            <ul class="task-list">
+                <li><span class="checkbox">☐</span> Host "constraint masquerade" <span class="priority-medium">DUE TONIGHT</span></li>
+                <li><span class="checkbox">☐</span> Challenge conventional thinking</li>
+                <li><span class="checkbox">☐</span> Creative branding concepts</li>
+            </ul>
+        </div>
+
+        <!-- Ninja Card -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🥷</span>
+                <div>
+                    <div class="card-title">Ninja</div>
+                    <div class="card-role">Head of Execution</div>
+                </div>
+                <span class="status active">Executing</span>
+            </div>
+            <ul class="task-list">
+                <li><span class="checkbox">☐</span> OpenWeatherMap integration <span class="priority-high">DUE TONIGHT</span></li>
+                <li><span class="checkbox">☐</span> Dashboard data layer wiring</li>
+                <li><span class="checkbox">☐</span> QA prep for tomorrow</li>
+            </ul>
+        </div>
+
+        <!-- Granny O Card -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">👵</span>
+                <div>
+                    <div class="card-title">Granny O</div>
+                    <div class="card-role">Head of Care</div>
+                </div>
+                <span class="status active">Caring</span>
+            </div>
+            <ul class="task-list">
+                <li><span class="checkbox">☐</span> Stevie wellness check <span class="priority-high">DUE 9PM</span></li>
+                <li><span class="checkbox">☐</span> Close laptop by 9pm reminder</li>
+                <li><span class="checkbox">☐</span> Chamomile & gratitude note</li>
+            </ul>
+        </div>
+
+        <!-- PC Plod Card -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">👮‍♀️</span>
+                <div>
+                    <div class="card-title">PC Plod</div>
+                    <div class="card-role">Compliance Officer</div>
+                </div>
+                <span class="status active">By The Book</span>
+            </div>
+            <ul class="task-list">
+                <li><span class="checkbox">☐</span> Draft Weather API SOP <span class="priority-high">DUE TONIGHT</span></li>
+                <li><span class="checkbox">☐</span> Document integration steps</li>
+                <li><span class="checkbox">☐</span> Define testing procedures</li>
+            </ul>
+        </div>
+
+        <!-- BrainZ Card -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🧠</span>
+                <div>
+                    <div class="card-title">BrainZ</div>
+                    <div class="card-role">Knowledge Officer</div>
+                </div>
+                <span class="status active">Indexing</span>
+            </div>
+            <ul class="task-list">
+                <li><span class="checkbox">☐</span> Consolidate Q1 retros <span class="priority-high">DUE TONIGHT</span></li>
+                <li><span class="checkbox">☐</span> Update Decision Log</li>
+                <li><span class="checkbox">☐</span> Organize hiring rationales</li>
+            </ul>
+        </div>
+
+        <!-- Kazza Card -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">👩‍🏫</span>
+                <div>
+                    <div class="card-title">Kazza</div>
+                    <div class="card-role">Client Success Lead</div>
+                </div>
+                <span class="status active">New Hire</span>
+            </div>
+            <ul class="task-list">
+                <li><span class="checkbox">☐</span> Introduce self to Stevie</li>
+                <li><span class="checkbox">☐</span> Set up feedback capture system</li>
+                <li><span class="checkbox">☐</span> Weekly check-in schedule</li>
+            </ul>
+        </div>
+
+        <!-- Rosco Card -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🐕‍🦺</span>
+                <div>
+                    <div class="card-title">Rosco</div>
+                    <div class="card-role">Performance Analyst</div>
+                </div>
+                <span class="status active">New Hire</span>
+            </div>
+            <ul class="task-list">
+                <li><span class="checkbox">☐</span> Introduce self to Stevie</li>
+                <li><span class="checkbox">☐</span> Set up token tracking</li>
+                <li><span class="checkbox">☐</span> Weekly cost audit schedule</li>
+            </ul>
+        </div>
+
+        <!-- Buzz Card -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🚀</span>
+                <div>
+                    <div class="card-title">Buzz</div>
+                    <div class="card-role">Head of Research</div>
+                </div>
+                <span class="status done">Done</span>
+            </div>
+            <ul class="task-list">
+                <li><span class="checkbox checked">✓</span> Research dashboard designs</li>
+                <li><span class="checkbox">☐</span> Fix API key config</li>
+                <li><span class="checkbox">☐</span> Weekly trend scanning</li>
+            </ul>
+        </div>
+
+        <!-- Meeting Notes Card -->
+        <div class="card" style="grid-column: span 2;">
+            <div class="card-header">
+                <span class="card-icon">📝</span>
+                <div>
+                    <div class="card-title">Meeting Notes</div>
+                    <div class="card-role">All-Hands #1 — Feb 16, 2026</div>
+                </div>
+                <span class="status done">Completed</span>
+            </div>
+            <div class="meeting-notes">
+                <h4>🎯 Key Takeaways</h4>
+                <p><strong>Strengths:</strong> Diverse expertise, cost-conscious with Ollama, proactive issue identification, empathetic leadership.</p>
+                <p><strong>Weaknesses:</strong> No visual dashboard (now fixed!), fragmented knowledge, security gaps, scope creep on projects.</p>
+                <p><strong>Blockers Resolved:</strong> Brave API key added — Buzz can now research. OpenClaw fully configured with Ollama integration.</p>
+                <p><strong>Next Meeting:</strong> Tomorrow 6:00 PM EST — review tonight's deliverables.</p>
+            </div>
+        </div>
+
+        <!-- Quick Actions Card -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">⚡</span>
+                <div>
+                    <div class="card-title">Quick Actions</div>
+                    <div class="card-role">For Stevie</div>
+                </div>
+            </div>
+            <div class="quick-actions">
+                <button class="action-btn" onclick="openModal('task')">📋 New Task</button>
+                <button class="action-btn" onclick="openModal('meeting')">👥 Call Meeting</button>
+                <button class="action-btn" onclick="openModal('reports')">📊 View Reports</button>
+                <button class="action-btn" onclick="openModal('settings')">⚙️ Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px; color: #555; font-size: 0.85rem;">
+        GWD Consulting 🦞 Global World Domination — Since 2026
+    </div>
+
+    <!-- Modal for Quick Actions -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Action</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modal-body">
+                <p>Send your request via Telegram to @openclaw_bot</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(type) {
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modal-title');
+            const body = document.getElementById('modal-body');
+            
+            const actions = {
+                task: {
+                    title: '📋 New Task',
+                    body: '<p>Create a new task in Telegram:</p><code style="background:rgba(0,0,0,0.3);padding:8px 12px;border-radius:4px;display:block;margin:10px 0;">@openclaw_bot Create a task to...</code><p>Or open <a href="https://t.me/openclaw_bot" target="_blank" style="color:#00d4ff;">@openclaw_bot</a></p>'
+                },
+                meeting: {
+                    title: '👥 Call Meeting',
+                    body: '<p>Request an all-hands meeting:</p><code style="background:rgba(0,0,0,0.3);padding:8px 12px;border-radius:4px;display:block;margin:10px 0;">@openclaw_bot I need an all-hands meeting about...</code>'
+                },
+                reports: {
+                    title: '📊 View Reports',
+                    body: '<p>Available reports:</p><ul style="margin:10px 0;padding-left:20px;"><li>Token usage: <code style="background:rgba(0,0,0,0.3);padding:4px 8px;border-radius:4px;">/status</code></li><li>Daily brief: Scheduled 6AM</li><li>Cost audit: Ask Rosco</li></ul>'
+                },
+                settings: {
+                    title: '⚙️ Settings',
+                    body: '<p>GWD Configuration:</p><ul style="margin:10px 0;padding-left:20px;"><li>Daily budget: $5 max</li><li>Primary model: Kimi K2.5</li><li>Workspace: ~/.openclaw/workspace</li><li>Config: ~/.openclaw/openclaw.json</li></ul><p>Edit config via Telegram or directly on Mac mini</p>'
+                }
+            };
+            
+            title.textContent = actions[type].title;
+            body.innerHTML = actions[type].body;
+            modal.style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>
