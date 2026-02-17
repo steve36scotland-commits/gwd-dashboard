@@ -208,7 +208,7 @@
             <div class="card-header"><span class="card-icon">⚡</span><div><div class="card-title">Quick Actions</div><div class="card-role">For Stevie</div></div></div>
             <div class="quick-actions">
                 <a href="https://t.me/openclaw_bot" target="_blank" class="action-btn">📋 New Task</a>
-                <a href="https://t.me/openclaw_bot" target="_blank" class="action-btn">👥 Call Meeting</a>
+                <button class="action-btn" onclick="showMeetingModal()">👥 Call Meeting</button>
                 <button class="action-btn" onclick="showReports()">📊 View Reports</button>
                 <button class="action-btn" onclick="showSettings()">⚙️ Settings</button>
             </div>
@@ -392,6 +392,15 @@
         
         function showSettings() {
             alert('⚙️ GWD Settings\n\n• Daily Budget: $5.00 (max)\n• Primary Model: Kimi K2.5\n• Workspace: ~/.openclaw/workspace\n• Config: ~/.openclaw/openclaw.json\n\nEdit config via Telegram or Mac mini terminal');
+        }
+        
+        function showMeetingModal() {
+            const topic = prompt('📅 Call GWD Meeting\n\nEnter meeting topic:', 'Weekly review');
+            if (topic) {
+                const message = `I need an all-hands meeting about: ${topic}`;
+                const telegramUrl = `https://t.me/openclaw_bot?start=${encodeURIComponent(message)}`;
+                window.open(telegramUrl, '_blank');
+            }
         }
         
         fetchNews(); fetchWeather(); updateBudget(); updateCountdown(); updateRefreshTimer();
