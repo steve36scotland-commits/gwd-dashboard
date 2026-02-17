@@ -213,6 +213,20 @@
                 <button class="action-btn" onclick="showSettings()">⚙️ Settings</button>
             </div>
         </div>
+        <div class="card">
+            <div class="card-header"><span class="card-icon">🧠</span><div><div class="card-title">Model Usage</div><div class="card-role">Today's Activity</div></div><span class="status active">Tracking</span></div>
+            <div class="live-data">
+                <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px; font-size: 0.85rem;">
+                    <div><span style="color: #4caf50;">●</span> Ollama (Free)</div><div id="ollama-calls">0 calls</div>
+                    <div><span style="color: #00d4ff;">●</span> Gemini Flash</div><div id="gemini-calls">0 calls</div>
+                    <div><span style="color: #ffc107;">●</span> Kimi K2.5</div><div id="kimi-calls">0 calls</div>
+                    <div><span style="color: #ff6b6b;">●</span> Claude/GPT</div><div id="expensive-calls">0 calls</div>
+                </div>
+                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem; color: #888;">
+                    Total Cost: <span id="total-cost" style="color: #eaeaea; font-weight: 600;">$0.00</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="section-title">👥 Team Members</div>
@@ -342,8 +356,38 @@
             document.getElementById('countdown').textContent = `${hrs}h ${mins}m`;
         }
         
+        // Model Usage Tracking (placeholder - real tracker coming tomorrow)
+        let modelCalls = {
+            ollama: 0,
+            gemini: 0,
+            kimi: 0,
+            expensive: 0
+        };
+        
+        function trackModelCall(model) {
+            if (model === 'ollama') modelCalls.ollama++;
+            else if (model === 'gemini') modelCalls.gemini++;
+            else if (model === 'kimi') modelCalls.kimi++;
+            else if (model === 'claude' || model === 'gpt') modelCalls.expensive++;
+            updateModelDisplay();
+        }
+        
+        function updateModelDisplay() {
+            document.getElementById('ollama-calls').textContent = `${modelCalls.ollama} calls`;
+            document.getElementById('gemini-calls').textContent = `${modelCalls.gemini} calls`;
+            document.getElementById('kimi-calls').textContent = `${modelCalls.kimi} calls`;
+            document.getElementById('expensive-calls').textContent = `${modelCalls.expensive} calls`;
+            
+            // Fake cost calculation (real one tomorrow)
+            const cost = (modelCalls.gemini * 0.0001) + (modelCalls.kimi * 0.002) + (modelCalls.expensive * 0.01);
+            document.getElementById('total-cost').textContent = `$${cost.toFixed(4)}`;
+            document.getElementById('budget-amount').textContent = `$${cost.toFixed(2)} / $5.00`;
+            document.getElementById('budget-bar').style.width = `${Math.min((cost/5)*100, 100)}%`;
+        }
+        
         function showReports() {
-            alert('📊 GWD Reports\n\n• Daily Budget: $0.12 / $5.00\n• Team Members: 12 Active\n• API Calls Today: 0\n• Next Brief: 6:00 AM EST\n\nFor detailed reports, message @openclaw_bot');
+            const cost = (modelCalls.gemini * 0.0001) + (modelCalls.kimi * 0.002) + (modelCalls.expensive * 0.01);
+            alert(`📊 GWD Reports\n\n• Daily Budget: $${cost.toFixed(2)} / $5.00\n• Team Members: 12 Active\n• Ollama Calls: ${modelCalls.ollama} (FREE)\n• Gemini Calls: ${modelCalls.gemini}\n• Kimi Calls: ${modelCalls.kimi}\n• Claude/GPT Calls: ${modelCalls.expensive}\n• Next Brief: 6:00 AM EST\n\nFor detailed reports, message @openclaw_bot`);
         }
         
         function showSettings() {
