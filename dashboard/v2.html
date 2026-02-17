@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 Buddie Command Center</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0a1628 0%, #1a2942 50%, #0f1d36 100%); color: #e0e7ff; min-height: 100vh; padding: 20px; overflow-x: hidden; }
+        /* ── PARTICLES ── */
+        .particles { position:fixed; inset:0; pointer-events:none; z-index:0; }
+        .particle { position:absolute; background: rgba(59,130,246,0.12); border-radius:50%; animation: floatP 20s infinite ease-in-out; }
+        @keyframes floatP { 0%,100% { transform:translateY(0) translateX(0) scale(1); } 25% { transform:translateY(-120px) translateX(60px) scale(1.1); } 50% { transform:translateY(-60px) translateX(-60px) scale(0.9); } 75% { transform:translateY(-180px) translateX(30px) scale(1.05); } }
+        /* ── HEADER ── */
+        .header { text-align:center; margin-bottom:30px; padding:28px 30px; background: rgba(15,29,54,0.65); backdrop-filter:blur(20px); border-radius:20px; border:1px solid rgba(59,130,246,0.25); box-shadow:0 20px 60px rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:space-between; }
+        .header-left { display:flex; align-items:center; gap:15px; }
+        .header-logo { font-size:40px; }
+        .header h1 { font-size:32px; font-weight:800; background:linear-gradient(135deg,#60a5fa,#3b82f6,#818cf8); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-align:left; }
+        .header-right { display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+        .status-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 14px; border-radius:20px; font-size:12px; font-weight:700; }
+        .status-badge.online { background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.35); color:#34d399; }
+        .pulse { width:7px; height:7px; border-radius:50%; background:#34d399; animation:blink 1.5s infinite; }
+        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+        .clock { font-size:13px; color:#94a3b8; font-weight:600; }
+        /* ── TICKER ── */
+        .ticker-wrap { background:rgba(59,130,246,0.08); border-radius:10px; padding:10px 20px; margin-bottom:24px; display:flex; align-items:center; gap:12px; overflow:hidden; }
+        .ticker-label { fontsize:11px; font-weight:700; color:#3b82f6; text-transform:uppercase; }
+        .ticker-text { fontsize:12px; color:#94a3b8; white-space:nowrap; overflow:hidden; animation:tickerScroll 30s linear infinite; }
+        @keyframes tickerScroll { 0% { transform:translateX(100%); } 100% { transform:translateX(-100%); } }
+        /* ── STATS ROW ── */
+        .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+        .stat-card { background:rgba(15,29,54,0.6); backdrop-filter:blur(15px); border:1px solid rgba(59,130,246,0.2); border-radius:16px; padding:20px; text-align:center; }
+        /* ── AI WORKERS GRID ── */
+        .section-title { font-size:20px; font-weight:700; color:#60a5fa; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+        .workers-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-bottom:24px; }
+        .worker-card { background:rgba(15,29,54,0.7); border-radius:20px; border:1px solid rgba(59,130,246,0.2); padding:24px; text-align:center; cursor:pointer; }
+        .worker-card:hover { transform:scale(1.05); }
+        /* CHARACTER ANIMATION */
+        .animated { animation: floating 2s ease-in-out infinite; }
+        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    </style>
+</head>
+<body>
+    <div class="particles"></div>
+    <header class="header">
+        <h1>Buddie Command Center</h1>
+        <div class="header-right">
+            <div class="status-badge online">System Online</div>
+            <div class="clock">00:00</div>
+        </div>
+    </header>
+
+    <div class="ticker-wrap">
+        <span class="ticker-label">🔔 Updates:</span>
+        <span class="ticker-text">Fetching data...</span>
+    </div>
+    
+    <main>
+        <div class="stats-row">
+            <div class="stat-card">
+                <span class="stat-icon">💰</span>
+                <div class="stat-value" id="total-cost">$0.00</div>
+                <div class="stat-label">Total Cost</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">🔢</span>
+                <div class="stat-value" id="total-tokens">0</div>
+                <div class="stat-label">Total Tokens</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">🔌</span>
+                <div class="stat-value" id="total-providers">0</div>
+                <div class="stat-label">Active Providers</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">⏰</span>
+                <div class="stat-value" id="uptime">0 Days</div>
+                <div class="stat-label">Uptime</div>
+            </div>
+        </div>
+          
+        <div class="section-title">AI Workers</div>
+        <div class="workers-grid">
+            <div class="worker-card claude-card animated" id="claude-card">
+                <div class="character-wrap"><div class="head animated">🤖</div><div class="body-sit">Zzz</div></div>
+                <div class="worker-name">Claude</div>
+                <div class="worker-status">Online</div>
+            </div>
+            <div class="worker-card chatgpt-card animated" id="gpt-card">
+                <div class="character-wrap"><div class="head animated">🤖</div><div class="body-sit">Zzz</div></div>
+                <div class="worker-name">ChatGPT</div>
+                <div class="worker-status">Online</div>
+            </div>
+            <div class="worker-card gemini-card animated" id="gemini-card">
+                <div class="character-wrap"><div class="head animated">🤖</div><div class="body-sit">Zzz</div></div>
+                <div class="worker-name">Gemini</div>
+                <div class="worker-status">Online</div>
+            </div>
+            <div class="worker-card grok-card animated" id="grok-card">
+                <div class="character-wrap"><div class="head animated">🤖</div><div class="body-sit">Zzz</div></div>
+                <div class="worker-name">Grok</div>
+                <div class="worker-status">Online</div>
+            </div>
+        </div>
+    </main>
+    <script>
+      async function fetchData() {
+          const statusResponse = await fetch('/api/status');
+          const tokenResponse = await fetch('proc/api/tokens');
+          const healthResponse = await fetch('/api/health');
+
+          const statusData = await statusResponse.json();
+          const tokenData = await tokenResponse.json();
+          const healthData = await healthResponse.json();
+
+          document.getElementById('total-cost').innerText = tokenData.usage;  // Update Total Cost
+          document.getElementById('total-tokens').innerText = tokenData.tokens;  // Update Total Tokens
+          // You can also update providers and uptime here based on healthData
+      }
+      fetchData();
+    </script>
+</body>
+</html>

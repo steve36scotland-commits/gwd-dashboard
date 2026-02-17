@@ -1,0 +1,13 @@
+{
+  "name": "dashboard",
+  "version": "1.0.0",
+  "description": "Dashboard project",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha test.js"
+  },
+  "devDependencies": {
+    "mocha": "^11.7.5"
+  },
+  "dependencies": {}
+}

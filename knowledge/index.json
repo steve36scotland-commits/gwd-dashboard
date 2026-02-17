@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-02-16",
+  "knowledge_base": {
+    "total_documents": 0,
+    "categories": [
+      "company",
+      "procedures", 
+      "decisions",
+      "incidents",
+      "playbooks"
+    ]
+  },
+  "search_index": {
+    "enabled": true,
+    "auto_update": true
+  },
+  "documents": []
+}

@@ -1,0 +1,456 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Buddie Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .metric:last-child {
+            border-bottom: none;
+        }
+        .metric-label {
+            font-weight: 500;
+            color: #555;
+        }
+        .metric-value {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .loading {
+            color: #999;
+            font-style: italic;
+        }
+        .error {
+            color: #e74c3c;
+        }
+        .api-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .api-item {
+            background: #f9f9f9;
+            padding: 12px;
+            border-left: 3px solid #3498db;
+            border-radius: 4px;
+        }
+        .api-path {
+            font-weight: 600;
+            color: #2c3e50;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        .api-desc {
+            color: #666;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+        .api-status {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 12px;
+            color: #27ae60;
+        }
+        .model-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        .model-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .model-card.openai {
+            background: linear-gradient(135deg, #10a37f 0%, #0d9177 100%);
+        }
+        .model-card.anthropic {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .model-card.ollama {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        }
+        .model-card.moonshot {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .model-name {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .model-provider {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        .model-stat {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin: 6px 0;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .model-stat:last-child {
+            border-bottom: none;
+        }
+        .model-purpose {
+            font-size: 11px;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 Buddie - OpenClaw Dashboard</h1>
+        <p>Real-time system monitoring and status</p>
+    </div>
+    
+    <div class="container">
+        <div class="controls">
+            <button class="btn" onclick="loadStatus()">🔄 Refresh Data</button>
+            <button class="btn" onclick="clearData()" style="background: #95a5a6;">Clear Cache</button>
+        </div>
+        
+        <div class="grid">
+            <!-- System Health -->
+            <div class="card">
+                <h2>💻 System Health</h2>
+                <div id="system" class="loading">Loading...</div>
+            </div>
+            
+            <!-- Memory Usage -->
+            <div class="card">
+                <h2>🧠 Memory</h2>
+                <div id="memory" class="loading">Loading...</div>
+            </div>
+            
+            <!-- Weather -->
+            <div class="card">
+                <h2>🌤️ Weather</h2>
+                <div id="weather" class="loading">Loading...</div>
+            </div>
+            
+            <!-- System Info -->
+            <div class="card">
+                <h2>ℹ️ System Info</h2>
+                <div id="sysinfo" class="loading">Loading...</div>
+            </div>
+            
+            <!-- Gateway Status -->
+            <div class="card">
+                <h2>🚪 OpenClaw Gateway</h2>
+                <div id="gateway" class="loading">Loading...</div>
+            </div>
+            
+            <!-- Active Sessions -->
+            <div class="card">
+                <h2>💻 Active Sessions</h2>
+                <div id="sessions" class="loading">Loading...</div>
+            </div>
+            
+            <!-- Cron Jobs -->
+            <div class="card full-width">
+                <h2>⏰ Scheduled Tasks</h2>
+                <div id="crons" class="loading">Loading...</div>
+            </div>
+            
+            <!-- Model Activity -->
+            <div class="card full-width">
+                <h2>🤖 AI Model Activity</h2>
+                <div id="models" class="loading">Loading...</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        async function loadStatus() {
+            try {
+                const statusRes = await fetch('/api/status');
+                const statusData = await statusRes.json();
+                
+                if (statusData.system) {
+                    // System Health
+                    document.getElementById('system').innerHTML = `
+                        <div class="metric">
+                            <span class="metric-label">Platform:</span>
+                            <span class="metric-value">${statusData.system.platform}</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Uptime:</span>
+                            <span class="metric-value">${statusData.system.uptime}</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">CPU Cores:</span>
+                            <span class="metric-value">${statusData.system.cpu.count}</span>
+                        </div>
+                    `;
+                    
+                    // Memory
+                    document.getElementById('memory').innerHTML = `
+                        <div class="metric">
+                            <span class="metric-label">Used:</span>
+                            <span class="metric-value">${statusData.system.memory.used}</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Free:</span>
+                            <span class="metric-value">${statusData.system.memory.free}</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Total:</span>
+                            <span class="metric-value">${statusData.system.memory.total}</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Usage:</span>
+                            <span class="metric-value">${statusData.system.memory.usagePercent}%</span>
+                        </div>
+                    `;
+                    
+                    // System Info
+                    document.getElementById('sysinfo').innerHTML = `
+                        <div class="metric">
+                            <span class="metric-label">CPU Model:</span>
+                            <span class="metric-value">${statusData.system.cpu.model}</span>
+                        </div>
+                    `;
+                    
+                    // Weather
+                    if (statusData.weather && !statusData.weather.error) {
+                        document.getElementById('weather').innerHTML = `
+                            <div class="metric">
+                                <span class="metric-label">Temperature:</span>
+                                <span class="metric-value">${statusData.weather.temperature}°C</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Humidity:</span>
+                                <span class="metric-value">${statusData.weather.humidity}%</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Wind Speed:</span>
+                                <span class="metric-value">${statusData.weather.windSpeed} km/h</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Location:</span>
+                                <span class="metric-value">${statusData.weather.location}</span>
+                            </div>
+                        `;
+                    } else {
+                        document.getElementById('weather').textContent = statusData.weather?.error || 'Unable to fetch weather';
+                    }
+                }
+            } catch (e) {
+                // Silent fail for status
+            }
+            
+            // Load Gateway Status
+            try {
+                const gatewayRes = await fetch('/api/gateway');
+                const gatewayData = await gatewayRes.json();
+                document.getElementById('gateway').innerHTML = `
+                    <div class="metric">
+                        <span class="metric-label">Status:</span>
+                        <span class="metric-value">${gatewayData.status}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Port:</span>
+                        <span class="metric-value">${gatewayData.port}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Address:</span>
+                        <span class="metric-value">${gatewayData.address}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Service:</span>
+                        <span class="metric-value">${gatewayData.service}</span>
+                    </div>
+                `;
+            } catch (e) {
+                document.getElementById('gateway').textContent = '❌ Unable to load gateway status';
+            }
+            
+            // Load Active Sessions
+            try {
+                const sessionsRes = await fetch('/api/sessions');
+                const sessionsData = await sessionsRes.json();
+                document.getElementById('sessions').innerHTML = `
+                    <div class="metric">
+                        <span class="metric-label">Total Sessions:</span>
+                        <span class="metric-value">${sessionsData.total}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Main Agent:</span>
+                        <span class="metric-value">${sessionsData.mainAgent}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Sub-agents:</span>
+                        <span class="metric-value">${sessionsData.subagents}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Last Activity:</span>
+                        <span class="metric-value">${sessionsData.lastActivity}</span>
+                    </div>
+                `;
+            } catch (e) {
+                document.getElementById('sessions').textContent = '❌ Unable to load sessions';
+            }
+            
+            // Load Cron Jobs
+            try {
+                const cronsRes = await fetch('/api/crons');
+                const cronsData = await cronsRes.json();
+                let cronsHtml = `<div class="metric"><span class="metric-label">Cron Status:</span><span class="metric-value">${cronsData.status}</span></div>`;
+                if (cronsData.jobs && cronsData.jobs.length > 0) {
+                    cronsHtml += '<div style="margin-top: 15px;"><strong>Scheduled Tasks:</strong>';
+                    cronsData.jobs.forEach(job => {
+                        cronsHtml += `<div class="metric"><span class="metric-label">${job.time}</span><span class="metric-value">${job.task}</span></div>`;
+                    });
+                    cronsHtml += '</div>';
+                }
+                document.getElementById('crons').innerHTML = cronsHtml;
+            } catch (e) {
+                document.getElementById('crons').textContent = '❌ Unable to load cron jobs';
+            }
+            
+            // Load Model Activity
+            try {
+                const modelsRes = await fetch('/api/models');
+                const modelsData = await modelsRes.json();
+                let modelsHtml = '<div class="model-grid">';
+                if (modelsData.models) {
+                    Object.entries(modelsData.models).forEach(([modelName, data]) => {
+                        let className = 'anthropic'; // default
+                        if (data.provider === 'OpenAI') className = 'openai';
+                        else if (data.provider === 'Ollama') className = 'ollama';
+                        else if (data.provider === 'Moonshot AI') className = 'moonshot';
+                        
+                        modelsHtml += `
+                            <div class="model-card ${className}">
+                                <div class="model-name">${modelName}</div>
+                                <div class="model-provider">Provider: ${data.provider}</div>
+                                <div class="model-stat">
+                                    <span>Status:</span>
+                                    <span>${data.status}</span>
+                                </div>
+                                <div class="model-stat">
+                                    <span>Calls:</span>
+                                    <span>${data.calls}</span>
+                                </div>
+                                <div class="model-stat">
+                                    <span>Last Used:</span>
+                                    <span>${data.lastUsed}</span>
+                                </div>
+                                <div class="model-stat">
+                                    <span>Tokens:</span>
+                                    <span>${(data.totalTokens || 0).toLocaleString()}</span>
+                                </div>
+                                <div class="model-purpose">💡 ${data.bestFor}</div>
+                            </div>
+                        `;
+                    });
+                }
+                modelsHtml += '</div>';
+                document.getElementById('models').innerHTML = modelsHtml;
+            } catch (e) {
+                document.getElementById('models').textContent = '❌ Unable to load model activity';
+            }
+        }
+        
+        function clearData() {
+            document.getElementById('system').textContent = 'Cleared';
+            document.getElementById('memory').textContent = 'Cleared';
+            document.getElementById('sysinfo').textContent = 'Cleared';
+            document.getElementById('weather').textContent = 'Cleared';
+            document.getElementById('gateway').textContent = 'Cleared';
+            document.getElementById('sessions').textContent = 'Cleared';
+            document.getElementById('crons').textContent = 'Cleared';
+            document.getElementById('models').textContent = 'Cleared';
+        }
+        
+        // Load on page load
+        loadStatus();
+        // Auto-refresh every 10 seconds
+        setInterval(loadStatus, 10000);
+    </script>
+</body>
+</html>

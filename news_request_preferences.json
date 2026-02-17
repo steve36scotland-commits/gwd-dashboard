@@ -1,0 +1,9 @@
+{
+    "local_weather": true,
+    "local_news_burlington": true,
+    "local_news_paisley": true,
+    "spfl_news": true,
+    "world_news_headlines": 4,
+    "include_links": true,
+    "brief_summaries": true
+}

@@ -1,0 +1,40 @@
+# Battle for Neo-Coruscant - Prototype Overview
+
+## Game Concept
+Battle for Neo-Coruscant is a strategy and action game set in a futuristic universe. Players compete for control over a vital planet amidst galactic conflict.
+
+## Basic Mechanics
+- **Player Classes:** Different classes with unique abilities (e.g., Warrior, Engineer, Scout).
+- **Resource Management:** Collect resources to build defenses and upgrade abilities.
+- **Combat System:** Engage in real-time battles with skills and tactical movements.
+- **Map Navigation:** Explore the map for resources and strategic points.
+
+## Character Designs
+1. **Warrior**  
+   - **Description:** Heavy armor, melee specialist.  
+   - **Ability:** "Shield Charge" - Rushes an enemy and knocks them back.
+
+2. **Engineer**  
+   - **Description:** Builds structures and turrets.  
+   - **Ability:** "Quick Fix" - Repairs allies and structures instantly.
+
+3. **Scout**  
+   - **Description:** Fast and agile, excels in reconnaissance.  
+   - **Ability:** "Invisibility" - Temporarily becomes invisible to enemies.
+
+## Playable Map
+- **Map Name:** Neo-Coruscant Urban Hub  
+- **Key Areas:**  
+  - **Resource Zones:** Rich in resources needed for upgrades.  
+  - **Battle Arenas:** Designated areas for combat between players.  
+  - **Safe Zones:** Areas where players can heal and strategize.
+
+## Additional Features
+- **Multiplayer Mode:** Players can compete in teams or solo.
+- **Quest System:** Complete missions for rewards and experience.
+- **Leaderboard:** Track player rankings based on performance.
+
+## Development Plan
+- **Phase 1:** Create character models and initial mechanics.  
+- **Phase 2:** Develop the playable map and resource system.  
+- **Phase 3:** Implement combat mechanics and multiplayer functionality.

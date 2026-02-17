@@ -1,0 +1,21 @@
+{
+  "taskTypeMapping": {
+    "conversation": "anthropic:default",
+    "creative": "anthropic:default",
+    "general_query": "chatgpt",
+    "short_response": "grok",
+    "longform": "anthropic:default",
+    "summarization": "chatgpt",
+    "data_formatting": "grok",
+    "scraping": "grok",
+    "fetch_content": "gemini",
+    "general": "ollama"
+  },
+  "fallbacks": {
+    "rate_limit": {
+      "anthropic": "chatgpt",
+      "chatgpt": "ollama",
+      "grok": "gemini"
+    }
+  }
+}
