@@ -1,134 +1,67 @@
----
----
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <title>GWD — LIVE Dashboard v2.2</title>
+    <title>GWD Dashboard</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: #eaeaea;
             min-height: 100vh;
-            padding: 10px;
+            padding: 20px;
             margin: 0;
-            width: 100%;
         }
         .header {
             text-align: center;
-            margin-bottom: 15px;
             padding: 20px;
             background: rgba(255,255,255,0.05);
             border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
         }
         .header h1 {
             font-size: 2.5rem;
             background: linear-gradient(90deg, #00d4ff, #7b2cbf);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
+            margin: 0;
         }
-        .live-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #4caf50;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            background: #4caf50;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        .section-title {
-            font-size: 1.2rem;
-            margin: 25px 0 12px 0;
-            padding-left: 10px;
-            border-left: 4px solid #00d4ff;
-            color: #00d4ff;
-        }
-        .dashboard-grid {
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-            width: 100%;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
         }
         .card {
             background: rgba(255,255,255,0.05);
             border-radius: 12px;
-            padding: 15px;
+            padding: 20px;
             border: 1px solid rgba(255,255,255,0.1);
         }
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .card-icon { font-size: 1.8rem; }
-        .card-title { font-size: 1.1rem; font-weight: 600; }
-        .card-role { font-size: 0.8rem; color: #888; }
-        .status {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-left: auto;
-        }
-        .status.online { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
-        .status.active { background: rgba(0, 212, 255, 0.2); color: #00d4ff; }
-        .timestamp {
-            text-align: center;
-            color: #666;
-            font-size: 0.85rem;
-            margin-top: 30px;
-            padding: 20px;
+        .card h3 {
+            margin-top: 0;
+            color: #00d4ff;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🦞 GWD</h1>
-        <div style="color: #888;">Global World Domination</div>
-        <div class="live-indicator"><span class="live-dot"></span><span>LIVE</span></div>
+        <p>Global World Domination</p>
     </div>
-
-    <div class="section-title">📊 Dashboard Loading...</div>
-    <div class="dashboard-grid">
+    <div class="grid">
         <div class="card">
-            <div class="card-header">
-                <span class="card-icon">🌤️</span>
-                <div><div class="card-title">Weather</div><div class="card-role">Burlington</div></div>
-                <span class="status online">Live</span>
-            </div>
-            <div style="padding: 20px; text-align: center;">Loading...</div>
+            <h3>🌤️ Weather</h3>
+            <p>Burlington conditions loading...</p>
         </div>
         <div class="card">
-            <div class="card-header">
-                <span class="card-icon">👥</span>
-                <div><div class="card-title">Team</div><div class="card-role">12 Members</div></div>
-                <span class="status active">Active</span>
-            </div>
-            <div style="padding: 20px; text-align: center;">Loading...</div>
+            <h3>👥 Team</h3>
+            <p>12 members active</p>
+        </div>
+        <div class="card">
+            <h3>📰 News</h3>
+            <p>Live headlines loading...</p>
         </div>
     </div>
-
-    <div class="timestamp">GWD 🦞 Global World Domination</div>
 </body>
 </html>
