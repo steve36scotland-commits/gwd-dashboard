@@ -148,8 +148,11 @@
         .team-ticker-track { display: flex; animation: scroll 35s linear infinite; white-space: nowrap; padding-left: 160px; }
         
         .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
-        .bottom-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .bottom-card.actions { display: flex; align-items: center; }
+        .bottom-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-height: 320px; overflow-y: auto; }
+        .bottom-card::-webkit-scrollbar { width: 6px; }
+        .bottom-card::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 3px; }
+        .bottom-card::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 3px; }
+        .bottom-card.actions { display: flex; align-items: center; max-height: none; overflow-y: visible; }
         .bottom-card.actions .action-buttons { width: 100%; }
         
         .team-section {
@@ -445,7 +448,11 @@
         `).join('');
 
         const EVENTS = [
+            { day: '18', month: 'FEB', title: '📡 Morning Brief', sub: 'Tomorrow 6:00 AM EST' },
+            { day: '22', month: 'FEB', title: '⚽ St. Mirren vs Celtic', sub: 'Saturday 10:00 AM' },
             { day: '03', month: 'MAR', title: "🎂 Chloe's Birthday", sub: '14 days away • Turning 19' },
+            { day: '05', month: 'MAR', title: '🌊 Niagara Falls Trip', sub: 'Mid-March getaway' },
+            { day: '21', month: 'MAR', title: '🍽 Dinner with Callum', sub: 'Monthly meal out' },
             { day: '25', month: 'JUN', title: '✈️ Mexico Trip', sub: '128 days away • Ocean Coral & Turquesa' }
         ];
         document.getElementById('eventsList').innerHTML = EVENTS.map(e => `
