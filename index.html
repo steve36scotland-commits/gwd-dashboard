@@ -48,6 +48,42 @@
         .clock { font-size: 32px; font-weight: 700; color: var(--primary); }
         .clock-date { font-size: 14px; color: var(--muted); text-align: right; }
         
+        .ticker-container {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 20px;
+            overflow: hidden;
+        }
+        .ticker-content {
+            display: flex;
+            animation: ticker 30s linear infinite;
+            white-space: nowrap;
+        }
+        .ticker-content span {
+            margin-right: 40px;
+            font-size: 14px;
+        }
+        .ticker-news {
+            background: linear-gradient(90deg, var(--primary), #4d94ff);
+            border-radius: 12px;
+            padding: 14px 20px;
+            color: white;
+            overflow: hidden;
+        }
+        .ticker-news .ticker-content {
+            animation: ticker 40s linear infinite;
+        }
+        .ticker-news span {
+            margin-right: 50px;
+            font-size: 14px;
+        }
+        
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -94,7 +130,7 @@
             width: 48px; height: 48px; border-radius: 12px;
             background: linear-gradient(135deg, #4d94ff, var(--primary));
             display: flex; align-items: center; justify-content: center;
-            font-size: 24px; color: white;
+            font-size: 24px;
         }
         .card-name { font-size: 16px; font-weight: 700; color: var(--text); }
         .card-role { font-size: 12px; color: var(--muted); }
@@ -144,31 +180,32 @@
         <div class="header">
             <div class="brand">
                 <div class="logo">GW</div>
-        <!-- TEAM TICKER -->
-        <div style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; margin-top: -10px; overflow: hidden;">
-            <div style="display: flex; animation: ticker 30s linear infinite; white-space: nowrap;" id="teamTicker">
-                <span style="margin-right: 40px;">💰 Budget: $0.13 used today (2 API calls)</span>
-                <span style="margin-right: 40px;">🤖 Kimi K2.5: 2 calls • 114K tokens • $0.243</span>
-                <span style="margin-right: 40px;">🤖 GPT-5.1: 1 call • 3,300 tokens • $0.010</span>
-                <span style="margin-right: 40px;">🤖 Gemini Flash: 2 calls • 22K tokens • $0.017</span>
-                <span style="margin-right: 40px;">🤖 Ollama: 3 calls • 15K tokens • FREE</span>
-                <span style="margin-right: 40px;">🌤 Weather: Live data from Burlington, ON</span>
-                <span style="margin-right: 40px;">✅ All 14 agents have SOUL & IDENTITY files</span>
-            </div>
-        </div>
-        
-        <style>
-            @keyframes ticker {
-                0% { transform: translateX(0); }
-                100% { transform: translateX(-50%); }
-            }
-        </style>
-
                 <div class="brand-title">GWD COMMAND CENTER</div>
             </div>
             <div>
                 <div class="clock" id="clock">--:--:--</div>
                 <div class="clock-date" id="clockDate">---</div>
+            </div>
+        </div>
+
+        <!-- TEAM TICKER -->
+        <div class="ticker-container">
+            <div class="ticker-content" id="teamTicker">
+                <span>💰 Budget: $0.13 used today (2 API calls)</span>
+                <span>🤖 Kimi K2.5: 2 calls • 114K tokens • $0.243</span>
+                <span>🤖 GPT-5.1: 1 call • 3,300 tokens • $0.010</span>
+                <span>🤖 Gemini Flash: 2 calls • 22K tokens • $0.017</span>
+                <span>🤖 Ollama: 3 calls • 15K tokens • FREE</span>
+                <span>🌤 Weather: Live data from Burlington, ON</span>
+                <span>✅ All 14 agents have SOUL & IDENTITY files</span>
+                <!-- Duplicate for seamless loop -->
+                <span>💰 Budget: $0.13 used today (2 API calls)</span>
+                <span>🤖 Kimi K2.5: 2 calls • 114K tokens • $0.243</span>
+                <span>🤖 GPT-5.1: 1 call • 3,300 tokens • $0.010</span>
+                <span>🤖 Gemini Flash: 2 calls • 22K tokens • $0.017</span>
+                <span>🤖 Ollama: 3 calls • 15K tokens • FREE</span>
+                <span>🌤 Weather: Live data from Burlington, ON</span>
+                <span>✅ All 14 agents have SOUL & IDENTITY files</span>
             </div>
         </div>
 
@@ -179,7 +216,7 @@
                     <div class="metric-title">Weather</div>
                 </div>
                 <div class="metric-value" id="weatherVal">--°C</div>
-                <div class="metric-sub" id="weatherSub">Loading...</div>
+                <div class="metric-sub" id="weatherSub">Loading live data...</div>
             </div>
             <div class="metric-card">
                 <div class="metric-header">
@@ -209,19 +246,26 @@
             </div>
         </div>
 
-        
         <!-- NEWS TICKER -->
-        <div style="background: linear-gradient(90deg, var(--primary), #4d94ff); border-radius: 12px; padding: 14px 20px; color: white; overflow: hidden;">
-            <div style="display: flex; animation: ticker 40s linear infinite; white-space: nowrap;" id="newsTicker">
-                <span style="margin-right: 50px;">📰 TSN: Latest Canadian Sports News</span>
-                <span style="margin-right: 50px;">🏒 Maple Leafs: Game tonight 7PM</span>
-                <span style="margin-right: 50px;">🏀 Raptors: Season highlights</span>
-                <span style="margin-right: 50px;">⚽ Toronto FC: Pre-season training</span>
-                <span style="margin-right: 50px;">🌊 Niagara Falls: Perfect for March visit</span>
-                <span style="margin-right: 50px;">📰 CBC Sports: Canadian athletes shine</span>
+        <div class="ticker-news">
+            <div class="ticker-content" id="newsTicker">
+                <span>📰 TSN: Latest Canadian Sports News</span>
+                <span>🏒 Maple Leafs: Game tonight 7PM</span>
+                <span>🏀 Raptors: Season highlights</span>
+                <span>⚽ Toronto FC: Pre-season training</span>
+                <span>🌊 Niagara Falls: Perfect for March visit</span>
+                <span>📰 CBC Sports: Canadian athletes shine</span>
+                <!-- Duplicate for seamless loop -->
+                <span>📰 TSN: Latest Canadian Sports News</span>
+                <span>🏒 Maple Leafs: Game tonight 7PM</span>
+                <span>🏀 Raptors: Season highlights</span>
+                <span>⚽ Toronto FC: Pre-season training</span>
+                <span>🌊 Niagara Falls: Perfect for March visit</span>
+                <span>📰 CBC Sports: Canadian athletes shine</span>
             </div>
         </div>
-<div class="card">
+
+        <div class="card">
             <div class="card-title">TEAM ROSTER (14 MEMBERS)</div>
             <div class="team-grid">
                 <div class="team-card">
@@ -495,18 +539,24 @@
                 </div>
             </div>
             <div class="card">
-                <div class="card-title">LIVE NEWS</div>
-                <div style="padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.06);">
-                    <a href="https://www.tsn.ca" style="color: var(--primary); text-decoration: none; font-weight: 500;">TSN - Latest Canadian Sports News</a>
-                </div>
-                <div style="padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.06);">
-                    <a href="https://www.sportsnet.ca" style="color: var(--primary); text-decoration: none; font-weight: 500;">Sportsnet - NHL, NBA, MLB Coverage</a>
-                </div>
-                <div style="padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.06);">
-                    <a href="https://www.cbc.ca/sports" style="color: var(--primary); text-decoration: none; font-weight: 500;">CBC Sports - Canadian Athletics</a>
-                </div>
-                <div style="padding: 12px;">
-                    <a href="https://www.thestar.com" style="color: var(--primary); text-decoration: none; font-weight: 500;">Toronto Star - Local & Sports News</a>
+                <div class="card-title">AGENT IDENTITY STATUS</div>
+                <div style="font-size: 13px; color: var(--muted); line-height: 1.6;">
+                    <div style="margin-bottom: 10px;"><strong>✅ All 14 agents have SOUL & IDENTITY</strong></div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 12px;">
+                        <div>🦞 CEO</div><div>🚀 Buzz</div>
+                        <div>🧙‍♂️ Gandalf</div><div>🧌 Chunk</div>
+                        <div>🥷 Ninja</div><div>👵 Granny O</div>
+                        <div>👮‍♀️ PC Plod</div><div>🧠 BrainZ</div>
+                        <div>🧚‍♀️ Wisp</div><div>👩‍🏫 Kazza</div>
+                        <div>🐕‍🦺 Rosco</div><div>🤖 Monitor</div>
+                        <div>🌙 Luna</div><div>🔧 Terra</div>
+                    </div>
+                    <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <a href="AGENT_BRIEFING.md" style="color: var(--primary); font-size: 12px;">📄 Briefing</a>
+                        <a href="STEVIE_QUICKREF.md" style="color: var(--primary); font-size: 12px;">⚡ Quick Ref</a>
+                        <a href="agents/ceo/SOUL.md" style="color: var(--primary); font-size: 12px;">💙 Agent Souls</a>
+                        <a href="agents/ceo/IDENTITY.md" style="color: var(--primary); font-size: 12px;">🆔 Agent IDs</a>
+                    </div>
                 </div>
             </div>
         </div>
