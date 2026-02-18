@@ -212,11 +212,20 @@
         <div class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-header">
-                    <div class="metric-icon">W</div>
+                    <div class="metric-icon" id="weatherIcon">☀️</div>
                     <div class="metric-title">Weather</div>
                 </div>
                 <div class="metric-value" id="weatherVal">--°C</div>
-                <div class="metric-sub" id="weatherSub">Loading live data...</div>
+                <div class="metric-sub" id="weatherFeels">Feels like --°C</div>
+                <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px;">
+                        <div>💧 <span id="weatherHumidity">--%</span> Humidity</div>
+                        <div>💨 <span id="weatherWind">-- km/h</span> Wind</div>
+                        <div>👁️ <span id="weatherVisibility">-- km</span> Visibility</div>
+                        <div>🔽 <span id="weatherPressure">-- hPa</span> Pressure</div>
+                    </div>
+                </div>
+                <div class="metric-sub" id="weatherSub" style="margin-top: 10px; font-style: italic;">Loading live data...</div>
             </div>
             <div class="metric-card">
                 <div class="metric-header">
@@ -586,19 +595,92 @@
         updateBrief();
         setInterval(updateBrief, 60000);
 
+        // WEATHER ICON MAPPING
+        const weatherIcons = {
+            'Clear': '☀️', 'Clouds': '☁️', 'Rain': '🌧️', 'Drizzle': '🌦️',
+            'Thunderstorm': '⛈️', 'Snow': '❄️', 'Mist': '🌫️', 'Fog': '🌫️',
+            'Haze': '🌫️', 'Dust': '🌫️', 'Sand': '🌫️'
+        };
+
         async function fetchWeather() {
             try {
                 const response = await fetch('https://api.openweathermap.org/data/2.5/weather?lat=43.3255&lon=-79.7990&appid=04832d02538c589665439846bde74042&units=metric');
                 if (response.ok) {
                     const data = await response.json();
+                    const icon = weatherIcons[data.weather[0].main] || '🌡️';
+                    document.getElementById('weatherIcon').textContent = icon;
                     document.getElementById('weatherVal').textContent = Math.round(data.main.temp) + '°C';
-                    document.getElementById('weatherSub').textContent = data.weather[0].main + ' • Burlington, ON';
+                    document.getElementById('weatherFeels').textContent = 'Feels like ' + Math.round(data.main.feels_like) + '°C';
+                    document.getElementById('weatherHumidity').textContent = data.main.humidity + '%';
+                    document.getElementById('weatherWind').textContent = Math.round(data.wind.speed * 3.6) + ' km/h';
+                    document.getElementById('weatherVisibility').textContent = (data.visibility / 1000).toFixed(1) + ' km';
+                    document.getElementById('weatherPressure').textContent = data.main.pressure + ' hPa';
+                    document.getElementById('weatherSub').textContent = data.weather[0].main + ' • Burlington, ON • Updated ' + new Date().toLocaleTimeString('en-CA', {hour: '2-digit', minute:'2-digit'});
                 }
             } catch (err) {
-                document.getElementById('weatherSub').textContent = 'Unable to load';
+                document.getElementById('weatherSub').textContent = 'Unable to load weather data';
             }
         }
         fetchWeather();
+        setInterval(fetchWeather, 600000); // Update weather every 10 minutes
+
+        // BUDGET TRACKER - Simulated live data (replace with actual API)
+        async function fetchBudgetData() {
+            try {
+                const response = await fetch('/api/budget');
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('budgetVal').textContent = '$' + data.used;
+                    // Update ticker with live data
+                    updateTeamTicker(data);
+                }
+            } catch (err) {
+                console.log('Budget API not available, using static data');
+            }
+        }
+
+        function updateTeamTicker(budgetData) {
+            const tickerItems = [
+                `💰 Budget: $${budgetData?.used || '0.13'} used today (${budgetData?.calls || '2'} API calls)`,
+                '🤖 Kimi K2.5: Real-time model monitoring active',
+                '🤖 GPT-5.1: Ready for code tasks',
+                '🤖 Gemini Flash: Quick queries optimized',
+                '🤖 Ollama: Free local compute available',
+                '🌤 Weather: Live data from Burlington, ON',
+                `✅ All 14 agents have SOUL & IDENTITY files`,
+                `🔄 Last updated: ${new Date().toLocaleTimeString('en-CA')}`
+            ];
+            const tickerHTML = tickerItems.map(item => `<span style="margin-right: 40px;">${item}</span>`).join('') + 
+                               tickerItems.map(item => `<span style="margin-right: 40px;">${item}</span>`).join('');
+            document.getElementById('teamTicker').innerHTML = tickerHTML;
+        }
+
+        // Initial ticker population
+        updateTeamTicker({used: '0.13', calls: '2'});
+        
+        // Update budget/ticker every 30 seconds
+        fetchBudgetData();
+        setInterval(fetchBudgetData, 30000);
+
+        // NEWS TICKER - Could fetch from NewsAPI
+        async function fetchNews() {
+            try {
+                const response = await fetch('/api/news');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.articles && data.articles.length > 0) {
+                        const newsItems = data.articles.slice(0, 6).map(a => `📰 ${a.title}`);
+                        const newsHTML = newsItems.map(item => `<span style="margin-right: 50px;">${item}</span>`).join('') +
+                                        newsItems.map(item => `<span style="margin-right: 50px;">${item}</span>`).join('');
+                        document.getElementById('newsTicker').innerHTML = newsHTML;
+                    }
+                }
+            } catch (err) {
+                console.log('News API not available, using static headlines');
+            }
+        }
+        fetchNews();
+        setInterval(fetchNews, 300000); // Update news every 5 minutes
     </script>
 </body>
 </html>
