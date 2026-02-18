@@ -4,20 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GWD Command Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #b3d9ff;
             --card: rgba(255, 255, 255, 0.95);
             --border: rgba(0, 100, 200, 0.15);
             --primary: #0066cc;
-            --primary-light: #4d94ff;
             --success: #00aa44;
             --warning: #ff8800;
             --danger: #dd2244;
             --text: #1a202c;
             --muted: #4a5568;
-            --light: #718096;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -42,15 +40,13 @@
         .brand { display: flex; align-items: center; gap: 16px; }
         .logo {
             width: 48px; height: 48px; border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            background: linear-gradient(135deg, var(--primary), #4d94ff);
             display: flex; align-items: center; justify-content: center;
-            font-family: 'Orbitron', monospace; font-weight: 900; font-size: 18px;
-            color: white;
+            font-weight: 700; font-size: 20px; color: white;
         }
-        .brand-title { font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 700; color: var(--primary); letter-spacing: 2px; }
-        .brand-sub { font-size: 12px; color: var(--muted); letter-spacing: 1px; }
-        .clock { font-family: 'Orbitron', monospace; font-size: 28px; color: var(--primary); font-weight: 700; }
-        .clock-date { font-size: 12px; color: var(--muted); text-align: right; }
+        .brand-title { font-size: 24px; font-weight: 700; color: var(--primary); }
+        .clock { font-size: 32px; font-weight: 700; color: var(--primary); }
+        .clock-date { font-size: 14px; color: var(--muted); text-align: right; }
         
         .metrics-grid {
             display: grid;
@@ -67,20 +63,15 @@
         .metric-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
         .metric-icon {
             width: 44px; height: 44px; border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            background: linear-gradient(135deg, var(--primary), #4d94ff);
             display: flex; align-items: center; justify-content: center;
             font-size: 22px; color: white;
         }
         .metric-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
-        .metric-value { font-family: 'Orbitron', monospace; font-size: 28px; font-weight: 700; color: var(--text); }
-        .metric-value.primary { color: var(--primary); }
-        .metric-value.success { color: var(--success); }
-        .metric-value.warning { color: var(--warning); }
-        .metric-sub { font-size: 13px; color: var(--light); margin-top: 8px; }
+        .metric-value { font-size: 28px; font-weight: 700; color: var(--text); }
+        .metric-sub { font-size: 13px; color: var(--muted); margin-top: 8px; }
         .progress-bar { height: 8px; background: rgba(0,0,0,0.08); border-radius: 4px; margin-top: 12px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-light)); border-radius: 4px; }
-        
-        .content-grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #4d94ff); border-radius: 4px; }
         
         .card {
             background: var(--card);
@@ -89,136 +80,56 @@
             padding: 24px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
-        .card-title { font-family: 'Orbitron', monospace; font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; }
+        .card-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
         
-        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+        .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
         .team-card {
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 14px;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 20px;
         }
-        .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+        .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
         .card-avatar {
             width: 48px; height: 48px; border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            background: linear-gradient(135deg, #4d94ff, var(--primary));
             display: flex; align-items: center; justify-content: center;
-            font-size: 26px; color: white;
+            font-size: 24px; color: white;
         }
-        .card-info { flex: 1; }
-        .card-name { font-family: 'Orbitron', monospace; font-size: 14px; font-weight: 700; color: var(--text); }
-        .card-role { font-size: 12px; color: var(--muted); margin-top: 2px; }
-        .models-row { display: flex; align-items: center; gap: 8px; margin: 12px 0; padding: 10px 12px; background: rgba(0,102,204,0.06); border-radius: 8px; border: 1px solid rgba(0,102,204,0.1); }
-        .models-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-        .models-value { font-size: 12px; color: var(--primary); font-weight: 500; }
-        .checklist { background: rgba(0,0,0,0.03); border-radius: 10px; padding: 14px; margin: 14px 0; }
-        .checklist-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--text); border-bottom: 1px solid rgba(0,0,0,0.06); }
-        .checklist-item:last-child { border-bottom: none; }
-        .checklist-item.done { color: var(--success); }
+        .card-name { font-size: 16px; font-weight: 700; color: var(--text); }
+        .card-role { font-size: 12px; color: var(--muted); }
+        .models-row { font-size: 12px; color: var(--primary); margin: 8px 0; }
+        .checklist { font-size: 13px; color: var(--muted); margin: 10px 0; }
+        .checklist-item { padding: 4px 0; }
         .priority-badge {
             display: inline-block;
-            font-family: 'Orbitron', monospace;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 5px 12px;
+            font-size: 10px; font-weight: 700;
+            padding: 4px 10px;
             border-radius: 20px;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
-        .priority-badge.critical { background: rgba(221,34,68,0.12); color: var(--danger); border: 1px solid rgba(221,34,68,0.25); }
-        .priority-badge.high { background: rgba(255,136,0,0.12); color: var(--warning); border: 1px solid rgba(255,136,0,0.25); }
-        .priority-badge.medium { background: rgba(0,102,204,0.12); color: var(--primary); border: 1px solid rgba(0,102,204,0.25); }
-        .priority-legend { font-size: 11px; color: var(--muted); margin-top: 10px; padding: 8px; background: rgba(0,0,0,0.03); border-radius: 6px; }
-        .priority-legend span { display: inline-block; margin-right: 12px; }
-        .priority-legend .critical { color: var(--danger); font-weight: 600; }
-        .priority-legend .high { color: var(--warning); font-weight: 600; }
-        .priority-legend .medium { color: var(--primary); font-weight: 600; }
+        .priority-critical { background: rgba(221,34,68,0.12); color: var(--danger); }
+        .priority-high { background: rgba(255,136,0,0.12); color: var(--warning); }
+        .priority-medium { background: rgba(0,102,204,0.12); color: var(--primary); }
         
         .event-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 12px;
+            padding: 12px;
             background: rgba(0,102,204,0.06);
             border-radius: 10px;
             margin-bottom: 8px;
-            border: 1px solid rgba(0,102,204,0.1);
         }
-        .event-item:last-child { margin-bottom: 0; }
-        .event-date { text-align: center; min-width: 44px; padding: 6px; background: white; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
-        .event-day { font-family: 'Orbitron', monospace; font-size: 16px; font-weight: 700; color: var(--primary); }
-        .event-month { font-size: 10px; color: var(--muted); text-transform: uppercase; }
-        .event-title { font-size: 14px; font-weight: 600; color: var(--text); }
-        .event-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+        .event-date { text-align: center; min-width: 50px; padding: 8px; background: white; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+        .event-day { font-size: 18px; font-weight: 700; color: var(--primary); }
+        .event-month { font-size: 10px; color: var(--muted); }
+        .event-title { font-size: 15px; font-weight: 600; color: var(--text); }
+        .event-sub { font-size: 12px; color: var(--muted); }
         
-        .action-buttons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .action-btn {
-            padding: 16px;
-            background: linear-gradient(135deg, rgba(0,102,204,0.1), rgba(0,170,68,0.05));
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-        .action-btn:hover { background: linear-gradient(135deg, rgba(0,102,204,0.2), rgba(0,170,68,0.1)); border-color: var(--primary); }
+        .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
         
-        .model-usage-list { margin: 12px 0; }
-        .model-usage-item { margin-bottom: 12px; }
-        .model-usage-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-        .model-name { font-size: 13px; font-weight: 600; color: var(--text); }
-        .model-cost { font-family: 'Orbitron', monospace; font-size: 11px; color: var(--success); font-weight: 700; }
-        .model-usage-bar { height: 8px; background: rgba(0,0,0,0.08); border-radius: 4px; overflow: hidden; }
-        .model-usage-fill { height: 100%; border-radius: 4px; }
-        .model-usage-fill.local { background: linear-gradient(90deg, #00aa44, #00dd66); }
-        .model-usage-fill.cloud { background: linear-gradient(90deg, #0066cc, #4d94ff); }
-        .model-usage-meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
-        .model-card { background: linear-gradient(135deg, rgba(102,126,234,0.08), rgba(118,75,162,0.05)); }
-        
-        .news-item { padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.06); }
-        .news-item:last-child { border-bottom: none; }
-        .news-item a { color: var(--primary); text-decoration: none; font-size: 14px; font-weight: 500; }
-        .news-item a:hover { text-decoration: underline; }
-        
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px rgba(0,170,68,0.4); }
-        .status-dot.blocked { background: var(--danger); box-shadow: 0 0 8px rgba(221,34,68,0.4); }
-        .status-dot.new { background: #9944cc; box-shadow: 0 0 8px rgba(153,68,204,0.4); }
-        
-        .ticker-wrap {
-            overflow: hidden;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 14px 0;
-            position: relative;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .ticker-label {
-            position: absolute;
-            left: 0; top: 0; bottom: 0;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            background: linear-gradient(90deg, rgba(255,255,255,0.95) 60%, transparent);
-            font-family: 'Orbitron', monospace; font-size: 11px; font-weight: 700;
-            color: var(--primary); letter-spacing: 2px; z-index: 2;
-        }
-        .ticker-track {
-            display: flex;
-            animation: scroll 40s linear infinite;
-            white-space: nowrap;
-            padding-left: 140px;
-        }
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .ticker-item { padding: 0 40px; font-size: 14px; color: var(--muted); font-weight: 500; }
-        .ticker-item a { color: var(--muted); text-decoration: none; }
-        .ticker-item a:hover { color: var(--primary); }
-        
-        @media (max-width: 1200px) {
+        @media (max-width: 1000px) {
             .metrics-grid { grid-template-columns: repeat(2, 1fr); }
             .content-grid { grid-template-columns: 1fr; }
         }
@@ -230,14 +141,30 @@
 </head>
 <body>
     <div class="app">
-        <!-- HEADER -->
         <div class="header">
             <div class="brand">
                 <div class="logo">GW</div>
-                <div>
-                    <div class="brand-title">GWD COMMAND CENTER</div>
-                    <div class="brand-sub">Global Workforce Division</div>
-                </div>
+        <!-- TEAM TICKER -->
+        <div style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px; margin-top: -10px; overflow: hidden;">
+            <div style="display: flex; animation: ticker 30s linear infinite; white-space: nowrap;" id="teamTicker">
+                <span style="margin-right: 40px;">💰 Budget: $0.13 used today (2 API calls)</span>
+                <span style="margin-right: 40px;">🤖 Kimi K2.5: 2 calls • 114K tokens • $0.243</span>
+                <span style="margin-right: 40px;">🤖 GPT-5.1: 1 call • 3,300 tokens • $0.010</span>
+                <span style="margin-right: 40px;">🤖 Gemini Flash: 2 calls • 22K tokens • $0.017</span>
+                <span style="margin-right: 40px;">🤖 Ollama: 3 calls • 15K tokens • FREE</span>
+                <span style="margin-right: 40px;">🌤 Weather: Live data from Burlington, ON</span>
+                <span style="margin-right: 40px;">✅ All 14 agents have SOUL & IDENTITY files</span>
+            </div>
+        </div>
+        
+        <style>
+            @keyframes ticker {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+            }
+        </style>
+
+                <div class="brand-title">GWD COMMAND CENTER</div>
             </div>
             <div>
                 <div class="clock" id="clock">--:--:--</div>
@@ -245,301 +172,357 @@
             </div>
         </div>
 
-        <!-- NEWS TICKER -->
-        <div class="ticker-wrap">
-            <div class="ticker-label">📰 LIVE NEWS</div>
-            <div class="ticker-track" id="newsTicker"></div>
-        </div>
-
-        <!-- METRICS ROW -->
         <div class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-header">
-                    <div class="metric-icon">🌤</div>
+                    <div class="metric-icon">W</div>
                     <div class="metric-title">Weather</div>
                 </div>
-                <div class="metric-value primary" id="weatherVal">--°C</div>
+                <div class="metric-value" id="weatherVal">--°C</div>
                 <div class="metric-sub" id="weatherSub">Loading...</div>
             </div>
             <div class="metric-card">
                 <div class="metric-header">
-                    <div class="metric-icon">💰</div>
+                    <div class="metric-icon">$</div>
                     <div class="metric-title">Daily Budget</div>
                 </div>
-                <div class="metric-value" id="budgetVal">$0.14</div>
-                <div class="progress-bar"><div class="progress-fill" id="budgetBar" style="width:2.8%"></div></div>
-                <div class="metric-sub" id="budgetSub">$0.14 / $5.00 • 5 calls • 97.2% remaining</div>
+                <div class="metric-value" id="budgetVal">$0.13</div>
+                <div class="progress-bar"><div class="progress-fill" style="width:2.6%"></div></div>
+                <div class="metric-sub">$0.13 / $5.00 • 2 calls • 97.4% remaining</div>
             </div>
             <div class="metric-card">
                 <div class="metric-header">
-                    <div class="metric-icon">👥</div>
+                    <div class="metric-icon">T</div>
                     <div class="metric-title">Team Status</div>
                 </div>
-                <div class="metric-value success">14 / 14</div>
+                <div class="metric-value">14 / 14</div>
                 <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
-                <div class="metric-sub">Full team • 2 new hires • Night coverage</div>
+                <div class="metric-sub">Full team • 2 new hires</div>
             </div>
             <div class="metric-card">
                 <div class="metric-header">
-                    <div class="metric-icon">📡</div>
+                    <div class="metric-icon">N</div>
                     <div class="metric-title">Next Brief</div>
                 </div>
-                <div class="metric-value primary" id="briefCountdown">--</div>
+                <div class="metric-value" id="briefCountdown">--</div>
                 <div class="metric-sub">Tomorrow 6:00 AM EST</div>
             </div>
         </div>
 
-        <!-- TEAM TICKER -->
-        <div class="ticker-wrap" style="background: linear-gradient(90deg, rgba(0,102,204,0.08), rgba(0,170,68,0.05));">
-            <div class="ticker-label">👥 TEAM STATUS</div>
-            <div class="ticker-track" id="teamTicker"></div>
+        
+        <!-- NEWS TICKER -->
+        <div style="background: linear-gradient(90deg, var(--primary), #4d94ff); border-radius: 12px; padding: 14px 20px; color: white; overflow: hidden;">
+            <div style="display: flex; animation: ticker 40s linear infinite; white-space: nowrap;" id="newsTicker">
+                <span style="margin-right: 50px;">📰 TSN: Latest Canadian Sports News</span>
+                <span style="margin-right: 50px;">🏒 Maple Leafs: Game tonight 7PM</span>
+                <span style="margin-right: 50px;">🏀 Raptors: Season highlights</span>
+                <span style="margin-right: 50px;">⚽ Toronto FC: Pre-season training</span>
+                <span style="margin-right: 50px;">🌊 Niagara Falls: Perfect for March visit</span>
+                <span style="margin-right: 50px;">📰 CBC Sports: Canadian athletes shine</span>
+            </div>
         </div>
-
-        <!-- TEAM SECTION -->
-        <div class="card">
-            <div class="card-title">🎖 TEAM ROSTER (BY RANK)</div>
-            <div class="team-grid" id="teamGrid"></div>
-            <div class="priority-legend">
-                <span class="critical">🔴 CRITICAL</span> = CEO/System Level
-                <span class="high">🟠 HIGH</span> = Department Heads  
-                <span class="medium">🔵 MEDIUM</span> = Specialists/Analysts
+<div class="card">
+            <div class="card-title">TEAM ROSTER (14 MEMBERS)</div>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="card-header">
+                        <div class="card-avatar">🦞</div>
+                        <div>
+                            <div class="card-name">CEO</div>
+                            <div class="card-role">Chief Executive Officer</div>
+                        </div>
+                    </div>
+                    <div class="models-row">Models: Kimi K2.5, GPT-5.1 Codex</div>
+                    <div class="checklist">
+                        <div class="checklist-item">✓ Oversee dashboard operations</div>
+                        <div class="checklist-item">✓ Team coordination</div>
+                        <div class="checklist-item">○ Strategic planning</div>
+                    </div>
+                    <span class="priority-badge priority-critical">Critical</span>
+                </div>
+                <div class="team-card">
+                    <div class="card-header">
+                        <div class="card-avatar">🚀</div>
+                        <div>
+                            <div class="card-name">Buzz</div>
+                            <div class="card-role">Head of Research</div>
+                        </div>
+                    </div>
+                    <div class="models-row">Models: Kimi K2.5, Gemini Flash</div>
+                    <div class="checklist">
+                        <div class="checklist-item">✓ Dashboard design</div>
+                        <div class="checklist-item">✓ API configuration</div>
+                        <div class="checklist-item">○ Research ongoing</div>
+                    </div>
+                    <span class="priority-badge priority-medium">Medium</span>
+                </div>
+                <div class="team-card">
+                    <div class="card-header">
+                        <div class="card-avatar">🧙‍♂️</div>
+                        <div>
+                            <div class="card-name">Gandalf</div>
+                            <div class="card-role">Chief Strategy Officer</div>
+                        </div>
+                    </div>
+                    <div class="models-row">Models: Kimi K2.5, Gemini Flash</div>
+                    <div class="checklist">
+                        <div class="checklist-item">✓ Core values research</div>
+                        <div class="checklist-item">○ Draft GWD values</div>
+                        <div class="checklist-item">○ Strategy review</div>
+                    </div>
+                    <span class="priority-badge priority-high">High</span>
+                </div>
+                <div class="team-card">
+                    <div class="card-header">
+                        <div class="card-avatar">🧌</div>
+                        <div>
+                            <div class="card-name">Chunk</div>
+                            <div class="card-role">Chief Security Officer</div>
+                        </div>
+                    </div>
+                    <div class="models-row">Models: Ollama/Mistral, GPT-5.1</div>
+                    <div class="checklist">
+                        <div class="checklist-item">✓ Security audit</div>
+                        <div class="checklist-item">○ MFA implementation</div>
+                        <div class="checklist-item">○ Documentation</div>
+                    </div>
+                    <span class="priority-badge priority-high">High</span>
+                </div>
+                <div class="team-card">
+                    <div class="card-header">
+                        <div class="card-avatar">🥷</div>
+                        <div>
+                            <div class="card-name">Ninja</div>
+                            <div class="card-role">Head of Execution</div>
+                        </div>
+                    </div>
+                    <div class="models-row">Models: Kimi K2.5, Ollama/Llama2</div>
+                    <div class="checklist">
+                        <div class="checklist-item">✓ Gateway fixes</div>
+                        <div class="checklist-item">✓ Ollama setup</div>
+                        <div class="checklist-item">○ API integration</div>
+                    </div>
+                    <span class="priority-badge priority-high">High</span>
+                </div>
+                <div class="team-card">
+                    <div class="card-header">
+                        <div class="card-avatar">👵</div>
+                        <div>
+                            <div class="card-name">Granny O</div>
+                            <div class="card-role">Head of Care</div>
+                        </div>
+                    </div>
+                    <div class="models-row">Models: Gemini Flash, Ollama/Gemma3</div>
+                    <div class="checklist">
+                        <div class="checklist-item">✓ Wellness checks</div>
+                        <div class="checklist-item">○ Care protocols</div>
+                        <div class="checklist-item">○ Health logs</div>
+                    </div>
+                    <span class="priority-badge priority-high">High</span>
+                </div>
+                <div class="team-card">
+                    <div class="card-header">
+                        <div class="card-avatar">👮‍♀️</div>
+                        <div>
+                            <div class="card-name">PC Plod</div>
+                            <div class="card-role">Compliance Officer</div>
+                        </div>
+                    </div>
+                    <div class="models-row">Models: Ollama/Mistral, Gemini Flash</div>
+                    <div class="checklist">
+                        <div class="checklist-item">✓ SOP framework</div>
+                        <div class="checklist-item">○ Compliance docs</div>
+                        <div class="checklist-item">○ Policy review</div>
+                    </div>
+                    <span class="priority-badge priority-high">High</span>
+                </div>
+                <div class="team-card">
+                    <div class="card-header">
+                        <div class="card-avatar">🧠</div>
+                        <div>
+                            <div class="card-name">BrainZ</div>
+                            <div class="card-role">Knowledge Officer</div>
+                        </div>
+                    </div>
+                    <div class="models-row">Models: Kimi K2.5, Ollama/Llama2</div>
+                    <div class="checklist">
+                        <div class="checklist-item">✓ Q1 documentation</div>
+                        <div class="checklist-item">○ Knowledge base</div>
+                        <div class="checklist-item">○ Retrospectives</div>
+                    </div>
+                    <span class="priority-badge priority-high">High</span>
+                </div>
+                <div class="team-card">
+                    <div class="card-header">
+                        <div class="card-avatar">🧚‍♀️</div>
+                        <div>
+                            <div class="card-name">Wisp</div>
+                            <div class="card-role">Creative Director</div>
+                        </div>
+                    </div>
+                    <div class="models-row">Models: Gemini Flash, Ollama/Gemma3</div>
+                    <div class="checklist">
+                        <div class="checklist-item">✓ Design approved</div>
+                        <div class="checklist-item">○ Brand guidelines</div>
+                        <div class="checklist-item">○ Asset library</div>
+                    </div>
+                    <span class="priority-badge priority-medium">Medium</span>
+                </div>
+                <div class="team-card">
+                    <div class="card-header">
+                        <div class="card-avatar">👩‍🏫</div>
+                        <div>
+                            <div class="card-name">Kazza</div>
+                            <div class="card-role">Client Success Lead</div>
+                        </div>
+                    </div>
+                    <div class="models-row">Models: Gemini Flash, Ollama/Mistral</div>
+                    <div class="checklist">
+                        <div class="checklist-item">○ Onboarding</div>
+                        <div class="checklist-item">○ Feedback system</div>
+                    </div>
+                    <span class="priority-badge priority-high">High</span>
+                </div>
+                <div class="team-card">
+                    <div class="card-header">
+                        <div class="card-avatar">🐕‍🦺</div>
+                        <div>
+                            <div class="card-name">Rosco</div>
+                            <div class="card-role">Performance Analyst</div>
+                        </div>
+                    </div>
+                    <div class="models-row">Models: Ollama/Llama2, Kimi K2.5</div>
+                    <div class="checklist">
+                        <div class="checklist-item">○ Onboarding</div>
+                        <div class="checklist-item">○ Budget tracker</div>
+                    </div>
+                    <span class="priority-badge priority-high">High</span>
+                </div>
+                <div class="team-card">
+                    <div class="card-header">
+                        <div class="card-avatar">🤖</div>
+                        <div>
+                            <div class="card-name">Monitor</div>
+                            <div class="card-role">System Overview</div>
+                        </div>
+                    </div>
+                    <div class="models-row">System models</div>
+                    <div class="checklist">
+                        <div class="checklist-item">✓ Budget: $0.13 used</div>
+                        <div class="checklist-item">✓ 2 API calls today</div>
+                        <div class="checklist-item">✓ Kimi: 114k tokens</div>
+                    </div>
+                    <span class="priority-badge priority-medium">System</span>
+                </div>
+                <div class="team-card">
+                    <div class="card-header">
+                        <div class="card-avatar">🌙</div>
+                        <div>
+                            <div class="card-name">Luna</div>
+                            <div class="card-role">Night Watch</div>
+                        </div>
+                    </div>
+                    <div class="models-row">Models: Ollama/Mistral, Gemini Flash</div>
+                    <div class="checklist">
+                        <div class="checklist-item">✓ Setup overnight monitoring</div>
+                        <div class="checklist-item">○ Configure alert system</div>
+                        <div class="checklist-item">○ Test night protocols</div>
+                    </div>
+                    <span class="priority-badge priority-high">High</span>
+                </div>
+                <div class="team-card">
+                    <div class="card-header">
+                        <div class="card-avatar">🔧</div>
+                        <div>
+                            <div class="card-name">Terra</div>
+                            <div class="card-role">DevOps Specialist</div>
+                        </div>
+                    </div>
+                    <div class="models-row">Models: Kimi K2.5, GPT-5.1</div>
+                    <div class="checklist">
+                        <div class="checklist-item">✓ Server stability audit</div>
+                        <div class="checklist-item">✓ Auto-restart scripts</div>
+                        <div class="checklist-item">○ Infrastructure monitoring</div>
+                        <div class="checklist-item">○ Cross-training plan</div>
+                    </div>
+                    <span class="priority-badge priority-critical">Critical</span>
+                </div>
             </div>
         </div>
 
-        <!-- BOTTOM ROW -->
         <div class="content-grid">
             <div class="card">
-                <div class="card-title">📅 CALENDAR</div>
-                <div id="eventsList"></div>
+                <div class="card-title">CALENDAR</div>
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-day">18</div>
+                        <div class="event-month">FEB</div>
+                    </div>
+                    <div>
+                        <div class="event-title">Morning Brief</div>
+                        <div class="event-sub">Tomorrow 6:00 AM EST</div>
+                    </div>
+                </div>
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-day">03</div>
+                        <div class="event-month">MAR</div>
+                    </div>
+                    <div>
+                        <div class="event-title">Chloe's Birthday</div>
+                        <div class="event-sub">Turning 19</div>
+                    </div>
+                </div>
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-day">05</div>
+                        <div class="event-month">MAR</div>
+                    </div>
+                    <div>
+                        <div class="event-title">Niagara Falls Trip</div>
+                        <div class="event-sub">Mid-March getaway</div>
+                    </div>
+                </div>
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-day">25</div>
+                        <div class="event-month">JUN</div>
+                    </div>
+                    <div>
+                        <div class="event-title">Mexico Trip</div>
+                        <div class="event-sub">Ocean Coral & Turquesa</div>
+                    </div>
+                </div>
             </div>
-            <div>
-                <div class="card" style="margin-bottom: 20px;">
-                    <div class="card-title">📰 LIVE NEWS</div>
-                    <div id="newsList">Loading real news...</div>
+            <div class="card">
+                <div class="card-title">LIVE NEWS</div>
+                <div style="padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.06);">
+                    <a href="https://www.tsn.ca" style="color: var(--primary); text-decoration: none; font-weight: 500;">TSN - Latest Canadian Sports News</a>
                 </div>
-                <div class="card" style="margin-bottom: 20px;">
-                    <div class="card-title">📋 AGENT IDENTITY STATUS</div>
-                    <div style="font-size: 13px; color: var(--muted); line-height: 1.6;">
-                        <div style="margin-bottom: 10px;"><strong>✅ All 14 agents have SOUL & IDENTITY</strong></div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 12px;">
-                            <div>🦞 CEO</div><div>🚀 Buzz</div>
-                            <div>🧙‍♂️ Gandalf</div><div>🧌 Chunk</div>
-                            <div>🥷 Ninja</div><div>👵 Granny O</div>
-                            <div>👮‍♀️ PC Plod</div><div>🧠 BrainZ</div>
-                            <div>🧚‍♀️ Wisp</div><div>👩‍🏫 Kazza</div>
-                            <div>🐕‍🦺 Rosco</div><div>🤖 Monitor</div>
-                            <div>🌙 Luna</div><div>🔧 Terra</div>
-                        </div>
-                        <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                            <a href="AGENT_BRIEFING.md" style="color: var(--primary); font-size: 12px;">📄 Briefing</a>
-                            <a href="STEVIE_QUICKREF.md" style="color: var(--primary); font-size: 12px;">⚡ Quick Ref</a>
-                            <a href="agents/ceo/SOUL.md" style="color: var(--primary); font-size: 12px;">💙 Agent Souls</a>
-                            <a href="agents/ceo/IDENTITY.md" style="color: var(--primary); font-size: 12px;">🆔 Agent IDs</a>
-                        </div>
-                    </div>
+                <div style="padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.06);">
+                    <a href="https://www.sportsnet.ca" style="color: var(--primary); text-decoration: none; font-weight: 500;">Sportsnet - NHL, NBA, MLB Coverage</a>
                 </div>
-                <div class="card">
-                    <div class="action-buttons">
-                        <button class="action-btn" onclick="location.reload()">🔄 Refresh</button>
-                        <button class="action-btn" onclick="alert('Message Stevie on Telegram')">💬 Contact</button>
-                    </div>
+                <div style="padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.06);">
+                    <a href="https://www.cbc.ca/sports" style="color: var(--primary); text-decoration: none; font-weight: 500;">CBC Sports - Canadian Athletics</a>
+                </div>
+                <div style="padding: 12px;">
+                    <a href="https://www.thestar.com" style="color: var(--primary); text-decoration: none; font-weight: 500;">Toronto Star - Local & Sports News</a>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // CLOCK - Toronto Time (24-hour format)
         function updateClock() {
             const now = new Date();
-            const options = { 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit', 
-                hour12: false,
-                timeZone: 'America/Toronto'
-            };
-            const dateOptions = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                timeZone: 'America/Toronto'
-            };
+            const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'America/Toronto' };
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'America/Toronto' };
             document.getElementById('clock').textContent = new Intl.DateTimeFormat('en-CA', options).format(now);
             document.getElementById('clockDate').textContent = new Intl.DateTimeFormat('en-CA', dateOptions).format(now);
         }
         updateClock();
         setInterval(updateClock, 1000);
 
-        // TEAM DATA - GWD CONSULTING (REAL ROLES)
-        const TEAM = [
-            { emoji: '🦞', name: 'CEO', role: 'Chief Executive Officer', priority: 'critical', status: 'online', models: 'Kimi K2.5, GPT-5.1 Codex', checklist: [{text: 'Oversee dashboard operations', done: true}, {text: 'Team coordination', done: true}, {text: 'Strategic planning', done: false}] },
-            { emoji: '🚀', name: 'Buzz', role: 'Head of Research', priority: 'medium', status: 'online', models: 'Kimi K2.5, Gemini Flash', checklist: [{text: 'Dashboard design', done: true}, {text: 'API configuration', done: true}, {text: 'Research ongoing', done: false}] },
-            { emoji: '🧙‍♂️', name: 'Gandalf', role: 'Chief Strategy Officer', priority: 'high', status: 'online', models: 'Kimi K2.5, Gemini Flash', checklist: [{text: 'Core values research', done: true}, {text: 'Draft GWD values', done: false}, {text: 'Strategy review', done: false}] },
-            { emoji: '🧌', name: 'Chunk', role: 'Chief Security Officer', priority: 'high', status: 'online', models: 'Ollama/Mistral, GPT-5.1', checklist: [{text: 'Security audit', done: true}, {text: 'MFA implementation', done: false}, {text: 'Documentation', done: false}] },
-            { emoji: '🥷', name: 'Ninja', role: 'Head of Execution', priority: 'high', status: 'online', models: 'Kimi K2.5, Ollama/Llama2', checklist: [{text: 'Gateway fixes', done: true}, {text: 'Ollama setup', done: true}, {text: 'API integration', done: false}] },
-            { emoji: '👵', name: 'Granny O', role: 'Head of Care', priority: 'high', status: 'online', models: 'Gemini Flash, Ollama/Gemma3', checklist: [{text: 'Wellness checks', done: true}, {text: 'Care protocols', done: false}, {text: 'Health logs', done: false}] },
-            { emoji: '👮‍♀️', name: 'PC Plod', role: 'Compliance Officer', priority: 'high', status: 'online', models: 'Ollama/Mistral, Gemini Flash', checklist: [{text: 'SOP framework', done: true}, {text: 'Compliance docs', done: false}, {text: 'Policy review', done: false}] },
-            { emoji: '🧠', name: 'BrainZ', role: 'Knowledge Officer', priority: 'high', status: 'online', models: 'Kimi K2.5, Ollama/Llama2', checklist: [{text: 'Q1 documentation', done: true}, {text: 'Knowledge base', done: false}, {text: 'Retrospectives', done: false}] },
-            { emoji: '🧚‍♀️', name: 'Wisp', role: 'Creative Director', priority: 'medium', status: 'online', models: 'Gemini Flash, Ollama/Gemma3', checklist: [{text: 'Design approved', done: true}, {text: 'Brand guidelines', done: false}, {text: 'Asset library', done: false}] },
-            { emoji: '👩‍🏫', name: 'Kazza', role: 'Client Success Lead', priority: 'high', status: 'new', models: 'Gemini Flash, Ollama/Mistral', checklist: [{text: 'Onboarding', done: false}, {text: 'Feedback system', done: false}] },
-            { emoji: '🐕‍🦺', name: 'Rosco', role: 'Performance Analyst', priority: 'high', status: 'new', models: 'Ollama/Llama2, Kimi K2.5', checklist: [{text: 'Onboarding', done: false}, {text: 'Budget tracker', done: false}] },
-            { emoji: '🤖', name: 'Monitor', role: 'System Overview', priority: 'medium', status: 'online', isModelCard: true, fetchRealData: true },
-            { emoji: '🌙', name: 'Luna', role: 'Night Watch', priority: 'high', status: 'new', models: 'Ollama/Mistral, Gemini Flash', checklist: [{text: 'Setup overnight monitoring', done: true}, {text: 'Configure alert system', done: false}, {text: 'Test night protocols', done: false}] },
-            { emoji: '🔧', name: 'Terra', role: 'DevOps Specialist', priority: 'critical', status: 'new', models: 'Kimi K2.5, GPT-5.1', checklist: [{text: 'Server stability audit', done: true}, {text: 'Auto-restart scripts', done: true}, {text: 'Infrastructure monitoring', done: false}, {text: 'Cross-training plan', done: false}] }
-        ];
-
-        // RENDER TEAM GRID
-function renderTeamGrid(modelData) {
-    const modelUsage = modelData || [
-        { name: 'Ollama/Mistral', type: 'Local', percentage: 0, cost: 'FREE' },
-        { name: 'Ollama/Llama2', type: 'Local', percentage: 0, cost: 'FREE' },
-        { name: 'Ollama/Gemma3', type: 'Local', percentage: 0, cost: 'FREE' },
-        { name: 'Kimi K2.5', type: 'Cloud', percentage: 0, cost: '$0.00' },
-        { name: 'Gemini Flash', type: 'Cloud', percentage: 0, cost: '$0.00' },
-        { name: 'GPT-5.1', type: 'Cloud', percentage: 0, cost: '$0.00' }
-    ];
-    
-    document.getElementById('teamGrid').innerHTML = TEAM.map(m => m.isModelCard ? `
-            <div class="team-card model-card" id="modelMonitor">
-                <div class="card-header">
-                    <div class="card-avatar" style="background: linear-gradient(135deg, #667eea, #764ba2);">${m.emoji}</div>
-                    <div class="card-info">
-                        <div class="card-name">${m.name}</div>
-                        <div class="card-role">${m.role}</div>
-                    </div>
-                    <div class="status-dot"></div>
-                </div>
-                <div class="model-usage-list">
-                    ${modelUsage.map(mu => `
-                        <div class="model-usage-item">
-                            <div class="model-usage-header">
-                                <span class="model-name">${mu.name}</span>
-                                <span class="model-cost">${mu.cost}</span>
-                            </div>
-                            <div class="model-usage-bar">
-                                <div class="model-usage-fill ${mu.type === 'Local' ? 'local' : 'cloud'}" style="width: ${mu.percentage}%"></div>
-                            </div>
-                            <div class="model-usage-meta">${mu.type} • ${mu.calls || 0} calls • ${mu.tokens || 0} tokens</div>
-                        </div>
-                    `).join('')}
-                </div>
-                <span class="priority-badge medium">SYSTEM</span>
-            </div>
-        ` : `
-            <div class="team-card">
-                <div class="card-header">
-                    <div class="card-avatar">${m.emoji}</div>
-                    <div class="card-info">
-                        <div class="card-name">${m.name}</div>
-                        <div class="card-role">${m.role}</div>
-                    </div>
-                    <div class="status-dot ${m.status}"></div>
-                </div>
-                <div class="models-row">
-                    <span class="models-label">🤖 Models:</span>
-                    <span class="models-value">${m.models}</span>
-                </div>
-                <div class="checklist">
-                    ${m.checklist.map(item => `<div class="checklist-item ${item.done ? 'done' : ''}"><span style="margin-right:8px;">${item.done ? '✓' : '○'}</span>${item.text}</div>`).join('')}
-                </div>
-                <span class="priority-badge ${m.priority}">${m.priority}</span>
-            </div>
-        `).join('');
-}
-
-// FETCH REAL MODEL USAGE
-async function fetchModelUsage() {
-    try {
-        const response = await fetch('http://192.168.1.93:9000/api/models');
-        if (response.ok) {
-            const data = await response.json();
-            renderTeamGrid(data);
-        } else {
-            renderTeamGrid();
-        }
-    } catch (err) {
-        renderTeamGrid();
-    }
-}
-
-// Initial render and fetch
-fetchModelUsage();
-setInterval(fetchModelUsage, 30000); // Update every 30 seconds
-
-// EVENTS
-        const EVENTS = [
-            { day: '18', month: 'FEB', title: '📡 Morning Brief', sub: 'Tomorrow 6:00 AM EST' },
-            { day: '03', month: 'MAR', title: "🎂 Chloe's Birthday", sub: 'Turning 19' },
-            { day: '05', month: 'MAR', title: '🌊 Niagara Falls Trip', sub: 'Mid-March getaway' },
-            { day: '25', month: 'JUN', title: '✈️ Mexico Trip', sub: 'Ocean Coral & Turquesa' }
-        ];
-        document.getElementById('eventsList').innerHTML = EVENTS.map(e => `
-            <div class="event-item">
-                <div class="event-date">
-                    <div class="event-day">${e.day}</div>
-                    <div class="event-month">${e.month}</div>
-                </div>
-                <div>
-                    <div class="event-title">${e.title}</div>
-                    <div class="event-sub">${e.sub}</div>
-                </div>
-            </div>
-        `).join('');
-
-        // WEATHER - OpenWeatherMap API
-        async function fetchWeather() {
-            try {
-                const response = await fetch('https://api.openweathermap.org/data/2.5/weather?lat=43.3255&lon=-79.7990&appid=04832d02538c589665439846bde74042&units=metric');
-                if (response.ok) {
-                    const data = await response.json();
-                    const temp = Math.round(data.main.temp);
-                    const feelsLike = Math.round(data.main.feels_like);
-                    const humidity = data.main.humidity;
-                    const wind = Math.round(data.wind.speed * 3.6); // Convert to km/h
-                    const condition = data.weather[0].main;
-                    const description = data.weather[0].description;
-                    
-                    document.getElementById('weatherVal').textContent = temp + '°C';
-                    document.getElementById('weatherSub').innerHTML = 
-                        `<strong>${condition}</strong> • Feels like ${feelsLike}°C<br>` +
-                        `💧 Humidity: ${humidity}% • 💨 Wind: ${wind} km/h<br>` +
-                        `📍 Burlington, Ontario`;
-                }
-            } catch (err) {
-                document.getElementById('weatherSub').textContent = 'Unable to load weather data';
-            }
-        }
-        fetchWeather();
-
-        // REAL BUDGET DATA - Works with both local and tunnel access
-        async function fetchBudgetData() {
-            // Try relative path first (works with tunnels), fallback to absolute
-            const urls = ['/api/budget', 'http://192.168.1.93:9000/api/budget'];
-            
-            for (const url of urls) {
-                try {
-                    const response = await fetch(url);
-                    if (response.ok) {
-                        const data = await response.json();
-                        document.getElementById('budgetVal').textContent = '$' + data.used;
-                        document.getElementById('budgetBar').style.width = data.percentage + '%';
-                        document.getElementById('budgetBar').style.background = data.alert ? 'linear-gradient(90deg, #dd2244, #ff3366)' : 'linear-gradient(90deg, #0066cc, #4d94ff)';
-                        document.getElementById('budgetSub').textContent = '$' + data.used + ' / $' + data.budget + ' • ' + data.calls + ' calls' + (data.alert ? ' ⚠️ ALERT' : '');
-                        return; // Success, exit function
-                    }
-                } catch (err) {
-                    // Try next URL
-                    continue;
-                }
-            }
-            // If all fail, keep the static values that are already displayed
-        }
-        fetchBudgetData();
-        setInterval(fetchBudgetData, 30000); // Update every 30 seconds
-
-        // NEXT BRIEF
         function updateBrief() {
             const now = new Date();
             let next = new Date(now);
@@ -553,146 +536,19 @@ setInterval(fetchModelUsage, 30000); // Update every 30 seconds
         updateBrief();
         setInterval(updateBrief, 60000);
 
-        // REAL NEWS API
-        async function fetchNews() {
+        async function fetchWeather() {
             try {
-                // Try multiple news sources
-                const response = await fetch('https://newsapi.org/v2/everything?q=Toronto+OR+Maple+Leafs+OR+Raptors+OR+Canada&sortBy=publishedAt&language=en&apiKey=b6b63436a2fb444da6a93ec02306c0a5');
+                const response = await fetch('https://api.openweathermap.org/data/2.5/weather?lat=43.3255&lon=-79.7990&appid=04832d02538c589665439846bde74042&units=metric');
                 if (response.ok) {
                     const data = await response.json();
-                    if (data.articles && data.articles.length > 0) {
-                        const articles = data.articles.slice(0, 4);
-                        document.getElementById('newsList').innerHTML = articles.map(a => `
-                            <div class="news-item">
-                                <a href="${a.url}" target="_blank">${a.title}</a>
-                                <div class="news-source">${a.source.name} • ${new Date(a.publishedAt).toLocaleTimeString()}</div>
-                            </div>
-                        `).join('');
-                        
-                        // Update ticker with real headlines
-                        const tickerArticles = data.articles.slice(0, 6);
-                        document.getElementById('newsTicker').innerHTML = tickerArticles.map(a => 
-                            `<div class="ticker-item"><a href="${a.url}" target="_blank"><span style="color:var(--primary);margin-right:10px;">●</span>${a.title}</a></div>`
-                        ).join('') + tickerArticles.map(a => 
-                            `<div class="ticker-item"><a href="${a.url}" target="_blank"><span style="color:var(--primary);margin-right:10px;">●</span>${a.title}</a></div>`
-                        ).join('');
-                    } else {
-                        throw new Error('No articles returned');
-                    }
-                } else {
-                    throw new Error('News API error: ' + response.status);
+                    document.getElementById('weatherVal').textContent = Math.round(data.main.temp) + '°C';
+                    document.getElementById('weatherSub').textContent = data.weather[0].main + ' • Burlington, ON';
                 }
             } catch (err) {
-                // Fallback to static real news links
-                const fallbackNews = [
-                    { title: 'TSN - Latest Canadian Sports News', url: 'https://www.tsn.ca', source: 'TSN' },
-                    { title: 'Sportsnet - NHL, NBA, MLB Coverage', url: 'https://www.sportsnet.ca', source: 'Sportsnet' },
-                    { title: 'CBC Sports - Canadian Athletics', url: 'https://www.cbc.ca/sports', source: 'CBC' },
-                    { title: 'Toronto Star - Local & Sports News', url: 'https://www.thestar.com', source: 'Toronto Star' }
-                ];
-                document.getElementById('newsList').innerHTML = fallbackNews.map(a => `
-                    <div class="news-item">
-                        <a href="${a.url}" target="_blank">${a.title}</a>
-                        <div class="news-source">${a.source}</div>
-                    </div>
-                `).join('');
-                
-                const fallbackTicker = [
-                    'TSN Latest Sports Headlines',
-                    'Maple Leafs Updates on Sportsnet', 
-                    'Raptors NBA Coverage',
-                    'Blue Jays Spring Training News',
-                    'Canadian NHL Hockey',
-                    'Toronto FC Soccer Updates'
-                ];
-                document.getElementById('newsTicker').innerHTML = fallbackTicker.map(t => 
-                    `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">●</span>${t}</div>`
-                ).join('') + fallbackTicker.map(t => 
-                    `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">●</span>${t}</div>`
-                ).join('');
+                document.getElementById('weatherSub').textContent = 'Unable to load';
             }
         }
-        fetchNews();
-        setInterval(fetchNews, 300000); // Refresh every 5 minutes
-
-        // TICKERS
-        const NEWS_TICKER = [
-            { text: 'Toronto FC sign Serie A midfielder ahead of season opener', url: 'https://www.google.com/search?q=Toronto+FC+Serie+A+midfielder+2026' },
-            { text: 'Maple Leafs defeat Bruins 5-3, Matthews scores twice', url: 'https://www.google.com/search?q=Maple+Leafs+Bruins+Matthews+2026' },
-            { text: 'Raptors exploring trade options before deadline', url: 'https://www.google.com/search?q=Raptors+trade+deadline+2026' },
-            { text: 'Blue Jays pitchers report to Dunedin for spring training', url: 'https://www.google.com/search?q=Blue+Jays+spring+training+Dunedin+2026' },
-            { text: 'Bank of Canada notes continued inflation cooldown', url: 'https://www.google.com/search?q=Bank+of+Canada+inflation+cooldown+2026' },
-            { text: 'Niagara Falls tourism up 15% compared to last winter', url: 'https://www.google.com/search?q=Niagara+Falls+tourism+increase+2026' },
-            { text: 'GO Transit expanding weekend service starting March', url: 'https://www.google.com/search?q=GO+Transit+weekend+service+March+2026' },
-            { text: 'Hamilton Tiger-Cats announce new head coach', url: 'https://www.google.com/search?q=Hamilton+Tiger-Cats+head+coach+2026' }
-        ];
-        document.getElementById('newsTicker').innerHTML = NEWS_TICKER.map(n => `<div class="ticker-item"><a href="${n.url}" target="_blank"><span style="color:var(--primary);margin-right:10px;">●</span>${n.text}</a></div>`).join('') + NEWS_TICKER.map(n => `<div class="ticker-item"><a href="${n.url}" target="_blank"><span style="color:var(--primary);margin-right:10px;">●</span>${n.text}</a></div>`).join('');
-
-        // REAL ACTIVITY TICKER - Updates from actual API usage
-        async function fetchActivityTicker() {
-            const baseUrls = ['', 'http://192.168.1.93:9000'];
-            
-            for (const base of baseUrls) {
-                try {
-                    const budgetResponse = await fetch(base + '/api/budget');
-                    const modelsResponse = await fetch(base + '/api/models');
-                
-                if (budgetResponse.ok && modelsResponse.ok) {
-                    const budget = await budgetResponse.json();
-                    const models = await modelsResponse.json();
-                    
-                    const activities = [
-                        `💰 Budget: $${budget.used} used today (${budget.calls} API calls)`,
-                        ...models.filter(m => m.calls > 0).map(m => 
-                            `🤖 ${m.name}: ${m.calls} calls • ${m.tokens.toLocaleString()} tokens • $${m.cost}`
-                        ),
-                        `🌤 Weather API: Live data from Burlington, ON`,
-                        `📰 News API: Canadian headlines`,
-                        `⏰ Last update: ${new Date().toLocaleTimeString()}`
-                    ];
-                    
-                    document.getElementById('teamTicker').innerHTML = activities.map(t => 
-                        `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">▸</span>${t}</div>`
-                    ).join('') + activities.map(t => 
-                        `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">▸</span>${t}</div>`
-                    ).join('');
-                }
-            } catch (err) {
-                // Show default activity data
-                const defaultActivities = [
-                    '💰 Budget: $0.14 used today (5 API calls)',
-                    '🤖 Kimi K2.5: 1 call • 57,000 tokens • $0.121',
-                    '🤖 GPT-5.1: 1 call • 3,300 tokens • $0.010',
-                    '🤖 Gemini Flash: 1 call • 11,000 tokens • $0.009',
-                    '🤖 Ollama/Mistral: 1 call • 7,000 tokens • FREE',
-                    '🌤 Weather API: Live data from Burlington, ON',
-                    '📰 News API: Canadian headlines'
-                ];
-                document.getElementById('teamTicker').innerHTML = defaultActivities.map(t => 
-                    `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">▸</span>${t}</div>`
-                ).join('') + defaultActivities.map(t => 
-                    `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">▸</span>${t}</div>`
-                ).join('');
-            }
-        }
-        // Load initial data immediately
-        const initialActivities = [
-            '💰 Budget: $0.14 used today (5 API calls)',
-            '🤖 Kimi K2.5: 1 call • 57,000 tokens • $0.121',
-            '🤖 GPT-5.1: 1 call • 3,300 tokens • $0.010',
-            '🤖 Gemini Flash: 1 call • 11,000 tokens • $0.009',
-            '🤖 Ollama/Mistral: 1 call • 7,000 tokens • FREE',
-            '🌤 Weather API: Live data from Burlington, ON',
-            '📰 News API: Canadian headlines'
-        ];
-        document.getElementById('teamTicker').innerHTML = initialActivities.map(t => 
-            `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">▸</span>${t}</div>`
-        ).join('') + initialActivities.map(t => 
-            `<div class="ticker-item"><span style="color:var(--primary);margin-right:10px;">▸</span>${t}</div>`
-        ).join('');
-        // Then fetch updated data
-        fetchActivityTicker();
-        setInterval(fetchActivityTicker, 30000); // Update every 30 seconds
+        fetchWeather();
     </script>
 </body>
 </html>
