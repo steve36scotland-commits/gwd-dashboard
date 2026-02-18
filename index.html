@@ -451,7 +451,7 @@ setInterval(fetchModelUsage, 30000); // Update every 30 seconds
             </div>
         `).join('');
 
-        // WEATHER
+        // WEATHER - OpenWeatherMap API
         async function fetchWeather() {
             try {
                 const response = await fetch('https://api.openweathermap.org/data/2.5/weather?lat=43.3255&lon=-79.7990&appid=04832d02538c589665439846bde74042&units=metric');
@@ -476,20 +476,28 @@ setInterval(fetchModelUsage, 30000); // Update every 30 seconds
         }
         fetchWeather();
 
-        // REAL BUDGET DATA
+        // REAL BUDGET DATA - Works with both local and tunnel access
         async function fetchBudgetData() {
-            try {
-                const response = await fetch('http://192.168.1.93:9000/api/budget');
-                if (response.ok) {
-                    const data = await response.json();
-                    document.getElementById('budgetVal').textContent = '$' + data.used;
-                    document.getElementById('budgetBar').style.width = data.percentage + '%';
-                    document.getElementById('budgetBar').style.background = data.alert ? 'linear-gradient(90deg, #dd2244, #ff3366)' : 'linear-gradient(90deg, #0066cc, #4d94ff)';
-                    document.getElementById('budgetSub').textContent = '$' + data.used + ' / $' + data.budget + ' • ' + data.calls + ' calls' + (data.alert ? ' ⚠️ ALERT' : '');
+            // Try relative path first (works with tunnels), fallback to absolute
+            const urls = ['/api/budget', 'http://192.168.1.93:9000/api/budget'];
+            
+            for (const url of urls) {
+                try {
+                    const response = await fetch(url);
+                    if (response.ok) {
+                        const data = await response.json();
+                        document.getElementById('budgetVal').textContent = '$' + data.used;
+                        document.getElementById('budgetBar').style.width = data.percentage + '%';
+                        document.getElementById('budgetBar').style.background = data.alert ? 'linear-gradient(90deg, #dd2244, #ff3366)' : 'linear-gradient(90deg, #0066cc, #4d94ff)';
+                        document.getElementById('budgetSub').textContent = '$' + data.used + ' / $' + data.budget + ' • ' + data.calls + ' calls' + (data.alert ? ' ⚠️ ALERT' : '');
+                        return; // Success, exit function
+                    }
+                } catch (err) {
+                    // Try next URL
+                    continue;
                 }
-            } catch (err) {
-                document.getElementById('budgetSub').textContent = 'Budget tracker offline';
             }
+            // If all fail, keep the static values that are already displayed
         }
         fetchBudgetData();
         setInterval(fetchBudgetData, 30000); // Update every 30 seconds
@@ -585,9 +593,12 @@ setInterval(fetchModelUsage, 30000); // Update every 30 seconds
 
         // REAL ACTIVITY TICKER - Updates from actual API usage
         async function fetchActivityTicker() {
-            try {
-                const budgetResponse = await fetch('http://192.168.1.93:9000/api/budget');
-                const modelsResponse = await fetch('http://192.168.1.93:9000/api/models');
+            const baseUrls = ['', 'http://192.168.1.93:9000'];
+            
+            for (const base of baseUrls) {
+                try {
+                    const budgetResponse = await fetch(base + '/api/budget');
+                    const modelsResponse = await fetch(base + '/api/models');
                 
                 if (budgetResponse.ok && modelsResponse.ok) {
                     const budget = await budgetResponse.json();
