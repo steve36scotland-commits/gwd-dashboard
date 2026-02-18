@@ -275,9 +275,9 @@
                     <div class="metric-icon">👥</div>
                     <div class="metric-title">Team Status</div>
                 </div>
-                <div class="metric-value success">11 / 12</div>
-                <div class="progress-bar"><div class="progress-fill" style="width:91.6%"></div></div>
-                <div class="metric-sub">11 active • 1 monitor</div>
+                <div class="metric-value success">14 / 14</div>
+                <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+                <div class="metric-sub">Full team • 2 new hires • Night coverage</div>
             </div>
             <div class="metric-card">
                 <div class="metric-header">
@@ -328,11 +328,25 @@
     </div>
 
     <script>
-        // CLOCK
+        // CLOCK - Toronto Time (24-hour format)
         function updateClock() {
             const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'America/Toronto' });
-            document.getElementById('clockDate').textContent = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Toronto' }).toUpperCase();
+            const options = { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit', 
+                hour12: false,
+                timeZone: 'America/Toronto'
+            };
+            const dateOptions = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                timeZone: 'America/Toronto'
+            };
+            document.getElementById('clock').textContent = new Intl.DateTimeFormat('en-CA', options).format(now);
+            document.getElementById('clockDate').textContent = new Intl.DateTimeFormat('en-CA', dateOptions).format(now);
         }
         updateClock();
         setInterval(updateClock, 1000);
@@ -350,7 +364,9 @@
             { emoji: '🧚‍♀️', name: 'Wisp', role: 'Creative Director', priority: 'medium', status: 'online', models: 'Gemini Flash, Ollama/Gemma3', checklist: [{text: 'Design approved', done: true}, {text: 'Brand guidelines', done: false}, {text: 'Asset library', done: false}] },
             { emoji: '👩‍🏫', name: 'Kazza', role: 'Client Success Lead', priority: 'high', status: 'new', models: 'Gemini Flash, Ollama/Mistral', checklist: [{text: 'Onboarding', done: false}, {text: 'Feedback system', done: false}] },
             { emoji: '🐕‍🦺', name: 'Rosco', role: 'Performance Analyst', priority: 'high', status: 'new', models: 'Ollama/Llama2, Kimi K2.5', checklist: [{text: 'Onboarding', done: false}, {text: 'Budget tracker', done: false}] },
-            { emoji: '🤖', name: 'Monitor', role: 'System Overview', priority: 'medium', status: 'online', isModelCard: true, fetchRealData: true }
+            { emoji: '🤖', name: 'Monitor', role: 'System Overview', priority: 'medium', status: 'online', isModelCard: true, fetchRealData: true },
+            { emoji: '🌙', name: 'Luna', role: 'Night Watch', priority: 'high', status: 'new', models: 'Ollama/Mistral, Gemini Flash', checklist: [{text: 'Setup overnight monitoring', done: true}, {text: 'Configure alert system', done: false}, {text: 'Test night protocols', done: false}] },
+            { emoji: '🔧', name: 'Terra', role: 'DevOps Specialist', priority: 'critical', status: 'new', models: 'Kimi K2.5, GPT-5.1', checklist: [{text: 'Server stability audit', done: true}, {text: 'Auto-restart scripts', done: true}, {text: 'Infrastructure monitoring', done: false}, {text: 'Cross-training plan', done: false}] }
         ];
 
         // RENDER TEAM GRID

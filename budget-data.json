@@ -1,0 +1,41 @@
+{
+  "dailyUsage": {
+    "2026-02-18": {
+      "totalCost": 0.13,
+      "calls": 2
+    }
+  },
+  "modelUsage": {
+    "gpt-5.1-codex": {
+      "calls": 1,
+      "tokens": 3300,
+      "cost": 0.0098
+    },
+    "moonshot/kimi-k2.5": {
+      "calls": 2,
+      "tokens": 114000,
+      "cost": 0.243
+    },
+    "gemini-flash": {
+      "calls": 2,
+      "tokens": 22000,
+      "cost": 0.017
+    },
+    "ollama/mistral": {
+      "calls": 1,
+      "tokens": 7000,
+      "cost": 0
+    },
+    "ollama/llama2": {
+      "calls": 1,
+      "tokens": 4500,
+      "cost": 0
+    },
+    "ollama/gemma3": {
+      "calls": 0,
+      "tokens": 0,
+      "cost": 0
+    }
+  },
+  "lastReset": "2026-02-18"
+}
